@@ -1,3 +1,4 @@
+
 import { Incident, AccessLog, Campus, User, ZoneOverlay, MapMarker } from './types';
 
 export const CAMPUSES: Exclude<Campus, 'Global'>[] = [
@@ -13,7 +14,7 @@ export const MOCK_USERS: Record<string, User & { password?: string }> = {
     role: 'autoridad',
     roleDisplay: 'Directora Comunidad Alerta',
     campus: 'Global',
-    email: 'e.vance@comunidadalerta.org',
+    email: 'e.vance@issu.edu.mx',
     password: 'admin'
   },
   'alumno_metro': {
@@ -22,7 +23,7 @@ export const MOCK_USERS: Record<string, User & { password?: string }> = {
     role: 'alumno',
     roleDisplay: 'Miembro Comunidad Alerta',
     campus: 'Campus Metropolitano',
-    email: 'm.lopez@comunidadalerta.org',
+    email: 'm.lopez@issu.edu.mx',
     password: 'password123'
   },
   'alumno_tec': {
@@ -31,7 +32,7 @@ export const MOCK_USERS: Record<string, User & { password?: string }> = {
     role: 'alumno',
     roleDisplay: 'Miembro Comunidad Alerta',
     campus: 'Campus Tecnológico',
-    email: 'r.garcia@comunidadalerta.org',
+    email: 'r.garcia@issu.edu.mx',
     password: 'password123'
   },
   'alumno_oriente': {
@@ -40,54 +41,49 @@ export const MOCK_USERS: Record<string, User & { password?: string }> = {
     role: 'alumno',
     roleDisplay: 'Miembro Comunidad Alerta',
     campus: 'Campus Oriente',
-    email: 's.perez@comunidadalerta.org',
+    email: 's.perez@issu.edu.mx',
     password: 'password123'
   }
 };
 
-export const mockIncidents: Incident[] = [
-  {
-    id: 1,
-    category: 'Infraestructura',
-    description: 'Cámara perimetral fuera de servicio por cortocircuito.',
-    zone: 'Puerta Norte',
-    campus: 'Campus Metropolitano',
-    status: 'pendiente',
-    severity: 'media',
-    userId: 'SYSTEM',
-    userName: 'Sistema de Red',
-    time: '09:00 AM',
-    coords: { top: '25%', left: '45%' }
-  }
-];
-
 export const campusMarkers: Record<string, MapMarker[]> = {
   'Campus Metropolitano': [
-    { id: 'm1', type: 'entrada', label: 'Acceso Principal A', coords: { top: '10%', left: '50%' } },
-    { id: 'm2', type: 'salida', label: 'Salida de Emergencia Sur', coords: { top: '90%', left: '40%' } },
-    { id: 'm3', type: 'falla', label: 'Luminaria Fundida L-42', coords: { top: '75%', left: '15%' } },
-    { id: 'm4', type: 'estudiante', label: 'Densidad Alta: Cafetería', coords: { top: '55%', left: '65%' } },
+    { id: 'm1', type: 'entrada', label: 'Acceso Av. Principal', coords: { top: '8%', left: '48%' } },
+    { id: 'm2', type: 'calle', label: 'Avenida de la Seguridad', coords: { top: '25%', left: '50%' } },
+    { id: 'm3', type: 'edificio', label: 'Edificio A: Rectoría', coords: { top: '35%', left: '25%' } },
+    { id: 'm4', type: 'edificio', label: 'Laboratorios de Innovación', coords: { top: '35%', left: '75%' } },
+    { id: 'm5', type: 'cctv', label: 'Cámara Domo C-01', coords: { top: '15%', left: '20%' } },
+    { id: 'm6', type: 'cctv', label: 'Cámara Domo C-02', coords: { top: '15%', left: '80%' } },
+    { id: 'm7', type: 'parking', label: 'Estacionamiento Norte', coords: { top: '65%', left: '15%' } },
+    { id: 'm8', type: 'iluminacion', label: 'Torre de Luz L-10', coords: { top: '80%', left: '85%' } },
+    { id: 'm9', type: 'calle', label: 'Callejón Táctico', coords: { top: '60%', left: '50%' } },
+    { id: 'm10', type: 'salida', label: 'Salida de Emergencia Sur', coords: { top: '92%', left: '50%' } },
   ],
   'Campus Tecnológico': [
-    { id: 't1', type: 'entrada', label: 'Puerta de Ingeniería', coords: { top: '20%', left: '30%' } },
-    { id: 't2', type: 'falla', label: 'Cámara C-12 Offline', coords: { top: '45%', left: '80%' } },
+    { id: 't1', type: 'entrada', label: 'Puerta Ing. Civil', coords: { top: '15%', left: '25%' } },
+    { id: 't2', type: 'calle', label: 'Paseo de la Tecnología', coords: { top: '40%', left: '50%' } },
+    { id: 't3', type: 'edificio', label: 'Taller Mecánico Central', coords: { top: '60%', left: '20%' } },
+    { id: 't4', type: 'cctv', label: 'CCTV-Perimetral T-05', coords: { top: '80%', left: '80%' } },
+    { id: 't5', type: 'parking', label: 'Área Carga/Descarga', coords: { top: '30%', left: '80%' } },
   ],
   'Campus Oriente': [
-    { id: 'o1', type: 'entrada', label: 'Acceso Peatonal Oriente', coords: { top: '80%', left: '20%' } },
-    { id: 'o2', type: 'salida', label: 'Salida Vehicular', coords: { top: '10%', left: '70%' } },
+    { id: 'o1', type: 'entrada', label: 'Acceso Oriente', coords: { top: '85%', left: '15%' } },
+    { id: 'o2', type: 'calle', label: 'Avenida Sol Oriente', coords: { top: '50%', left: '30%' } },
+    { id: 'o3', type: 'edificio', label: 'Módulo de Prefectura', coords: { top: '30%', left: '60%' } },
+    { id: 'o4', type: 'cctv', label: 'Cámara Exterior O-01', coords: { top: '10%', left: '75%' } },
   ]
 };
 
 export const campusZones: Record<string, ZoneOverlay[]> = {
   'Campus Metropolitano': [
-    { id: 'z1', name: 'ZONA ROJA: Riesgo por Obra en Curso', type: 'danger-high', coords: { top: '15%', left: '10%', width: '25%', height: '20%' } },
-    { id: 'z3', name: 'Santuario de Seguridad: Punto de Reunión', type: 'safe', coords: { top: '45%', left: '45%', width: '10%', height: '10%' } }
+    { id: 'z1', name: 'ZONA DE RIESGO: Obras Civiles', type: 'danger-high', coords: { top: '10%', left: '10%', width: '25%', height: '20%' } },
+    { id: 'z3', name: 'PUNTO DE REUNIÓN SEGURO', type: 'safe', coords: { top: '48%', left: '48%', width: '15%', height: '15%' } }
   ],
   'Campus Tecnológico': [
-    { id: 'zt1', name: 'Punto de Encuentro Seguro', type: 'safe', coords: { top: '30%', left: '30%', width: '15%', height: '15%' } }
+    { id: 'zt1', name: 'Santuario de Seguridad', type: 'safe', coords: { top: '25%', left: '40%', width: '20%', height: '20%' } }
   ],
   'Campus Oriente': [
-    { id: 'zo1', name: 'Área de Vigilancia Reforzada', type: 'danger-low', coords: { top: '60%', left: '20%', width: '30%', height: '20%' } }
+    { id: 'zo1', name: 'Vigilancia Reforzada', type: 'danger-low', coords: { top: '55%', left: '25%', width: '40%', height: '30%' } }
   ]
 };
 
