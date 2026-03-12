@@ -62,10 +62,10 @@ export default function Sidebar({ role, activeSection, onSectionChange, onLogout
               )}
             >
               <span className={cn(
-                "w-8 h-8 lg:w-9 lg:h-9 rounded-xl p-1.5 shrink-0 border",
+                "w-8 h-8 lg:w-9 lg:h-9 rounded-xl p-1.5 shrink-0 border shadow-sm",
                 isActive
-                  ? "bg-secondary/25 border-secondary/45"
-                  : "bg-primary-foreground/10 border-primary-foreground/25 group-hover:bg-secondary/25 group-hover:border-secondary/45"
+                  ? "bg-background border-background/70"
+                  : "bg-background border-background/70 group-hover:bg-background group-hover:border-background"
               )}>
                 <img src={iconSrc} alt={`Icono ${item.text}`} className="w-full h-full object-contain" />
               </span>
@@ -80,7 +80,7 @@ export default function Sidebar({ role, activeSection, onSectionChange, onLogout
           onClick={onLogout}
           className="w-full flex items-center justify-center gap-3 p-4 lg:p-5 rounded-[1rem] lg:rounded-[1.25rem] text-primary-foreground/70 hover:bg-background/20 hover:text-primary-foreground transition-all font-black text-[10px] lg:text-xs uppercase tracking-widest"
         >
-          <span className="w-7 h-7 rounded-lg bg-primary-foreground/10 border border-primary-foreground/25 p-1.5">
+          <span className="w-7 h-7 rounded-lg bg-background border border-background/70 p-1.5 shadow-sm">
             <img src="/iconos/ICONOS-11.svg" alt="Salir" className="w-full h-full object-contain" />
           </span>
           DESCONECTAR TERMINAL

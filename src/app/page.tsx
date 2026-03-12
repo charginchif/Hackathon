@@ -219,6 +219,9 @@ export default function Home() {
                                 <p className="text-xs font-black text-primary leading-none group-hover:text-secondary-foreground">Mariana López</p>
                             <p className="text-[9px] text-muted uppercase group-hover:text-secondary-foreground/85">Campus Metropolitano</p>
                             </div>
+                          <span className="w-6 h-6 rounded-lg bg-background/90 border border-muted/30 p-1">
+                            <img src="/iconos/ICONOS-12.svg" alt="Logo administrador" className="w-full h-full object-contain" />
+                          </span>
                         </div>
                         <ChevronRight className="w-4 h-4 group-hover:text-secondary-foreground" />
                       </Button>
@@ -229,6 +232,9 @@ export default function Home() {
                                 <p className="text-xs font-black text-primary leading-none group-hover:text-secondary-foreground">Roberto García</p>
                             <p className="text-[9px] text-muted uppercase group-hover:text-secondary-foreground/85">Campus Tecnológico</p>
                             </div>
+                          <span className="w-6 h-6 rounded-lg bg-background/90 border border-muted/30 p-1">
+                            <img src="/iconos/ICONOS-12.svg" alt="Logo administrador" className="w-full h-full object-contain" />
+                          </span>
                         </div>
                         <ChevronRight className="w-4 h-4 group-hover:text-secondary-foreground" />
                       </Button>
@@ -239,6 +245,9 @@ export default function Home() {
                                 <p className="text-xs font-black text-primary leading-none group-hover:text-secondary-foreground">Sofía Pérez</p>
                             <p className="text-[9px] text-muted uppercase group-hover:text-secondary-foreground/85">Campus Oriente</p>
                             </div>
+                          <span className="w-6 h-6 rounded-lg bg-background/90 border border-muted/30 p-1">
+                            <img src="/iconos/ICONOS-12.svg" alt="Logo administrador" className="w-full h-full object-contain" />
+                          </span>
                         </div>
                         <ChevronRight className="w-4 h-4 group-hover:text-secondary-foreground" />
                       </Button>
@@ -350,13 +359,13 @@ export default function Home() {
             )}
 
             {currentUser.role === 'autoridad' && (
-              <div className="hidden md:flex items-center gap-3">
-                <span className="text-[10px] font-black text-muted uppercase tracking-widest">Central de Mando:</span>
+              <div className="hidden md:flex items-center gap-2">
+                <span className="text-[9px] font-black text-muted uppercase tracking-[0.18em]">Campus:</span>
                 <Select value={activeCampus as string} onValueChange={(v: Campus) => setActiveCampus(v)}>
-                  <SelectTrigger className="w-[200px] lg:w-[260px] bg-background border-muted/40 font-black text-primary rounded-2xl h-10 md:h-12">
+                  <SelectTrigger className="w-[160px] lg:w-[185px] bg-background border-muted/40 font-black text-primary rounded-xl h-9 text-[11px] px-3">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent className="rounded-2xl border-muted/40">
+                  <SelectContent className="rounded-xl border-muted/40">
                     <SelectItem value="Campus Metropolitano" className="font-bold text-xs uppercase">Campus Metropolitano</SelectItem>
                     <SelectItem value="Campus Tecnológico" className="font-bold text-xs uppercase">Campus Tecnológico</SelectItem>
                     <SelectItem value="Campus Oriente" className="font-bold text-xs uppercase">Campus Oriente</SelectItem>

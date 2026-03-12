@@ -15,14 +15,20 @@ interface CampusConfig {
   lng: number;
   lat: number;
   zoom: number;
+  bearing: number;
+  pitch: number;
+  lonSpan: number;
+  latSpan: number;
+  label: string;
+  detail: string;
 }
 
 const CAMPUS_CONFIG: Record<string, CampusConfig> = {
-  'Campus Metropolitano': { lng: -99.1332, lat: 19.4326, zoom: 15.2 },
-  'Campus Tecnologico': { lng: -100.3161, lat: 25.6866, zoom: 15.2 },
-  'Campus Tecnológico': { lng: -100.3161, lat: 25.6866, zoom: 15.2 },
-  'Campus Oriente': { lng: -98.2063, lat: 19.0414, zoom: 15.2 },
-  Global: { lng: -99.1332, lat: 19.4326, zoom: 11.5 },
+  'Campus Metropolitano': { lng: -99.1332, lat: 19.4326, zoom: 15.4, bearing: -18, pitch: 52, lonSpan: 0.038, latSpan: 0.024, label: 'Escena Metro', detail: 'Trazado urbano denso y vigilancia perimetral.' },
+  'Campus Tecnologico': { lng: -100.3161, lat: 25.6866, zoom: 15.1, bearing: 22, pitch: 58, lonSpan: 0.048, latSpan: 0.028, label: 'Escena Tec', detail: 'Bloques industriales, patios y corredores amplios.' },
+  'Campus Tecnológico': { lng: -100.3161, lat: 25.6866, zoom: 15.1, bearing: 22, pitch: 58, lonSpan: 0.048, latSpan: 0.028, label: 'Escena Tec', detail: 'Bloques industriales, patios y corredores amplios.' },
+  'Campus Oriente': { lng: -98.2063, lat: 19.0414, zoom: 15.6, bearing: -36, pitch: 48, lonSpan: 0.032, latSpan: 0.022, label: 'Escena Oriente', detail: 'Perimetro compacto con zonas verdes y accesos laterales.' },
+  Global: { lng: -99.1332, lat: 19.4326, zoom: 11.5, bearing: 0, pitch: 0, lonSpan: 0.08, latSpan: 0.05, label: 'Vista General', detail: 'Resumen de cobertura intercampus.' },
 };
 
 const MARKER_ICON_BY_TYPE: Record<string, string> = {
@@ -44,9 +50,6 @@ const MARKER_ICON_BY_TYPE: Record<string, string> = {
   cafeteria: '/iconos/ICONOS-07.svg',
 };
 
-const LON_SPAN = 0.045;
-const LAT_SPAN = 0.03;
-
 function parsePercent(value: string): number {
   return Number(value.replace('%', ''));
 }
@@ -57,7 +60,7 @@ function percentToLngLat(
 ): [number, number] {
   const x = (parsePercent(coords.left) - 50) / 100;
   const y = (50 - parsePercent(coords.top)) / 100;
-  return [center.lng + x * LON_SPAN, center.lat + y * LAT_SPAN];
+  return [center.lng + x * center.lonSpan, center.lat + y * center.latSpan];
 }
 
 function zoneToPolygon(zone: ZoneOverlay, center: CampusConfig): [number, number][][] {
@@ -124,8 +127,8 @@ export default function PerimeterMap({ incidents, campus }: PerimeterMapProps) {
       style: 'mapbox://styles/mapbox/streets-v12',
       center: [campusConfig.lng, campusConfig.lat] as LngLatLike,
       zoom: campusConfig.zoom,
-      pitch: 35,
-      bearing: -15,
+      pitch: campusConfig.pitch,
+      bearing: campusConfig.bearing,
       antialias: true,
     });
 
@@ -155,9 +158,24 @@ export default function PerimeterMap({ incidents, campus }: PerimeterMapProps) {
     map.flyTo({
       center: [campusConfig.lng, campusConfig.lat],
       zoom: campusConfig.zoom,
+      pitch: campusConfig.pitch,
+      bearing: campusConfig.bearing,
       duration: 800,
       essential: true,
     });
+
+    const pathCoordinates = markers.slice(0, 6).map((marker) => percentToLngLat(marker.coords, campusConfig));
+    const routeData = {
+      type: 'FeatureCollection' as const,
+      features: pathCoordinates.length >= 2 ? [{
+        type: 'Feature' as const,
+        geometry: {
+          type: 'LineString' as const,
+          coordinates: pathCoordinates,
+        },
+        properties: {},
+      }] : [],
+    };
 
     const zoneFeatures = zones.map((zone) => ({
       type: 'Feature' as const,
@@ -203,6 +221,28 @@ export default function PerimeterMap({ incidents, campus }: PerimeterMapProps) {
         paint: {
           'line-color': '#E37909',
           'line-width': 2,
+        },
+      });
+    }
+
+    const existingRouteSource = map.getSource('campus-route') as mapboxgl.GeoJSONSource | undefined;
+    if (existingRouteSource) {
+      existingRouteSource.setData(routeData);
+    } else {
+      map.addSource('campus-route', {
+        type: 'geojson',
+        data: routeData,
+      });
+
+      map.addLayer({
+        id: 'campus-route-line',
+        type: 'line',
+        source: 'campus-route',
+        paint: {
+          'line-color': '#E37909',
+          'line-width': 4,
+          'line-opacity': 0.7,
+          'line-dasharray': [2, 2],
         },
       });
     }
@@ -305,7 +345,14 @@ export default function PerimeterMap({ incidents, campus }: PerimeterMapProps) {
       </div>
 
       <div className="flex-1 min-h-[650px] rounded-[2.5rem] border border-muted/35 shadow-2xl overflow-hidden panel-soft">
-        <div ref={mapContainerRef} className="h-full w-full" />
+        <div className="relative h-full w-full">
+          <div ref={mapContainerRef} className="h-full w-full" />
+          <div className="absolute left-4 top-4 z-10 max-w-[260px] rounded-2xl bg-background/95 border border-muted/35 px-4 py-3 shadow-xl backdrop-blur-sm">
+            <p className="text-[10px] font-black uppercase tracking-[0.24em] text-primary">{campusConfig.label}</p>
+            <h4 className="mt-1 text-sm font-black uppercase text-foreground">{campus}</h4>
+            <p className="mt-1 text-xs text-muted-foreground">{campusConfig.detail}</p>
+          </div>
+        </div>
       </div>
     </div>
   );
