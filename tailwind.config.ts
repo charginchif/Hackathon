@@ -10,8 +10,8 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        body: ['Inter', 'sans-serif'],
-        headline: ['Inter', 'sans-serif'],
+        body: ['Segoe UI Variable', 'Segoe UI', 'sans-serif'],
+        headline: ['Swiss721 LtEx BT Light', 'Segoe UI Variable', 'Segoe UI', 'sans-serif'],
         code: ['monospace'],
       },
       colors: {
