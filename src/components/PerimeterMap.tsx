@@ -33,7 +33,7 @@ const MARKER_ICON_BY_TYPE: Record<string, string> = {
   incidente: '/iconos/Alerta.svg',
   cctv: '/iconos/ICONOS-10.svg',
   iluminacion: '/iconos/ICONOS-09.svg',
-  edificio: '/iconos/Logo.svg',
+  edificio: '/iconos/logo-secundario.png',
   calle: '/iconos/ICONOS-03.svg',
   parking: '/iconos/ICONOS-12.svg',
   hospital: '/iconos/Hospital.svg',

@@ -187,7 +187,7 @@ export default function Home() {
             <>
               <div className="text-center mb-8 md:mb-10 flex flex-col items-center">
                 <div className="mb-4 md:mb-6 flex items-center justify-center w-full h-32 md:h-40 overflow-hidden relative">
-                   <img src="/iconos/IconoLogo.svg" alt="Comunidad Alerta Icono" className="h-full object-contain drop-shadow-[0_8px_18px_rgba(227,121,9,0.35)]" />
+                   <img src="/iconos/logo-principal.png" alt="Comunidad Alerta Icono" className="h-full object-contain drop-shadow-[0_8px_18px_rgba(227,121,9,0.35)]" />
                 </div>
                 <h1 className="text-2xl md:text-3xl font-black text-primary tracking-tighter mb-1 md:2 font-headline uppercase leading-none">Comunidad Alerta</h1>
                 <p className="text-muted-foreground text-[10px] md:text-xs font-bold uppercase tracking-[0.2em]">Unidos por un entorno más seguro</p>

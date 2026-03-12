@@ -29,7 +29,7 @@ export default function Sidebar({ role, activeSection, onSectionChange, onLogout
       <div className="p-8 lg:p-10 border-b border-primary-foreground/20 bg-primary/95">
         <div className="flex items-center gap-4 text-primary-foreground mb-5">
           <div className="w-20 h-20 lg:w-24 lg:h-24 bg-background rounded-[1.5rem] flex items-center justify-center shadow-2xl border border-muted/40 overflow-hidden p-2">
-            <img src="/iconos/IconoLogo.svg" alt="Comunidad Alerta Logo" className="w-full h-full object-contain" />
+            <img src="/iconos/logo-principal.png" alt="Comunidad Alerta Logo" className="w-full h-full object-contain" />
           </div>
           <div className="flex flex-col">
             <span className="font-black text-lg lg:text-xl tracking-tighter leading-none uppercase">Comunidad</span>

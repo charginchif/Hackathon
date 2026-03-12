@@ -180,7 +180,7 @@ export default function Dashboard({ role, campus, incidents = [], onNavigate }: 
 
             <div className="w-[85%] md:w-2/3 h-1/2 map-building rounded-[3rem] flex flex-col items-center justify-center relative shadow-2xl overflow-hidden bg-background/90 backdrop-blur-[4px] z-10 border-4 border-background group-hover:scale-[1.02] transition-transform">
                <div className="absolute inset-0 bg-primary/5"></div>
-              <img src="/iconos/Logo.svg" alt="Comunidad Alerta" className="w-14 h-14 md:w-20 md:h-20 object-contain mb-2 opacity-90" />
+              <img src="/iconos/logo-secundario.png" alt="Comunidad Alerta" className="w-14 h-14 md:w-20 md:h-20 object-contain mb-2 opacity-90" />
                <span className="text-primary font-black uppercase tracking-[0.2em] text-sm md:text-xl font-headline relative z-10 text-center px-6 leading-tight">
                 COMUNIDAD ALERTA
               </span>
