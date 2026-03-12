@@ -1,14 +1,14 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Image from 'next/image';
-import { ShieldCheck, UserCheck, ChevronRight, Bell, User as UserIcon, ScanFace, Mail, Lock, Landmark, Loader2, Zap, LayoutDashboard, Map as MapIcon, Megaphone, CheckCircle2, Siren } from 'lucide-react';
+import { ShieldCheck, UserCheck, ChevronRight, Bell, User as UserIcon, ScanFace, Mail, Lock, Landmark, Loader2, Zap, LayoutDashboard, Map as MapIcon, Megaphone, CheckCircle2, Siren, Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 import { ROLES_CONFIG, CAMPUSES, MOCK_USERS } from '@/lib/mocks';
 import { Role, User, Incident, AccessLog, Campus } from '@/lib/types';
 import Dashboard from '@/components/Dashboard';
@@ -34,6 +34,7 @@ export default function Home() {
   const [activeSection, setActiveSection] = useState<string>('dashboard');
   const [activeCampus, setActiveCampus] = useState<Campus>('Campus Metropolitano');
   const [activeEmergency, setActiveEmergency] = useState<Incident | null>(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
   // Firebase Data Subscriptions
   const incidentsRef = useMemoFirebase(() => {
@@ -183,19 +184,19 @@ export default function Home() {
     return (
       <div className="h-screen w-full flex items-center justify-center bg-indigo-950 px-4 relative overflow-hidden">
         <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] pointer-events-none"></div>
-        <div className="max-w-md w-full bg-white rounded-[2.5rem] shadow-2xl p-10 relative z-10 border border-slate-200">
+        <div className="max-w-md w-full bg-white rounded-[2.5rem] shadow-2xl p-6 md:p-10 relative z-10 border border-slate-200">
           {!isScanning ? (
             <>
-              <div className="text-center mb-10">
-                <div className="mb-6 inline-flex items-center justify-center w-24 h-24 bg-white rounded-3xl overflow-hidden shadow-xl border-4 border-slate-50 relative">
+              <div className="text-center mb-8 md:mb-10">
+                <div className="mb-4 md:mb-6 inline-flex items-center justify-center w-20 h-20 md:w-24 md:h-24 bg-white rounded-3xl overflow-hidden shadow-xl border-4 border-slate-50 relative">
                    <img src="/iconos/Logo.png" alt="Comunidad Alerta Logo" className="w-full h-full object-contain" />
                 </div>
-                <h1 className="text-3xl font-black text-primary tracking-tighter mb-2 font-headline uppercase leading-none">Comunidad Alerta</h1>
-                <p className="text-slate-500 text-xs font-bold uppercase tracking-[0.2em]">Unidos por un entorno más seguro</p>
+                <h1 className="text-2xl md:text-3xl font-black text-primary tracking-tighter mb-1 md:2 font-headline uppercase leading-none">Comunidad Alerta</h1>
+                <p className="text-slate-500 text-[10px] md:text-xs font-bold uppercase tracking-[0.2em]">Unidos por un entorno más seguro</p>
               </div>
 
               <Tabs defaultValue="biometric" className="w-full">
-                <TabsList className="grid w-full grid-cols-2 mb-10 bg-slate-100 p-1.5 rounded-2xl">
+                <TabsList className="grid w-full grid-cols-2 mb-8 md:mb-10 bg-slate-100 p-1.5 rounded-2xl">
                   <TabsTrigger value="biometric" className="rounded-xl font-bold text-xs uppercase">Biometría</TabsTrigger>
                   <TabsTrigger value="email" className="rounded-xl font-bold text-xs uppercase">Credenciales</TabsTrigger>
                 </TabsList>
@@ -266,18 +267,18 @@ export default function Home() {
               </Tabs>
             </>
           ) : (
-            <div className="py-12 flex flex-col items-center">
-              <div className="relative w-56 h-56 mb-10">
+            <div className="py-8 md:py-12 flex flex-col items-center">
+              <div className="relative w-48 h-48 md:w-56 md:h-56 mb-8 md:10">
                 <div className="absolute inset-0 rounded-[3rem] border-8 border-slate-50 overflow-hidden shadow-inner bg-slate-100 flex items-center justify-center">
-                    <UserIcon className="w-28 h-28 text-slate-200" />
+                    <UserIcon className="w-24 h-24 md:w-28 md:h-28 text-slate-200" />
                 </div>
                 <div className="face-scan-line"></div>
               </div>
-              <h2 className="text-2xl font-black text-primary mb-2 uppercase tracking-tight text-center">Escaneando Biometría</h2>
+              <h2 className="text-xl md:text-2xl font-black text-primary mb-2 uppercase tracking-tight text-center">Escaneando Biometría</h2>
               <div className="w-full bg-slate-100 h-3 rounded-full overflow-hidden mb-6">
                 <div className="h-full bg-primary transition-all duration-100" style={{ width: `${scanProgress}%` }}></div>
               </div>
-              <p className="text-slate-400 text-[10px] font-black uppercase tracking-[0.4em]">Identidad Comunidad Alerta v2.0</p>
+              <p className="text-slate-400 text-[8px] md:text-[10px] font-black uppercase tracking-[0.4em]">Identidad Comunidad Alerta v2.0</p>
             </div>
           )}
         </div>
@@ -287,33 +288,65 @@ export default function Home() {
 
   return (
     <div className="h-screen w-full flex flex-col lg:flex-row overflow-hidden bg-background text-slate-800">
-      <Sidebar 
-        role={currentUser.role} 
-        activeSection={activeSection} 
-        onSectionChange={setActiveSection} 
-        onLogout={logout}
-        campus={currentUser.campus}
-      />
+      {/* Desktop Sidebar */}
+      <div className="hidden lg:flex">
+        <Sidebar 
+          role={currentUser.role} 
+          activeSection={activeSection} 
+          onSectionChange={setActiveSection} 
+          onLogout={logout}
+          campus={currentUser.campus}
+        />
+      </div>
 
       <main className="flex-1 flex flex-col h-full overflow-hidden relative">
-        <header className="bg-white h-24 border-b border-slate-100 flex items-center justify-between px-10 shrink-0 z-10 shadow-sm">
-          <div className="flex flex-col">
-            <h2 className="text-2xl font-black text-primary font-headline tracking-tighter uppercase leading-none">
-              {ROLES_CONFIG[currentUser.role].nav.find(n => n.id === activeSection)?.text || 'Operaciones'}
-            </h2>
-            <div className="flex items-center gap-2 mt-1">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Enlace Comunidad Alerta Activo</span>
+        <header className="bg-white h-20 md:h-24 border-b border-slate-100 flex items-center justify-between px-4 md:px-10 shrink-0 z-10 shadow-sm">
+          <div className="flex items-center gap-3">
+            {/* Mobile Sidebar Trigger */}
+            <div className="lg:hidden">
+              <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+                <SheetTrigger asChild>
+                  <Button variant="ghost" size="icon" className="text-primary h-10 w-10">
+                    <Menu className="w-6 h-6" />
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="left" className="p-0 border-none w-80 bg-primary">
+                  <SheetHeader className="sr-only">
+                    <SheetTitle>Navegación Comunidad Alerta</SheetTitle>
+                    <SheetDescription>Acceso a las secciones de la plataforma</SheetDescription>
+                  </SheetHeader>
+                  <Sidebar 
+                    role={currentUser.role} 
+                    activeSection={activeSection} 
+                    onSectionChange={(id) => {
+                      setActiveSection(id);
+                      setIsMobileMenuOpen(false);
+                    }} 
+                    onLogout={logout}
+                    campus={currentUser.campus}
+                  />
+                </SheetContent>
+              </Sheet>
+            </div>
+            
+            <div className="flex flex-col">
+              <h2 className="text-lg md:text-2xl font-black text-primary font-headline tracking-tighter uppercase leading-none">
+                {ROLES_CONFIG[currentUser.role].nav.find(n => n.id === activeSection)?.text || 'Operaciones'}
+              </h2>
+              <div className="flex items-center gap-2 mt-0.5 md:mt-1">
+                <span className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span className="text-[8px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest">Enlace Activo</span>
+              </div>
             </div>
           </div>
           
-          <div className="flex items-center gap-8">
+          <div className="flex items-center gap-3 md:gap-8">
             {currentUser.role === 'alumno' && (
                 <Button 
                     onClick={handleSOS}
-                    className="bg-secondary hover:bg-secondary/90 text-white font-black px-8 py-6 rounded-2xl shadow-2xl animate-pulse flex gap-3 border-b-4 border-b-black/20"
+                    className="bg-secondary hover:bg-secondary/90 text-white font-black px-4 md:px-8 py-4 md:py-6 rounded-xl md:rounded-2xl shadow-lg md:shadow-2xl animate-pulse flex gap-2 md:gap-3 border-b-2 md:border-b-4 border-b-black/20 text-[10px] md:text-sm h-auto"
                 >
-                    <Zap className="w-6 h-6 fill-white" /> BOTÓN SOS
+                    <Zap className="w-4 h-4 md:w-6 md:h-6 fill-white" /> SOS
                 </Button>
             )}
 
@@ -321,7 +354,7 @@ export default function Home() {
               <div className="hidden md:flex items-center gap-3">
                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Central de Mando:</span>
                 <Select value={activeCampus as string} onValueChange={(v: Campus) => setActiveCampus(v)}>
-                  <SelectTrigger className="w-[260px] bg-slate-50 border-slate-200 font-black text-primary rounded-2xl h-12">
+                  <SelectTrigger className="w-[200px] lg:w-[260px] bg-slate-50 border-slate-200 font-black text-primary rounded-2xl h-10 md:h-12">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="rounded-2xl border-slate-200">
@@ -333,19 +366,19 @@ export default function Home() {
               </div>
             )}
 
-            <div className="flex items-center gap-4 pl-8 border-l border-slate-100">
+            <div className="flex items-center gap-2 md:gap-4 pl-3 md:pl-8 border-l border-slate-100">
               <div className="text-right hidden sm:block">
-                <p className="text-sm font-black text-primary leading-tight uppercase tracking-tighter">{currentUser.name}</p>
-                <p className="text-[9px] text-secondary font-black uppercase tracking-widest">{currentUser.roleDisplay}</p>
+                <p className="text-xs md:text-sm font-black text-primary leading-tight uppercase tracking-tighter">{currentUser.name}</p>
+                <p className="text-[7px] md:text-[9px] text-secondary font-black uppercase tracking-widest">{currentUser.roleDisplay}</p>
               </div>
-              <div className="w-14 h-14 bg-indigo-900 text-secondary rounded-[1.25rem] flex items-center justify-center font-bold shadow-xl border-4 border-slate-50 overflow-hidden">
-                <UserIcon className="w-8 h-8" />
+              <div className="w-10 h-10 md:w-14 md:h-14 bg-indigo-900 text-secondary rounded-lg md:rounded-[1.25rem] flex items-center justify-center font-bold shadow-md md:shadow-xl border-2 md:border-4 border-slate-50 overflow-hidden">
+                <UserIcon className="w-6 h-6 md:w-8 md:h-8" />
               </div>
             </div>
           </div>
         </header>
 
-        <div className="flex-1 overflow-y-auto p-8 lg:p-12 scroll-smooth bg-slate-50/50">
+        <div className="flex-1 overflow-y-auto p-4 md:p-8 lg:p-12 scroll-smooth bg-slate-50/50">
           {activeSection === 'dashboard' && (
             <Dashboard 
               role={currentUser.role} 
