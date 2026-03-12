@@ -121,7 +121,7 @@ export default function Home() {
                 name: user.name,
                 role: user.role,
                 campus: user.campus,
-                email: user.email || `${fbUid}@comunidad-alerta.mx`,
+                email: user.email || `${fbUid}@issu.edu.mx`,
                 lastLogin: serverTimestamp() 
             }, { merge: true });
 
@@ -189,6 +189,7 @@ export default function Home() {
             <>
               <div className="text-center mb-8 md:mb-10">
                 <div className="mb-4 md:mb-6 inline-flex items-center justify-center w-20 h-20 md:w-24 md:h-24 bg-white rounded-3xl overflow-hidden shadow-xl border-4 border-slate-50 relative">
+                   {/* IconoLogo.png para el inicio de sesión */}
                    <img src="/iconos/IconoLogo.png" alt="Comunidad Alerta Icono" className="w-full h-full object-contain" />
                 </div>
                 <h1 className="text-2xl md:text-3xl font-black text-primary tracking-tighter mb-1 md:2 font-headline uppercase leading-none">Comunidad Alerta</h1>
@@ -252,7 +253,7 @@ export default function Home() {
                   <form onSubmit={handleEmailLogin} className="space-y-4">
                     <div className="relative">
                         <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-                        <Input placeholder="usuario@comunidadalerta.org" className="pl-12 rounded-2xl h-14" value={loginEmail} onChange={e => setLoginEmail(e.target.value)} />
+                        <Input placeholder="usuario@issu.edu.mx" className="pl-12 rounded-2xl h-14" value={loginEmail} onChange={e => setLoginEmail(e.target.value)} />
                     </div>
                     <div className="relative">
                         <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />

@@ -30,6 +30,7 @@ export default function Sidebar({ role, activeSection, onSectionChange, onLogout
       <div className="p-8 lg:p-10 border-b border-white/5 bg-black/10">
         <div className="flex items-center gap-4 text-white mb-4">
           <div className="w-12 h-12 lg:w-14 lg:h-14 bg-white rounded-[1rem] lg:rounded-[1.25rem] flex items-center justify-center shadow-2xl border-2 border-white/10 overflow-hidden p-1">
+            {/* Logo.png para el interior de la aplicación */}
             <img src="/iconos/Logo.png" alt="Comunidad Alerta Logo" className="w-full h-full object-contain" />
           </div>
           <div className="flex flex-col">
