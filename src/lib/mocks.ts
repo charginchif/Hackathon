@@ -14,7 +14,7 @@ export const MOCK_USERS: Record<string, User & { password?: string }> = {
     role: 'autoridad',
     roleDisplay: 'Directora Comunidad Alerta',
     campus: 'Global',
-    email: 'e.vance@issu.edu.mx',
+    email: 'e.vance@comunidadalerta.org',
     password: 'admin'
   },
   'alumno_metro': {
@@ -23,7 +23,7 @@ export const MOCK_USERS: Record<string, User & { password?: string }> = {
     role: 'alumno',
     roleDisplay: 'Miembro Comunidad Alerta',
     campus: 'Campus Metropolitano',
-    email: 'm.lopez@issu.edu.mx',
+    email: 'm.lopez@comunidadalerta.org',
     password: 'password123'
   },
   'alumno_tec': {
@@ -32,7 +32,7 @@ export const MOCK_USERS: Record<string, User & { password?: string }> = {
     role: 'alumno',
     roleDisplay: 'Miembro Comunidad Alerta',
     campus: 'Campus Tecnológico',
-    email: 'r.garcia@issu.edu.mx',
+    email: 'r.garcia@comunidadalerta.org',
     password: 'password123'
   },
   'alumno_oriente': {
@@ -41,7 +41,7 @@ export const MOCK_USERS: Record<string, User & { password?: string }> = {
     role: 'alumno',
     roleDisplay: 'Miembro Comunidad Alerta',
     campus: 'Campus Oriente',
-    email: 's.perez@issu.edu.mx',
+    email: 's.perez@comunidadalerta.org',
     password: 'password123'
   }
 };
@@ -55,22 +55,29 @@ export const campusMarkers: Record<string, MapMarker[]> = {
     { id: 'm5', type: 'cctv', label: 'Cámara Domo C-01', coords: { top: '15%', left: '20%' } },
     { id: 'm6', type: 'cctv', label: 'Cámara Domo C-02', coords: { top: '15%', left: '80%' } },
     { id: 'm7', type: 'parking', label: 'Estacionamiento Norte', coords: { top: '65%', left: '15%' } },
-    { id: 'm8', type: 'iluminacion', label: 'Torre de Luz L-10', coords: { top: '80%', left: '85%' } },
-    { id: 'm9', type: 'calle', label: 'Callejón Táctico', coords: { top: '60%', left: '50%' } },
-    { id: 'm10', type: 'salida', label: 'Salida de Emergencia Sur', coords: { top: '92%', left: '50%' } },
+    { id: 'm11', type: 'hospital', label: 'Hospital General IMSS', coords: { top: '15%', left: '10%' } },
+    { id: 'm12', type: 'farmacia', label: 'Farmacia Similares', coords: { top: '80%', left: '20%' } },
+    { id: 'm13', type: 'comercio', label: 'OXXO Esquina', coords: { top: '10%', left: '85%' } },
+    { id: 'm14', type: 'policia', label: 'Módulo de Policía #4', coords: { top: '90%', left: '85%' } },
+    { id: 'm15', type: 'parque', label: 'Parque de la Paz', coords: { top: '50%', left: '10%' } },
+    { id: 'm16', type: 'cafeteria', label: 'Starbucks Metropoli', coords: { top: '40%', left: '90%' } },
   ],
   'Campus Tecnológico': [
     { id: 't1', type: 'entrada', label: 'Puerta Ing. Civil', coords: { top: '15%', left: '25%' } },
     { id: 't2', type: 'calle', label: 'Paseo de la Tecnología', coords: { top: '40%', left: '50%' } },
     { id: 't3', type: 'edificio', label: 'Taller Mecánico Central', coords: { top: '60%', left: '20%' } },
     { id: 't4', type: 'cctv', label: 'CCTV-Perimetral T-05', coords: { top: '80%', left: '80%' } },
-    { id: 't5', type: 'parking', label: 'Área Carga/Descarga', coords: { top: '30%', left: '80%' } },
+    { id: 't6', type: 'hospital', label: 'Centro de Salud Tec', coords: { top: '10%', left: '10%' } },
+    { id: 't7', type: 'policia', label: 'Cuadrante T-8', coords: { top: '90%', left: '30%' } },
+    { id: 't8', type: 'comercio', label: 'Plaza Tech', coords: { top: '50%', left: '85%' } },
   ],
   'Campus Oriente': [
     { id: 'o1', type: 'entrada', label: 'Acceso Oriente', coords: { top: '85%', left: '15%' } },
     { id: 'o2', type: 'calle', label: 'Avenida Sol Oriente', coords: { top: '50%', left: '30%' } },
     { id: 'o3', type: 'edificio', label: 'Módulo de Prefectura', coords: { top: '30%', left: '60%' } },
     { id: 'o4', type: 'cctv', label: 'Cámara Exterior O-01', coords: { top: '10%', left: '75%' } },
+    { id: 'o5', type: 'parque', label: 'Reserva Ecológica', coords: { top: '20%', left: '15%' } },
+    { id: 'o6', type: 'farmacia', label: 'Farmacia del Ahorro', coords: { top: '70%', left: '85%' } },
   ]
 };
 
@@ -86,8 +93,6 @@ export const campusZones: Record<string, ZoneOverlay[]> = {
     { id: 'zo1', name: 'Vigilancia Reforzada', type: 'danger-low', coords: { top: '55%', left: '25%', width: '40%', height: '30%' } }
   ]
 };
-
-export const mockAccessLogs: AccessLog[] = [];
 
 export const ROLES_CONFIG = {
   alumno: {

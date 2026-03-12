@@ -17,7 +17,7 @@ export type IncidentSeverity = 'baja' | 'media' | 'alta' | 'critica';
 
 export interface MapMarker {
   id: string;
-  type: 'entrada' | 'salida' | 'falla' | 'estudiante' | 'incidente' | 'cctv' | 'iluminacion' | 'edificio' | 'calle' | 'parking';
+  type: 'entrada' | 'salida' | 'falla' | 'estudiante' | 'incidente' | 'cctv' | 'iluminacion' | 'edificio' | 'calle' | 'parking' | 'hospital' | 'comercio' | 'parque' | 'policia' | 'farmacia' | 'cafeteria';
   label: string;
   coords: {
     top: string;

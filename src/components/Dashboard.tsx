@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Card } from '@/components/ui/card';
@@ -24,7 +25,7 @@ export default function Dashboard({ role, campus, incidents = [], onNavigate }: 
     <div className="space-y-6 md:space-y-8">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-2xl md:text-3xl font-extrabold text-primary font-headline">Comunidad Alerta <span className="text-secondary tracking-tight">PROTECCIÓN</span></h1>
+          <h1 className="text-2xl md:text-3xl font-extrabold text-primary font-headline uppercase tracking-tighter">Comunidad Alerta</h1>
           <p className="text-sm md:text-base text-slate-500 font-medium">Unidos por un entorno más seguro: <strong className="text-primary">{campusDisplay}</strong></p>
         </div>
         {criticalReports > 0 && (
@@ -94,27 +95,32 @@ export default function Dashboard({ role, campus, incidents = [], onNavigate }: 
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
-        <Card className="lg:col-span-2 p-0 overflow-hidden flex flex-col min-h-[350px] md:min-h-[450px] border-slate-100 shadow-xl rounded-3xl bg-white">
+        <Card className="lg:col-span-2 p-0 overflow-hidden flex flex-col min-h-[350px] md:min-h-[450px] border-slate-100 shadow-xl rounded-3xl bg-slate-100">
           <div className="p-4 md:p-6 border-b flex justify-between items-center bg-white z-10">
-            <h4 className="font-extrabold text-sm md:text-base text-primary uppercase tracking-tight">Geolocalización: {campusDisplay}</h4>
+            <h4 className="font-extrabold text-sm md:text-base text-primary uppercase tracking-tight">VISTA URBANA: {campusDisplay}</h4>
             <button 
                 onClick={() => onNavigate('mapa')}
                 className="text-[9px] md:text-xs font-bold text-secondary hover:text-primary transition-colors flex items-center gap-1 bg-secondary/10 px-2 md:px-3 py-1 md:py-1.5 rounded-full"
             >
-                VISTA TÁCTICA <ChevronRight className="w-3 h-3 md:w-4 md:h-4" />
+                MAPA COMPLETO <ChevronRight className="w-3 h-3 md:w-4 md:h-4" />
             </button>
           </div>
-          <div className="flex-1 bg-grid-pattern relative flex items-center justify-center bg-slate-50 overflow-hidden">
+          <div className="flex-1 relative flex items-center justify-center overflow-hidden">
             {/* Radar Animation Elements */}
             <div className="radar-sweep"></div>
-            <div className="radar-circle w-20 h-20 opacity-50"></div>
-            <div className="radar-circle w-40 h-40 opacity-30"></div>
-            <div className="radar-circle w-60 h-60 opacity-10"></div>
             
-            <div className="w-[90%] md:w-3/4 h-2/3 map-building rounded-3xl flex items-center justify-center relative shadow-2xl overflow-hidden bg-white/40 backdrop-blur-[2px] z-10">
+            {/* Calles Visuales */}
+            <div className="absolute inset-0 opacity-10 pointer-events-none">
+                <div className="absolute top-[30%] w-full h-4 bg-slate-800"></div>
+                <div className="absolute top-[70%] w-full h-4 bg-slate-800"></div>
+                <div className="absolute left-[30%] h-full w-4 bg-slate-800"></div>
+                <div className="absolute left-[70%] h-full w-4 bg-slate-800"></div>
+            </div>
+
+            <div className="w-[90%] md:w-3/4 h-2/3 map-building rounded-3xl flex items-center justify-center relative shadow-2xl overflow-hidden bg-white/60 backdrop-blur-[2px] z-10 border-4 border-white">
                <div className="absolute inset-0 bg-indigo-50/20"></div>
-              <span className="text-slate-300 font-black uppercase tracking-[0.2em] text-lg md:text-2xl font-headline relative z-10 text-center px-4 leading-tight">
-                SISTEMA COMUNIDAD ALERTA
+              <span className="text-slate-400 font-black uppercase tracking-[0.2em] text-lg md:text-2xl font-headline relative z-10 text-center px-4 leading-tight">
+                COMUNIDAD ALERTA
               </span>
               
               {campusIncidents.filter(i => i.status === 'pendiente').map((inc) => (
@@ -160,7 +166,7 @@ export default function Dashboard({ role, campus, incidents = [], onNavigate }: 
             )) : (
               <div className="flex flex-col items-center justify-center h-full opacity-30">
                 <ShieldCheck className="w-12 h-12 md:w-16 md:h-16 text-slate-300 mb-2" />
-                <p className="text-[9px] md:text-xs font-bold text-slate-400">ENTORNO PROTEGIDO</p>
+                <p className="text-[9px] md:text-xs font-bold text-slate-400 uppercase tracking-widest">Entorno Protegido</p>
               </div>
             )}
           </div>
