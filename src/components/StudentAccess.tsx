@@ -1,11 +1,10 @@
-
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ScanFace, LogIn, LogOut, CheckCircle2, Clock, MapPin, UserCheck, ShieldCheck } from 'lucide-react';
-import { User, Campus, AccessLog } from '@/lib/types';
+import { User, AccessLog } from '@/lib/types';
 import { Progress } from '@/components/ui/progress';
 import { useFirestore } from '@/firebase';
 import { collection, serverTimestamp } from 'firebase/firestore';
@@ -21,12 +20,44 @@ export default function StudentAccess({ user, logs }: StudentAccessProps) {
   const [isScanning, setIsScanning] = useState(false);
   const [scanProgress, setScanProgress] = useState(0);
   const [accessType, setAccessType] = useState<'Entrada' | 'Salida' | null>(null);
+  const hasFired = useRef(false);
 
   const studentLogs = logs.filter(l => l.userId === user.id);
   const lastAccess = studentLogs[0];
   const isInside = lastAccess?.type === 'Entrada';
 
+  // Monitor scan progress to trigger database write only once
+  useEffect(() => {
+    if (isScanning && scanProgress >= 100 && !hasFired.current) {
+      hasFired.current = true;
+      const type = accessType!;
+      
+      const timer = setTimeout(() => {
+        if (db) {
+          const campusId = user.campus === 'Global' ? 'Campus Metropolitano' : user.campus;
+          const colRef = collection(db, 'schools', campusId, 'accessLogs');
+          
+          addDocumentNonBlocking(colRef, {
+            userId: user.id,
+            userName: user.name,
+            userRole: user.roleDisplay,
+            gate: 'Acceso Principal A',
+            type: type,
+            campus: campusId,
+            status: 'Autorizado',
+            timestamp: serverTimestamp(),
+            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+          });
+        }
+        setIsScanning(false);
+      }, 800);
+
+      return () => clearTimeout(timer);
+    }
+  }, [isScanning, scanProgress, accessType, db, user]);
+
   const startAccessScan = (type: 'Entrada' | 'Salida') => {
+    hasFired.current = false;
     setAccessType(type);
     setIsScanning(true);
     setScanProgress(0);
@@ -35,29 +66,11 @@ export default function StudentAccess({ user, logs }: StudentAccessProps) {
       setScanProgress(prev => {
         if (prev >= 100) {
           clearInterval(interval);
-          setTimeout(() => {
-            if (!db) return;
-            const campusId = user.campus === 'Global' ? 'Campus Metropolitano' : user.campus;
-            const colRef = collection(db, 'schools', campusId, 'accessLogs');
-            
-            addDocumentNonBlocking(colRef, {
-              userId: user.id,
-              userName: user.name,
-              userRole: user.roleDisplay,
-              gate: 'Acceso Principal A',
-              type: type,
-              campus: campusId,
-              status: 'Autorizado',
-              timestamp: serverTimestamp(),
-              time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-            });
-            setIsScanning(false);
-          }, 800);
           return 100;
         }
         return prev + 10;
       });
-    }, 150);
+    }, 100);
   };
 
   return (
@@ -125,7 +138,7 @@ export default function StudentAccess({ user, logs }: StudentAccessProps) {
       <Card className="p-8 border-none shadow-xl bg-white rounded-3xl">
           <h4 className="font-black text-primary uppercase tracking-widest mb-6 border-b pb-4">Historial Personal de Acceso</h4>
           <div className="space-y-4">
-              {studentLogs.slice(0, 5).map(log => (
+              {studentLogs.length > 0 ? studentLogs.slice(0, 5).map(log => (
                   <div key={log.id} className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100">
                       <div className="flex items-center gap-4">
                           <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${log.type === 'Entrada' ? 'bg-emerald-100 text-emerald-600' : 'bg-slate-200 text-slate-600'}`}>
@@ -141,7 +154,9 @@ export default function StudentAccess({ user, logs }: StudentAccessProps) {
                           <span className="text-[9px] font-black text-emerald-600 uppercase">Validado</span>
                       </div>
                   </div>
-              ))}
+              )) : (
+                  <p className="text-center text-slate-400 py-4 text-xs font-bold uppercase tracking-widest">Sin registros recientes</p>
+              )}
           </div>
       </Card>
     </div>

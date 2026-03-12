@@ -8,10 +8,13 @@ import { AlertTriangle, MapPin, CheckCircle, CheckCircle2, MoreVertical, Radio, 
 import { Incident } from '@/lib/types';
 import { globalAlertGenerator } from '@/ai/flows/global-alert-generator';
 import AIAssistant from './AIAssistant';
+import { useFirestore } from '@/firebase';
+import { doc } from 'firebase/firestore';
+import { updateDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 
 interface IncidentManagementProps {
   incidents: Incident[];
-  onResolve: (id: number, status: 'atendido') => void;
+  onResolve: (id: number | string, status: 'atendido') => void;
 }
 
 export default function IncidentManagement({ incidents, onResolve }: IncidentManagementProps) {
@@ -80,7 +83,7 @@ export default function IncidentManagement({ incidents, onResolve }: IncidentMan
                       <span className="text-xs text-slate-400">• {inc.time}</span>
                     </div>
                     <p className="text-slate-800 font-semibold text-base leading-tight">{inc.description}</p>
-                    <p className="text-[11px] text-slate-500 mt-2">Reportado por: <strong className="text-slate-700">{inc.user}</strong></p>
+                    <p className="text-[11px] text-slate-500 mt-2">Reportado por: <strong className="text-slate-700">{inc.userName}</strong></p>
                   </div>
                 </div>
                 

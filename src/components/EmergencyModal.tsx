@@ -9,7 +9,7 @@ import { useState } from 'react';
 interface EmergencyModalProps {
   incident: Incident;
   onClose: () => void;
-  onDispatch: (id: number) => void;
+  onDispatch: (id: number | string) => void;
 }
 
 export default function EmergencyModal({ incident, onClose, onDispatch }: EmergencyModalProps) {
@@ -44,11 +44,10 @@ export default function EmergencyModal({ incident, onClose, onDispatch }: Emerge
   return (
     <Dialog open={true} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-xl p-0 overflow-hidden border-none shadow-2xl">
-        {/* Accesibilidad: Título y descripción ocultos para Radix UI si no se usan visualmente en el diseño actual */}
         <DialogHeader className="sr-only">
           <DialogTitle>ALERTA SOS ACTIVA - PROTOCOLO ISSU</DialogTitle>
           <DialogDescription>
-            Intervención inmediata requerida para el usuario {incident.user} en {incident.zone}.
+            Intervención inmediata requerida para el usuario {incident.userName} en {incident.zone}.
           </DialogDescription>
         </DialogHeader>
 
@@ -58,7 +57,7 @@ export default function EmergencyModal({ incident, onClose, onDispatch }: Emerge
           </div>
           <div>
             <h2 className="text-2xl font-black uppercase tracking-tight">ALERTA SOS ACTIVA</h2>
-            <p className="text-red-100 font-bold opacity-90">{incident.user} ha solicitado auxilio inmediato</p>
+            <p className="text-red-100 font-bold opacity-90">{incident.userName} ha solicitado auxilio inmediato</p>
           </div>
         </div>
 

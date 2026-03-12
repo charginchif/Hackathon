@@ -33,7 +33,7 @@ export default function Home() {
   const [activeCampus, setActiveCampus] = useState<Campus>('Campus Metropolitano');
   const [activeEmergency, setActiveEmergency] = useState<Incident | null>(null);
   
-  // Firebase Data Subscriptions - Only run if user is logged in AND fbUser is present
+  // Firebase Data Subscriptions
   const incidentsRef = useMemoFirebase(() => {
     if (!db || !activeCampus || !currentUser || !fbUser) return null;
     const campusId = activeCampus === 'Global' ? 'Campus Metropolitano' : activeCampus;
@@ -129,7 +129,6 @@ export default function Home() {
                 await setDoc(adminAuthRef, { active: true });
             } else if (user.role === 'alumno') {
                 const campusId = user.campus === 'Global' ? 'Campus Metropolitano' : user.campus;
-                // Fixed even path depth for document reference: schoolStudents/{schoolId}/students/{fbUid}
                 const studentAuthRef = doc(db, 'schoolStudents', campusId, 'students', fbUid);
                 await setDoc(studentAuthRef, { active: true });
             }
@@ -168,12 +167,12 @@ export default function Home() {
       description: 'ALERTA SOS: USUARIO SOLICITA AUXILIO INMEDIATO',
       zone: 'UBICACIÓN GEOLOCALIZADA',
       campus: campusId,
-      schoolId: campusId, // Added to match firestore rules
+      schoolId: campusId,
       status: 'pendiente',
       severity: 'critica',
       userId: fbUser.uid,
       userName: currentUser.name,
-      reporterUserId: fbUser.uid, // Added to match firestore rules
+      reporterUserId: fbUser.uid,
       timestamp: serverTimestamp(),
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       coords: { top: '50%', left: '50%' }
