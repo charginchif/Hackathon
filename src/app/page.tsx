@@ -202,45 +202,45 @@ export default function Home() {
                 <TabsContent value="biometric">
                   <ScrollArea className="h-64 pr-4">
                     <div className="space-y-3">
-                        <Button variant="outline" onClick={() => startBiometricLogin('admin_global')} className="w-full justify-between h-14 rounded-xl border-secondary/30 group bg-background">
+                        <Button variant="outline" onClick={() => startBiometricLogin('admin_global')} className="w-full justify-between h-14 rounded-xl border-secondary/30 group bg-background hover:bg-secondary hover:text-secondary-foreground">
                         <div className="flex items-center gap-3">
                           <img src="/iconos/ICONOS-12.png" alt="Admin" className="w-5 h-5 object-contain" />
                             <div className="text-left">
-                                <p className="text-xs font-black text-primary leading-none">Admin Global C5</p>
-                            <p className="text-[9px] text-muted uppercase">Supervisión Comunidad Alerta</p>
+                                <p className="text-xs font-black text-primary leading-none group-hover:text-secondary-foreground">Admin Global C5</p>
+                            <p className="text-[9px] text-muted uppercase group-hover:text-secondary-foreground/85">Supervisión Comunidad Alerta</p>
                             </div>
                         </div>
-                        <ChevronRight className="w-4 h-4" />
+                        <ChevronRight className="w-4 h-4 group-hover:text-secondary-foreground" />
                       </Button>
-                        <Button variant="outline" onClick={() => startBiometricLogin('alumno_metro')} className="w-full justify-between h-14 rounded-xl border-muted/40 group bg-background">
+                        <Button variant="outline" onClick={() => startBiometricLogin('alumno_metro')} className="w-full justify-between h-14 rounded-xl border-muted/40 group bg-background hover:bg-secondary hover:text-secondary-foreground">
                         <div className="flex items-center gap-3">
                           <img src="/iconos/ICONOS-05.png" alt="Alumno" className="w-5 h-5 object-contain" />
                             <div className="text-left">
-                                <p className="text-xs font-black text-primary leading-none">Mariana López</p>
-                            <p className="text-[9px] text-muted uppercase">Campus Metropolitano</p>
+                                <p className="text-xs font-black text-primary leading-none group-hover:text-secondary-foreground">Mariana López</p>
+                            <p className="text-[9px] text-muted uppercase group-hover:text-secondary-foreground/85">Campus Metropolitano</p>
                             </div>
                         </div>
-                        <ChevronRight className="w-4 h-4" />
+                        <ChevronRight className="w-4 h-4 group-hover:text-secondary-foreground" />
                       </Button>
-                        <Button variant="outline" onClick={() => startBiometricLogin('alumno_tec')} className="w-full justify-between h-14 rounded-xl border-muted/40 group bg-background">
+                        <Button variant="outline" onClick={() => startBiometricLogin('alumno_tec')} className="w-full justify-between h-14 rounded-xl border-muted/40 group bg-background hover:bg-secondary hover:text-secondary-foreground">
                         <div className="flex items-center gap-3">
                           <img src="/iconos/ICONOS-05.png" alt="Alumno" className="w-5 h-5 object-contain" />
                             <div className="text-left">
-                                <p className="text-xs font-black text-primary leading-none">Roberto García</p>
-                            <p className="text-[9px] text-muted uppercase">Campus Tecnológico</p>
+                                <p className="text-xs font-black text-primary leading-none group-hover:text-secondary-foreground">Roberto García</p>
+                            <p className="text-[9px] text-muted uppercase group-hover:text-secondary-foreground/85">Campus Tecnológico</p>
                             </div>
                         </div>
-                        <ChevronRight className="w-4 h-4" />
+                        <ChevronRight className="w-4 h-4 group-hover:text-secondary-foreground" />
                       </Button>
-                        <Button variant="outline" onClick={() => startBiometricLogin('alumno_oriente')} className="w-full justify-between h-14 rounded-xl border-muted/40 group bg-background">
+                        <Button variant="outline" onClick={() => startBiometricLogin('alumno_oriente')} className="w-full justify-between h-14 rounded-xl border-muted/40 group bg-background hover:bg-secondary hover:text-secondary-foreground">
                         <div className="flex items-center gap-3">
                           <img src="/iconos/ICONOS-05.png" alt="Alumno" className="w-5 h-5 object-contain" />
                             <div className="text-left">
-                                <p className="text-xs font-black text-primary leading-none">Sofía Pérez</p>
-                            <p className="text-[9px] text-muted uppercase">Campus Oriente</p>
+                                <p className="text-xs font-black text-primary leading-none group-hover:text-secondary-foreground">Sofía Pérez</p>
+                            <p className="text-[9px] text-muted uppercase group-hover:text-secondary-foreground/85">Campus Oriente</p>
                             </div>
                         </div>
-                        <ChevronRight className="w-4 h-4" />
+                        <ChevronRight className="w-4 h-4 group-hover:text-secondary-foreground" />
                       </Button>
                     </div>
                   </ScrollArea>
