@@ -59,6 +59,36 @@
   100% { top: 0; }
 }
 
+/* Radar Animation Styles */
+.radar-sweep {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 250%;
+  height: 250%;
+  background: conic-gradient(from 0deg, transparent 80%, hsl(var(--primary) / 0.05) 90%, hsl(var(--primary) / 0.15) 100%);
+  transform-origin: center;
+  animation: radar-rotate 6s linear infinite;
+  pointer-events: none;
+  z-index: 2;
+}
+
+@keyframes radar-rotate {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+.radar-circle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 1px solid hsl(var(--primary) / 0.1);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 1;
+}
+
 .danger-high { background-color: rgba(153, 27, 27, 0.3); border-color: #991b1b; }
 .danger-mid { background-color: rgba(154, 52, 18, 0.3); border-color: #9a3412; }
 .danger-low { background-color: rgba(133, 77, 14, 0.3); border-color: #854d0e; }

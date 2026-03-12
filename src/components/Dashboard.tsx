@@ -2,7 +2,7 @@
 
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { CheckCircle2, IdCard, AlertTriangle, Network, MapPin, ChevronRight, Landmark, ShieldCheck, Zap } from 'lucide-react';
+import { CheckCircle2, IdCard, AlertTriangle, Network, MapPin, ChevronRight, ShieldCheck, Zap } from 'lucide-react';
 import { Role, Incident, Campus } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
@@ -104,8 +104,14 @@ export default function Dashboard({ role, campus, incidents = [], onNavigate }: 
                 VISTA TÁCTICA <ChevronRight className="w-3 h-3 md:w-4 md:h-4" />
             </button>
           </div>
-          <div className="flex-1 bg-grid-pattern relative flex items-center justify-center bg-slate-50">
-            <div className="w-[90%] md:w-3/4 h-2/3 map-building rounded-3xl flex items-center justify-center relative shadow-2xl overflow-hidden bg-slate-100">
+          <div className="flex-1 bg-grid-pattern relative flex items-center justify-center bg-slate-50 overflow-hidden">
+            {/* Radar Animation Elements */}
+            <div className="radar-sweep"></div>
+            <div className="radar-circle w-20 h-20 opacity-50"></div>
+            <div className="radar-circle w-40 h-40 opacity-30"></div>
+            <div className="radar-circle w-60 h-60 opacity-10"></div>
+            
+            <div className="w-[90%] md:w-3/4 h-2/3 map-building rounded-3xl flex items-center justify-center relative shadow-2xl overflow-hidden bg-white/40 backdrop-blur-[2px] z-10">
                <div className="absolute inset-0 bg-indigo-50/20"></div>
               <span className="text-slate-300 font-black uppercase tracking-[0.2em] text-lg md:text-2xl font-headline relative z-10 text-center px-4 leading-tight">
                 SISTEMA COMUNIDAD ALERTA

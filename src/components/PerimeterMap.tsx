@@ -5,6 +5,7 @@ import { Incident, ZoneOverlay, MapMarker } from '@/lib/types';
 import { campusZones, campusMarkers } from '@/lib/mocks';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
+import { Badge } from '@/components/ui/badge';
 
 interface PerimeterMapProps {
   incidents: Incident[];
@@ -24,20 +25,28 @@ export default function PerimeterMap({ incidents, campus }: PerimeterMapProps) {
           <p className="text-sm text-slate-500 font-medium">Visualización de riesgos, accesos y estado de infraestructura en tiempo real.</p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200">Zona Segura</Badge>
-          <Badge className="bg-yellow-100 text-yellow-700 border-yellow-200">Riesgo Bajo</Badge>
-          <Badge className="bg-orange-100 text-orange-700 border-orange-200">Riesgo Alto</Badge>
-          <Badge className="bg-red-100 text-red-700 border-red-200">Crítico</Badge>
+          <Badge variant="outline" className="bg-emerald-100 text-emerald-700 border-emerald-200 px-3 py-1 text-[10px] font-bold">Zona Segura</Badge>
+          <Badge variant="outline" className="bg-yellow-100 text-yellow-700 border-yellow-200 px-3 py-1 text-[10px] font-bold">Riesgo Bajo</Badge>
+          <Badge variant="outline" className="bg-orange-100 text-orange-700 border-orange-200 px-3 py-1 text-[10px] font-bold">Riesgo Alto</Badge>
+          <Badge variant="outline" className="bg-red-100 text-red-700 border-red-200 px-3 py-1 text-[10px] font-bold">Crítico</Badge>
         </div>
       </div>
       
       <div className="flex-1 bg-grid-pattern rounded-[2rem] border border-slate-200 shadow-2xl relative overflow-hidden min-h-[600px] bg-slate-50">
+        {/* Radar Animation Elements */}
+        <div className="radar-sweep"></div>
+        <div className="radar-circle w-[200px] h-[200px] opacity-40"></div>
+        <div className="radar-circle w-[400px] h-[400px] opacity-30"></div>
+        <div className="radar-circle w-[600px] h-[600px] opacity-20"></div>
+        <div className="radar-circle w-[800px] h-[800px] opacity-10"></div>
+        <div className="radar-circle w-[1000px] h-[1000px] opacity-5"></div>
+
         {/* Capas de Riesgo */}
         {zones.map(zone => (
           <div 
             key={zone.id}
             className={cn(
-              "absolute rounded-3xl border-2 transition-all duration-700",
+              "absolute rounded-3xl border-2 transition-all duration-700 z-10",
               zone.type === 'danger-high' && "danger-high animate-pulse",
               zone.type === 'danger-mid' && "danger-mid",
               zone.type === 'danger-low' && "danger-low",
@@ -56,7 +65,7 @@ export default function PerimeterMap({ incidents, campus }: PerimeterMapProps) {
         {/* Puntos de Infraestructura y Accesos */}
         <TooltipProvider>
             {markers.map(marker => (
-                <div key={marker.id} className="absolute" style={marker.coords}>
+                <div key={marker.id} className="absolute z-20" style={marker.coords}>
                     <Tooltip>
                         <TooltipTrigger asChild>
                             <div className={cn(
@@ -81,11 +90,11 @@ export default function PerimeterMap({ incidents, campus }: PerimeterMapProps) {
         </TooltipProvider>
 
         {/* Edificio Central Institucional */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-56 h-40 bg-white/90 backdrop-blur-md border-b-8 border-b-secondary border-4 border-primary rounded-[2.5rem] flex flex-col items-center justify-center shadow-2xl z-10 group hover:scale-105 transition-transform">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-56 h-40 bg-white/70 backdrop-blur-md border-b-8 border-b-secondary border-4 border-primary rounded-[2.5rem] flex flex-col items-center justify-center shadow-2xl z-10 group hover:scale-105 transition-transform">
           <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center mb-2 shadow-inner">
             <School className="w-10 h-10 text-secondary" />
           </div>
-          <span className="text-primary font-black text-sm uppercase tracking-[0.2em] font-headline">NÚCLEO ISSU</span>
+          <span className="text-primary font-black text-sm uppercase tracking-[0.2em] font-headline text-center px-4">COMUNIDAD ALERTA</span>
           <div className="mt-3 flex gap-2">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse delay-75"></span>
@@ -118,10 +127,10 @@ export default function PerimeterMap({ incidents, campus }: PerimeterMapProps) {
                 </TooltipTrigger>
                 <TooltipContent className="bg-slate-900 text-white border-none p-5 w-64 rounded-3xl shadow-2xl">
                   <div className="flex justify-between items-center mb-3">
-                    <Badge className={cn(
-                        "text-[9px] font-black uppercase",
-                        inc.severity === 'critica' ? "bg-red-500" : "bg-orange-500"
-                    )}>{inc.category}</Badge>
+                    <span className={cn(
+                        "text-[9px] font-black uppercase px-2 py-0.5 rounded",
+                        inc.severity === 'critica' ? "bg-red-500 text-white" : "bg-orange-500 text-white"
+                    )}>{inc.category}</span>
                     <span className="text-[9px] text-slate-400 font-bold">{inc.time}</span>
                   </div>
                   <p className="font-bold text-base leading-tight mb-2">{inc.description}</p>
@@ -140,12 +149,4 @@ export default function PerimeterMap({ incidents, campus }: PerimeterMapProps) {
       </div>
     </div>
   );
-}
-
-function Badge({ children, className }: { children: React.ReactNode, className?: string }) {
-    return (
-        <span className={cn("px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border", className)}>
-            {children}
-        </span>
-    );
 }
