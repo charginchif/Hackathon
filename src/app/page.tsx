@@ -129,7 +129,8 @@ export default function Home() {
                 await setDoc(adminAuthRef, { active: true });
             } else if (user.role === 'alumno') {
                 const campusId = user.campus === 'Global' ? 'Campus Metropolitano' : user.campus;
-                const studentAuthRef = doc(db, 'schoolStudents', campusId, fbUid);
+                // Fixed even path depth for document reference: schoolStudents/{schoolId}/students/{fbUid}
+                const studentAuthRef = doc(db, 'schoolStudents', campusId, 'students', fbUid);
                 await setDoc(studentAuthRef, { active: true });
             }
         }

@@ -22,7 +22,7 @@ service cloud.firestore {
     }
 
     function isStudentOfSchool(schoolId) {
-      return isSignedIn() && exists(/databases/$(database)/documents/schoolStudents/$(schoolId)/$(request.auth.uid));
+      return isSignedIn() && exists(/databases/$(database)/documents/schoolStudents/$(schoolId)/students/$(request.auth.uid));
     }
 
     function isOwner(userId) {
@@ -49,7 +49,7 @@ service cloud.firestore {
       allow write: if isGlobalAdmin() || isOwner(globalAdminId);
     }
 
-    match /schoolStudents/{schoolId}/{studentId} {
+    match /schoolStudents/{schoolId}/students/{studentId} {
       allow get: if isOwner(studentId) || isGlobalAdmin();
       allow list: if isGlobalAdmin() || (isSignedIn() && request.query.limit <= 100);
       // Prototype mode: Allow students to register their own school mapping
