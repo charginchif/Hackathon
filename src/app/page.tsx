@@ -1,16 +1,14 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { ShieldCheck, UserCheck, ChevronRight, Bell, User as UserIcon, ScanFace, Mail, Lock, Landmark, Loader2, Zap, LayoutDashboard, Map as MapIcon, Megaphone, CheckCircle2, Siren, Menu } from 'lucide-react';
+import { UserCheck, ChevronRight, User as UserIcon, Mail, Lock, Landmark, Loader2, Zap, Menu, ShieldCheck, AlertTriangle, Network, Navigation, Building2, Cctv, DoorOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
-import { ROLES_CONFIG, CAMPUSES, MOCK_USERS } from '@/lib/mocks';
-import { Role, User, Incident, AccessLog, Campus } from '@/lib/types';
+import { ROLES_CONFIG, MOCK_USERS } from '@/lib/mocks';
+import { User, Incident, AccessLog, Campus } from '@/lib/types';
 import Dashboard from '@/components/Dashboard';
 import PerimeterMap from '@/components/PerimeterMap';
 import AccessControl from '@/components/AccessControl';
@@ -189,7 +187,7 @@ export default function Home() {
             <>
               <div className="text-center mb-8 md:mb-10">
                 <div className="mb-4 md:mb-6 inline-flex items-center justify-center w-20 h-20 md:w-24 md:h-24 bg-white rounded-3xl overflow-hidden shadow-xl border-4 border-slate-50 relative">
-                   {/* IconoLogo.png para el inicio de sesión */}
+                   {/* IconoLogo.png para el inicio de sesión como se solicitó */}
                    <img src="/iconos/IconoLogo.png" alt="Comunidad Alerta Icono" className="w-full h-full object-contain" />
                 </div>
                 <h1 className="text-2xl md:text-3xl font-black text-primary tracking-tighter mb-1 md:2 font-headline uppercase leading-none">Comunidad Alerta</h1>
