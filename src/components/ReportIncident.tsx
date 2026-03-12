@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -6,16 +7,16 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Megaphone, MapPin, Camera, Send, Check, Zap } from 'lucide-react';
-import { Incident, IncidentCategory, IncidentSeverity } from '@/lib/types';
+import { Megaphone, Camera, Send, Check, Zap } from 'lucide-react';
+import { Incident, User, IncidentCategory } from '@/lib/types';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 
 interface ReportIncidentProps {
-  onReport: (incident: Incident) => void;
-  userName: string;
+  onReport: (incident: Partial<Incident>) => void;
+  user: User;
 }
 
-export default function ReportIncident({ onReport, userName }: ReportIncidentProps) {
+export default function ReportIncident({ onReport, user }: ReportIncidentProps) {
   const [category, setCategory] = useState<string>('');
   const [zone, setZone] = useState<string>('');
   const [description, setDescription] = useState('');
@@ -24,20 +25,20 @@ export default function ReportIncident({ onReport, userName }: ReportIncidentPro
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    const newIncident: Incident = {
+    onReport({
       id: Date.now(),
       category: category as IncidentCategory,
       description,
       zone,
-      campus: 'Campus Metropolitano', // Default para mock
+      campus: user.campus === 'Global' ? 'Campus Metropolitano' : user.campus,
       status: 'pendiente',
       severity: (category === 'Emergencia' || category === 'Acoso') ? 'alta' : 'media',
-      user: userName,
+      userId: user.id,
+      userName: user.name,
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      coords: { top: '30%', left: '30%' } // Mock de posición
-    };
+      coords: { top: '35%', left: '40%' }
+    });
 
-    onReport(newIncident);
     setShowSuccess(true);
     setCategory('');
     setZone('');
@@ -46,12 +47,11 @@ export default function ReportIncident({ onReport, userName }: ReportIncidentPro
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
-      <Card className="bg-red-600 p-8 border-none text-white shadow-2xl relative overflow-hidden group">
-        <div className="absolute -right-10 -bottom-10 w-48 h-48 bg-white/10 rounded-full group-hover:scale-110 transition-transform"></div>
-        <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
+      <Card className="bg-red-600 p-8 border-none text-white shadow-2xl relative overflow-hidden">
+        <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex flex-col gap-2">
             <h3 className="text-3xl font-black uppercase tracking-tight">Protocolo SOS ISSU</h3>
-            <p className="text-red-100 font-bold">Usa este botón solo en caso de peligro inminente o emergencia crítica.</p>
+            <p className="text-red-100 font-bold opacity-80">Alerta inmediata por peligro inminente.</p>
           </div>
           <Button 
             onClick={() => {
@@ -59,38 +59,39 @@ export default function ReportIncident({ onReport, userName }: ReportIncidentPro
                     id: Date.now(),
                     category: 'SOS',
                     description: 'BOTÓN SOS ACTIVADO POR USUARIO',
-                    zone: 'UBICACIÓN GEOLOCALIZADA',
-                    campus: 'Campus Metropolitano',
+                    zone: 'UBICACIÓN DINÁMICA',
+                    campus: user.campus === 'Global' ? 'Campus Metropolitano' : user.campus,
                     status: 'pendiente',
                     severity: 'critica',
-                    user: userName,
+                    userId: user.id,
+                    userName: user.name,
                     time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
                     coords: { top: '50%', left: '50%' }
                 });
                 setShowSuccess(true);
             }}
-            className="bg-white text-red-600 hover:bg-red-50 h-16 px-10 rounded-2xl font-black text-xl shadow-2xl animate-pulse flex gap-3"
+            className="bg-white text-red-600 h-16 px-10 rounded-2xl font-black text-xl shadow-2xl animate-pulse flex gap-3"
           >
             <Zap className="w-8 h-8 fill-current" /> ACTIVAR SOS
           </Button>
         </div>
       </Card>
 
-      <Card className="border-t-4 border-t-primary shadow-xl p-8 bg-white">
+      <Card className="shadow-xl p-8 bg-white border border-slate-100 rounded-3xl">
         <div className="text-center mb-10">
-          <div className="w-16 h-16 bg-slate-100 text-primary rounded-full flex items-center justify-center mx-auto mb-4 shadow-inner">
+          <div className="w-16 h-16 bg-indigo-50 text-primary rounded-full flex items-center justify-center mx-auto mb-4">
             <Megaphone className="w-8 h-8" />
           </div>
-          <h3 className="text-2xl font-bold text-slate-800 font-headline">Reporte Ciudadano ISSU</h3>
-          <p className="text-slate-500 mt-1">Colabora con la red de seguridad informando anomalías.</p>
+          <h3 className="text-2xl font-bold text-slate-800">Reporte de Seguridad</h3>
+          <p className="text-slate-500 mt-1">Colabora con la vigilancia de tu campus.</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-8">
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <Label className="font-bold text-slate-700 uppercase text-[10px] tracking-widest">Tipo de Incidencia</Label>
               <Select value={category} onValueChange={setCategory} required>
-                <SelectTrigger className="p-6 bg-slate-50 rounded-xl focus:ring-2 focus:ring-primary border-slate-200">
+                <SelectTrigger className="h-14 bg-slate-50 rounded-xl border-slate-200">
                   <SelectValue placeholder="Seleccionar..." />
                 </SelectTrigger>
                 <SelectContent>
@@ -105,7 +106,7 @@ export default function ReportIncident({ onReport, userName }: ReportIncidentPro
             <div className="space-y-2">
               <Label className="font-bold text-slate-700 uppercase text-[10px] tracking-widest">Zona del Incidente</Label>
               <Select value={zone} onValueChange={setZone} required>
-                <SelectTrigger className="p-6 bg-slate-50 rounded-xl focus:ring-2 focus:ring-primary border-slate-200">
+                <SelectTrigger className="h-14 bg-slate-50 rounded-xl border-slate-200">
                   <SelectValue placeholder="Seleccionar zona..." />
                 </SelectTrigger>
                 <SelectContent>
@@ -120,41 +121,35 @@ export default function ReportIncident({ onReport, userName }: ReportIncidentPro
           </div>
           
           <div className="space-y-2">
-            <Label className="font-bold text-slate-700 uppercase text-[10px] tracking-widest">Detalles del Reporte</Label>
+            <Label className="font-bold text-slate-700 uppercase text-[10px] tracking-widest">Detalles</Label>
             <Textarea 
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               required
               rows={4} 
-              className="p-4 bg-slate-50 rounded-xl focus:ring-2 focus:ring-primary border-slate-200 resize-none" 
-              placeholder="Describa la situación de forma concisa..."
+              className="bg-slate-50 rounded-xl border-slate-200 resize-none p-4" 
+              placeholder="Describa la situación..."
             />
           </div>
 
-          <div className="border-2 border-dashed border-slate-300 rounded-xl p-8 text-center bg-slate-50 hover:bg-slate-100 transition cursor-pointer group">
-            <Camera className="w-10 h-10 text-slate-400 mx-auto mb-2 group-hover:text-primary transition-colors" />
-            <p className="text-sm font-semibold text-slate-600">Captura de Evidencia</p>
-            <p className="text-xs text-slate-400">Adjunte imágenes para validación por el C5</p>
-          </div>
-
-          <Button type="submit" className="w-full bg-primary hover:bg-primary/90 h-14 text-lg font-bold gap-2 shadow-lg rounded-xl">
+          <Button type="submit" className="w-full bg-primary h-14 text-lg font-bold gap-2 shadow-lg rounded-xl">
             <Send className="w-5 h-5" /> ENVIAR AL CENTRO DE MANDO
           </Button>
         </form>
       </Card>
 
       <Dialog open={showSuccess} onOpenChange={setShowSuccess}>
-        <DialogContent className="sm:max-w-md p-8 text-center border-none shadow-2xl">
+        <DialogContent className="sm:max-w-md p-10 text-center rounded-[2rem]">
           <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6">
             <Check className="w-10 h-10 text-emerald-600" />
           </div>
           <DialogHeader>
-            <DialogTitle className="text-2xl font-bold text-slate-800 font-headline mb-2 text-center uppercase">¡Reporte Recibido!</DialogTitle>
-            <DialogDescription className="text-slate-500 mb-8 text-sm font-medium text-center">
-              El Centro de Mando ISSU ha registrado tu reporte. Nuestras unidades han sido notificadas. Mantente en una zona segura.
+            <DialogTitle className="text-2xl font-black text-primary text-center uppercase">¡Reporte Enviado!</DialogTitle>
+            <DialogDescription className="text-slate-500 font-medium text-center">
+              El Centro de Mando ISSU ha registrado tu reporte. Nuestras unidades han sido notificadas.
             </DialogDescription>
           </DialogHeader>
-          <Button onClick={() => setShowSuccess(false)} className="w-full bg-primary rounded-xl font-bold h-12">ENTENDIDO</Button>
+          <Button onClick={() => setShowSuccess(false)} className="w-full bg-primary rounded-xl font-bold h-12 mt-4">ENTENDIDO</Button>
         </DialogContent>
       </Dialog>
     </div>

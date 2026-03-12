@@ -1,3 +1,4 @@
+
 export type Role = 'alumno' | 'autoridad';
 export type Campus = 'Campus Metropolitano' | 'Campus Tecnológico' | 'Campus Oriente' | 'Global';
 
@@ -26,15 +27,17 @@ export interface MapMarker {
 }
 
 export interface Incident {
-  id: number;
+  id: string | number;
   category: IncidentCategory;
   description: string;
   zone: string;
-  campus: Exclude<Campus, 'Global'>;
+  campus: string;
   status: IncidentStatus;
   severity: IncidentSeverity;
-  user: string;
+  userId: string;
+  userName: string;
   time: string;
+  timestamp?: any;
   coords: {
     top: string;
     left: string;
@@ -44,12 +47,14 @@ export interface Incident {
 export interface AccessLog {
   id: string;
   time: string;
-  person: string;
-  role: string;
+  userId: string;
+  userName: string;
+  userRole: string;
   gate: string;
   type: 'Entrada' | 'Salida';
-  campus: Exclude<Campus, 'Global'>;
+  campus: string;
   status: 'Autorizado' | 'Denegado';
+  timestamp?: any;
 }
 
 export interface ZoneOverlay {

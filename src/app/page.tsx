@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -7,7 +8,7 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ROLES_CONFIG, mockIncidents, mockAccessLogs, CAMPUSES, MOCK_USERS } from '@/lib/mocks';
+import { ROLES_CONFIG, CAMPUSES, MOCK_USERS } from '@/lib/mocks';
 import { Role, User, Incident, AccessLog, Campus } from '@/lib/types';
 import Dashboard from '@/components/Dashboard';
 import PerimeterMap from '@/components/PerimeterMap';
@@ -19,14 +20,33 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import EmergencyModal from '@/components/EmergencyModal';
 import StudentAccess from '@/components/StudentAccess';
 
+import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
+import { collection, query, orderBy, serverTimestamp, doc, setDoc } from 'firebase/firestore';
+import { addDocumentNonBlocking, updateDocumentNonBlocking } from '@/firebase/non-blocking-updates';
+
 export default function Home() {
+  const db = useFirestore();
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [activeSection, setActiveSection] = useState<string>('dashboard');
   const [activeCampus, setActiveCampus] = useState<Campus>('Campus Metropolitano');
-  const [incidents, setIncidents] = useState<Incident[]>(mockIncidents);
-  const [accessLogs, setAccessLogs] = useState<AccessLog[]>(mockAccessLogs);
   const [activeEmergency, setActiveEmergency] = useState<Incident | null>(null);
   
+  // Firebase Data Subscriptions
+  const incidentsRef = useMemoFirebase(() => {
+    if (!db || !activeCampus) return null;
+    const campusId = activeCampus === 'Global' ? 'Campus Metropolitano' : activeCampus;
+    return query(collection(db, 'schools', campusId, 'incidents'), orderBy('timestamp', 'desc'));
+  }, [db, activeCampus]);
+
+  const accessLogsRef = useMemoFirebase(() => {
+    if (!db || !activeCampus) return null;
+    const campusId = activeCampus === 'Global' ? 'Campus Metropolitano' : activeCampus;
+    return query(collection(db, 'schools', campusId, 'accessLogs'), orderBy('timestamp', 'desc'));
+  }, [db, activeCampus]);
+
+  const { data: incidents = [] } = useCollection<Incident>(incidentsRef);
+  const { data: accessLogs = [] } = useCollection<AccessLog>(accessLogsRef);
+
   // Login states
   const [isScanning, setIsScanning] = useState(false);
   const [scanProgress, setScanProgress] = useState(0);
@@ -38,7 +58,7 @@ export default function Home() {
   // Monitor SOS events for admin
   useEffect(() => {
     if (currentUser?.role === 'autoridad') {
-      const emergency = incidents.find(i => i.category === 'SOS' && i.status === 'pendiente');
+      const emergency = incidents?.find(i => i.category === 'SOS' && i.status === 'pendiente');
       if (emergency) {
         setActiveEmergency(emergency);
       }
@@ -60,7 +80,7 @@ export default function Home() {
           }, 600);
           return 100;
         }
-        return prev + 5;
+        return prev + 10;
       });
     }, 100);
   };
@@ -78,7 +98,7 @@ export default function Home() {
         setLoginError('Credenciales ISSU no válidas.');
       }
       setIsLoading(false);
-    }, 1500);
+    }, 1000);
   };
 
   const handleLoginSuccess = (user: User) => {
@@ -90,6 +110,12 @@ export default function Home() {
     }
     setActiveSection(ROLES_CONFIG[user.role].defaultSection);
     setIsScanning(false);
+
+    // Sync user to Firestore if needed
+    if (db) {
+        const userRef = doc(db, 'users', user.id);
+        setDoc(userRef, { ...user, lastLogin: serverTimestamp() }, { merge: true });
+    }
   };
 
   const logout = () => {
@@ -101,45 +127,30 @@ export default function Home() {
     setLoginError('');
   };
 
-  const handleAddIncident = (newIncident: Incident) => {
-    setIncidents(prev => [newIncident, ...prev]);
-    if (newIncident.category !== 'SOS') {
-        setActiveSection('dashboard');
-    }
-  };
-
-  const handleAddAccessLog = (newLog: AccessLog) => {
-    setAccessLogs(prev => [newLog, ...prev]);
-  };
-
-  const handleUpdateIncidentStatus = (id: number, status: 'atendido' | 'despachado') => {
-    setIncidents(prev => prev.map(inc => inc.id === id ? { ...inc, status } : inc));
-    if (activeEmergency?.id === id) setActiveEmergency(null);
-  };
-
   const handleSOS = () => {
-    const newSOS: Incident = {
-        id: Date.now(),
-        category: 'SOS',
-        description: 'ALERTA SOS: USUARIO SOLICITA AUXILIO INMEDIATO',
-        zone: 'ZONA DE RIESGO DETECTADA',
-        campus: currentUser?.campus as Exclude<Campus, 'Global'>,
-        status: 'pendiente',
-        severity: 'critica',
-        user: currentUser?.name || 'Usuario Anónimo',
-        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        coords: { top: '50%', left: '50%' }
-    };
-    handleAddIncident(newSOS);
+    if (!db || !currentUser) return;
+    const campusId = currentUser.campus === 'Global' ? 'Campus Metropolitano' : currentUser.campus;
+    const colRef = collection(db, 'schools', campusId, 'incidents');
+    
+    addDocumentNonBlocking(colRef, {
+      category: 'SOS',
+      description: 'ALERTA SOS: USUARIO SOLICITA AUXILIO INMEDIATO',
+      zone: 'UBICACIÓN GEOLOCALIZADA',
+      campus: campusId,
+      status: 'pendiente',
+      severity: 'critica',
+      userId: currentUser.id,
+      userName: currentUser.name,
+      timestamp: serverTimestamp(),
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      coords: { top: '50%', left: '50%' }
+    });
   };
 
   if (!currentUser) {
     return (
       <div className="h-screen w-full flex items-center justify-center bg-indigo-950 px-4 relative overflow-hidden">
         <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] pointer-events-none"></div>
-        <div className="absolute -top-24 -left-24 w-96 h-96 bg-secondary/20 rounded-full blur-[100px]"></div>
-        <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-primary/20 rounded-full blur-[100px]"></div>
-        
         <div className="max-w-md w-full bg-white rounded-[2.5rem] shadow-2xl p-10 relative z-10 border border-slate-200">
           {!isScanning ? (
             <>
@@ -153,86 +164,46 @@ export default function Home() {
 
               <Tabs defaultValue="biometric" className="w-full">
                 <TabsList className="grid w-full grid-cols-2 mb-10 bg-slate-100 p-1.5 rounded-2xl">
-                  <TabsTrigger value="biometric" className="rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-md font-bold text-xs uppercase">Biometría</TabsTrigger>
-                  <TabsTrigger value="email" className="rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-md font-bold text-xs uppercase">Credenciales</TabsTrigger>
+                  <TabsTrigger value="biometric" className="rounded-xl font-bold text-xs uppercase">Biometría</TabsTrigger>
+                  <TabsTrigger value="email" className="rounded-xl font-bold text-xs uppercase">Credenciales</TabsTrigger>
                 </TabsList>
 
-                <TabsContent value="biometric" className="space-y-6">
-                  <div className="bg-indigo-50 p-5 rounded-2xl border border-indigo-100 mb-8 flex items-start gap-4">
-                    <ScanFace className="w-6 h-6 text-primary shrink-0 mt-1" />
-                    <p className="text-[11px] text-indigo-900 leading-relaxed font-medium">El sistema ISSU utiliza reconocimiento facial avanzado para validar su identidad en cualquier campus de la red.</p>
-                  </div>
-
-                  <div className="grid gap-4">
-                    <Button 
-                      variant="outline" 
-                      onClick={() => startBiometricLogin('alumno_metro')}
-                      className="justify-between h-16 border-slate-200 hover:border-primary hover:bg-primary/5 rounded-2xl group transition-all"
-                    >
-                      <div className="flex items-center gap-4">
+                <TabsContent value="biometric" className="space-y-4">
+                  <Button variant="outline" onClick={() => startBiometricLogin('alumno_metro')} className="w-full justify-between h-16 rounded-2xl border-slate-200 group">
+                    <div className="flex items-center gap-4">
                         <UserCheck className="w-6 h-6 text-slate-400 group-hover:text-primary" />
                         <div className="text-left">
-                          <p className="text-sm font-black text-primary leading-none mb-1">Estudiante ISSU</p>
-                          <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Campus Metropolitano</p>
+                            <p className="text-sm font-black text-primary leading-none">Alumno Metropolitano</p>
+                            <p className="text-[10px] text-slate-400">ISSU Campus Metro</p>
                         </div>
-                      </div>
-                      <ChevronRight className="w-5 h-5 text-slate-300" />
-                    </Button>
-
-                    <Button 
-                      variant="outline" 
-                      onClick={() => startBiometricLogin('admin_global')}
-                      className="justify-between h-16 border-secondary/20 hover:border-secondary hover:bg-secondary/5 rounded-2xl group transition-all"
-                    >
-                      <div className="flex items-center gap-4">
+                    </div>
+                    <ChevronRight className="w-4 h-4" />
+                  </Button>
+                  <Button variant="outline" onClick={() => startBiometricLogin('admin_global')} className="w-full justify-between h-16 rounded-2xl border-secondary/20 group">
+                    <div className="flex items-center gap-4">
                         <Landmark className="w-6 h-6 text-slate-400 group-hover:text-secondary" />
                         <div className="text-left">
-                          <p className="text-sm font-black text-primary leading-none mb-1">Autoridad Institucional</p>
-                          <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Dirección de Seguridad</p>
+                            <p className="text-sm font-black text-primary leading-none">Admin Global</p>
+                            <p className="text-[10px] text-slate-400">Centro de Mando C5</p>
                         </div>
-                      </div>
-                      <ChevronRight className="w-5 h-5 text-slate-300" />
-                    </Button>
-                  </div>
+                    </div>
+                    <ChevronRight className="w-4 h-4" />
+                  </Button>
                 </TabsContent>
 
-                <TabsContent value="email" className="space-y-6">
-                  <form onSubmit={handleEmailLogin} className="space-y-6">
-                    <div className="space-y-2">
-                      <Label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Identificador ISSU</Label>
-                      <div className="relative">
+                <TabsContent value="email">
+                  <form onSubmit={handleEmailLogin} className="space-y-4">
+                    <div className="relative">
                         <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-                        <Input 
-                          type="email" 
-                          placeholder="usuario@issu.edu.mx" 
-                          className="pl-12 rounded-2xl h-14 border-slate-200"
-                          value={loginEmail}
-                          onChange={(e) => setLoginEmail(e.target.value)}
-                          required
-                        />
-                      </div>
+                        <Input placeholder="usuario@issu.edu.mx" className="pl-12 rounded-2xl h-14" value={loginEmail} onChange={e => setLoginEmail(e.target.value)} />
                     </div>
-                    <div className="space-y-2">
-                      <Label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Token de Acceso</Label>
-                      <div className="relative">
+                    <div className="relative">
                         <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-                        <Input 
-                          type="password" 
-                          placeholder="••••••••" 
-                          className="pl-12 rounded-2xl h-14 border-slate-200"
-                          value={loginPass}
-                          onChange={(e) => setLoginPass(e.target.value)}
-                          required
-                        />
-                      </div>
+                        <Input type="password" placeholder="••••••••" className="pl-12 rounded-2xl h-14" value={loginPass} onChange={e => setLoginPass(e.target.value)} />
                     </div>
-                    {loginError && <p className="text-xs text-secondary font-black bg-secondary/5 p-3 rounded-xl text-center border border-secondary/20">{loginError}</p>}
-                    <Button 
-                      type="submit" 
-                      className="w-full bg-primary hover:bg-primary/90 h-14 rounded-2xl font-black shadow-xl text-white uppercase tracking-widest"
-                      disabled={isLoading}
-                    >
-                      {isLoading ? <Loader2 className="w-6 h-6 animate-spin" /> : 'Sincronizar Acceso'}
+                    {loginError && <p className="text-xs text-red-500 font-bold text-center">{loginError}</p>}
+                    <Button type="submit" className="w-full bg-primary h-14 rounded-2xl font-black uppercase tracking-widest" disabled={isLoading}>
+                      {isLoading ? <Loader2 className="animate-spin" /> : 'Sincronizar Terminal'}
                     </Button>
                   </form>
                 </TabsContent>
@@ -241,27 +212,16 @@ export default function Home() {
           ) : (
             <div className="py-12 flex flex-col items-center">
               <div className="relative w-56 h-56 mb-10">
-                <div className="absolute inset-0 rounded-[3rem] border-8 border-slate-50 overflow-hidden shadow-inner">
-                  <div className="w-full h-full bg-slate-100 flex items-center justify-center">
+                <div className="absolute inset-0 rounded-[3rem] border-8 border-slate-50 overflow-hidden shadow-inner bg-slate-100 flex items-center justify-center">
                     <UserIcon className="w-28 h-28 text-slate-200" />
-                  </div>
                 </div>
                 <div className="face-scan-line"></div>
-                <div className={`absolute inset-0 border-4 border-secondary rounded-[3rem] transition-opacity duration-500 ${scanProgress > 90 ? 'opacity-100' : 'opacity-0 animate-pulse'}`}></div>
               </div>
-              <h2 className="text-2xl font-black text-primary mb-2 font-headline uppercase tracking-tight">Escaneando Biometría</h2>
-              <div className="w-full bg-slate-100 h-3 rounded-full overflow-hidden mb-6 shadow-inner">
-                <div 
-                  className="h-full bg-primary transition-all duration-100 ease-out shadow-[0_0_10px_rgba(30,27,75,0.5)]"
-                  style={{ width: `${scanProgress}%` }}
-                ></div>
+              <h2 className="text-2xl font-black text-primary mb-2 uppercase tracking-tight">Escaneando Biometría</h2>
+              <div className="w-full bg-slate-100 h-3 rounded-full overflow-hidden mb-6">
+                <div className="h-full bg-primary transition-all duration-100" style={{ width: `${scanProgress}%` }}></div>
               </div>
               <p className="text-slate-400 text-[10px] font-black uppercase tracking-[0.4em]">Protocolo de Identidad ISSU v2.0</p>
-              {scanProgress >= 100 && (
-                <div className="mt-6 text-emerald-600 flex items-center gap-2 font-black animate-bounce bg-emerald-50 px-6 py-2 rounded-full border border-emerald-100 uppercase text-xs tracking-widest">
-                  <CheckCircle2 className="w-4 h-4" /> Autorizado
-                </div>
-              )}
             </div>
           )}
         </div>
@@ -270,7 +230,7 @@ export default function Home() {
   }
 
   return (
-    <div className="h-screen w-full flex flex-col lg:flex-row overflow-hidden bg-background">
+    <div className="h-screen w-full flex flex-col lg:flex-row overflow-hidden bg-background text-slate-800">
       <Sidebar 
         role={currentUser.role} 
         activeSection={activeSection} 
@@ -317,17 +277,12 @@ export default function Home() {
               </div>
             )}
 
-            <button className="relative text-slate-300 hover:text-primary transition group p-3 rounded-2xl hover:bg-slate-50 border border-transparent hover:border-slate-100">
-              <Bell className="w-6 h-6" />
-              <span className="absolute top-2.5 right-2.5 w-3.5 h-3.5 bg-secondary rounded-full border-2 border-white shadow-sm"></span>
-            </button>
-            
             <div className="flex items-center gap-4 pl-8 border-l border-slate-100">
               <div className="text-right hidden sm:block">
                 <p className="text-sm font-black text-primary leading-tight uppercase tracking-tighter">{currentUser.name}</p>
                 <p className="text-[9px] text-secondary font-black uppercase tracking-widest">{currentUser.roleDisplay}</p>
               </div>
-              <div className="w-14 h-14 bg-indigo-900 text-secondary rounded-[1.25rem] flex items-center justify-center font-bold shadow-xl border-4 border-slate-50 overflow-hidden group hover:scale-110 transition-transform cursor-pointer">
+              <div className="w-14 h-14 bg-indigo-900 text-secondary rounded-[1.25rem] flex items-center justify-center font-bold shadow-xl border-4 border-slate-50 overflow-hidden">
                 <UserIcon className="w-8 h-8" />
               </div>
             </div>
@@ -339,15 +294,33 @@ export default function Home() {
             <Dashboard 
               role={currentUser.role} 
               campus={activeCampus as Campus} 
-              incidents={incidents} 
+              incidents={incidents as Incident[]} 
               onNavigate={setActiveSection} 
             />
           )}
-          {activeSection === 'mapa' && <PerimeterMap campus={activeCampus} incidents={incidents} />}
-          {activeSection === 'accesos' && currentUser.role === 'autoridad' && <AccessControl logs={accessLogs} />}
-          {activeSection === 'accesos' && currentUser.role === 'alumno' && <StudentAccess user={currentUser} logs={accessLogs} onRegisterAccess={handleAddAccessLog} />}
-          {activeSection === 'gestion' && <IncidentManagement incidents={incidents} onResolve={handleUpdateIncidentStatus} />}
-          {activeSection === 'reportar' && <ReportIncident onReport={handleAddIncident} userName={currentUser.name} />}
+          {activeSection === 'mapa' && <PerimeterMap campus={activeCampus} incidents={incidents as Incident[]} />}
+          {activeSection === 'accesos' && currentUser.role === 'autoridad' && <AccessControl logs={accessLogs as AccessLog[]} />}
+          {activeSection === 'accesos' && currentUser.role === 'alumno' && <StudentAccess user={currentUser} logs={accessLogs as AccessLog[]} />}
+          {activeSection === 'gestion' && (
+            <IncidentManagement 
+                incidents={incidents as Incident[]} 
+                onResolve={(id, status) => {
+                    const campusId = activeCampus === 'Global' ? 'Campus Metropolitano' : activeCampus;
+                    const docRef = doc(db!, 'schools', campusId, 'incidents', id.toString());
+                    updateDocumentNonBlocking(docRef, { status });
+                }} 
+            />
+          )}
+          {activeSection === 'reportar' && (
+            <ReportIncident 
+                onReport={(newInc) => {
+                    const campusId = currentUser.campus === 'Global' ? 'Campus Metropolitano' : currentUser.campus;
+                    const colRef = collection(db!, 'schools', campusId, 'incidents');
+                    addDocumentNonBlocking(colRef, { ...newInc, timestamp: serverTimestamp() });
+                }} 
+                user={currentUser} 
+            />
+          )}
         </div>
       </main>
 
@@ -355,7 +328,11 @@ export default function Home() {
         <EmergencyModal 
             incident={activeEmergency} 
             onClose={() => setActiveEmergency(null)} 
-            onDispatch={(id) => handleUpdateIncidentStatus(id, 'despachado')}
+            onDispatch={(id) => {
+                const campusId = activeCampus === 'Global' ? 'Campus Metropolitano' : activeCampus;
+                const docRef = doc(db!, 'schools', campusId, 'incidents', id.toString());
+                updateDocumentNonBlocking(docRef, { status: 'despachado' });
+            }}
         />
       )}
     </div>
