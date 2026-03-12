@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -46,8 +45,11 @@ export default function Home() {
     return query(collection(db, 'schools', campusId, 'accessLogs'), orderBy('timestamp', 'desc'));
   }, [db, activeCampus, !!currentUser]);
 
-  const { data: incidents = [] } = useCollection<Incident>(incidentsRef);
-  const { data: accessLogs = [] } = useCollection<AccessLog>(accessLogsRef);
+  const { data: incidentsData } = useCollection<Incident>(incidentsRef);
+  const incidents = incidentsData ?? [];
+
+  const { data: accessLogsData } = useCollection<AccessLog>(accessLogsRef);
+  const accessLogs = accessLogsData ?? [];
 
   // Login states
   const [isScanning, setIsScanning] = useState(false);
@@ -60,7 +62,7 @@ export default function Home() {
   // Monitor SOS events for admin
   useEffect(() => {
     if (currentUser?.role === 'autoridad') {
-      const emergency = incidents?.find(i => i.category === 'SOS' && i.status === 'pendiente');
+      const emergency = incidents.find(i => i.category === 'SOS' && i.status === 'pendiente');
       if (emergency) {
         setActiveEmergency(emergency);
       }
@@ -309,16 +311,16 @@ export default function Home() {
             <Dashboard 
               role={currentUser.role} 
               campus={activeCampus as Campus} 
-              incidents={incidents as Incident[]} 
+              incidents={incidents} 
               onNavigate={setActiveSection} 
             />
           )}
-          {activeSection === 'mapa' && <PerimeterMap campus={activeCampus} incidents={incidents as Incident[]} />}
-          {activeSection === 'accesos' && currentUser.role === 'autoridad' && <AccessControl logs={accessLogs as AccessLog[]} />}
-          {activeSection === 'accesos' && currentUser.role === 'alumno' && <StudentAccess user={currentUser} logs={accessLogs as AccessLog[]} />}
+          {activeSection === 'mapa' && <PerimeterMap campus={activeCampus} incidents={incidents} />}
+          {activeSection === 'accesos' && currentUser.role === 'autoridad' && <AccessControl logs={accessLogs} />}
+          {activeSection === 'accesos' && currentUser.role === 'alumno' && <StudentAccess user={currentUser} logs={accessLogs} />}
           {activeSection === 'gestion' && (
             <IncidentManagement 
-                incidents={incidents as Incident[]} 
+                incidents={incidents} 
                 onResolve={(id, status) => {
                     const campusId = activeCampus === 'Global' ? 'Campus Metropolitano' : activeCampus;
                     const docRef = doc(db!, 'schools', campusId, 'incidents', id.toString());

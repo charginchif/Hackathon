@@ -13,10 +13,10 @@ interface DashboardProps {
   onNavigate: (section: string) => void;
 }
 
-export default function Dashboard({ role, campus, incidents, onNavigate }: DashboardProps) {
+export default function Dashboard({ role, campus, incidents = [], onNavigate }: DashboardProps) {
   const campusDisplay = campus === 'Global' ? 'Todos los Planteles' : campus;
   
-  const campusIncidents = incidents.filter(i => campus === 'Global' ? true : i.campus === campus);
+  const campusIncidents = (incidents || []).filter(i => campus === 'Global' ? true : i.campus === campus);
   const activeReports = campusIncidents.filter(i => i.status === 'pendiente').length;
   const criticalReports = campusIncidents.filter(i => i.severity === 'critica' && i.status === 'pendiente').length;
 
