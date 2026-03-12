@@ -58,7 +58,7 @@ export default function EmergencyModal({ incident, onClose, onDispatch }: Emerge
             </div>
             <p className="text-lg font-bold text-slate-800 leading-tight mb-2">{incident.description}</p>
             <p className="text-sm text-slate-500 flex items-center gap-1">
-                <S Siren className="w-4 h-4" /> Ubicación: <strong className="text-slate-700">{incident.zone} ({incident.campus})</strong>
+                <Siren className="w-4 h-4" /> Ubicación: <strong className="text-slate-700">{incident.zone} ({incident.campus})</strong>
             </p>
           </div>
 
