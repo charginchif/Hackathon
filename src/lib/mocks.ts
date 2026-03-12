@@ -73,8 +73,8 @@ export const campusZones: Record<string, ZoneOverlay[]> = {
 };
 
 export const mockAccessLogs: AccessLog[] = [
-  { id: '1', time: '08:00 AM', person: 'Mariana López', role: 'Alumno', gate: 'Acceso Principal A', campus: 'Campus Metropolitano', status: 'Autorizado' },
-  { id: '2', time: '08:15 AM', person: 'Elena Vance', role: 'Autoridad', gate: 'Acceso Principal A', campus: 'Campus Metropolitano', status: 'Autorizado' }
+  { id: '1', time: '08:00 AM', person: 'Mariana López', role: 'Alumno', gate: 'Acceso Principal A', type: 'Entrada', campus: 'Campus Metropolitano', status: 'Autorizado' },
+  { id: '2', time: '08:15 AM', person: 'Elena Vance', role: 'Autoridad', gate: 'Acceso Principal A', type: 'Entrada', campus: 'Campus Metropolitano', status: 'Autorizado' }
 ];
 
 export const ROLES_CONFIG = {
@@ -82,6 +82,7 @@ export const ROLES_CONFIG = {
     nav: [
       { id: 'dashboard', icon: 'Home', text: 'Mi Seguridad' },
       { id: 'mapa', icon: 'Map', text: 'Navegación Segura' },
+      { id: 'accesos', icon: 'BadgeCheck', text: 'Registro Acceso' },
       { id: 'reportar', icon: 'Megaphone', text: 'Reportar Incidente' }
     ],
     defaultSection: 'dashboard'

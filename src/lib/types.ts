@@ -47,6 +47,7 @@ export interface AccessLog {
   person: string;
   role: string;
   gate: string;
+  type: 'Entrada' | 'Salida';
   campus: Exclude<Campus, 'Global'>;
   status: 'Autorizado' | 'Denegado';
 }

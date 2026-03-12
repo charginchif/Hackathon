@@ -17,13 +17,14 @@ import ReportIncident from '@/components/ReportIncident';
 import Sidebar from '@/components/Sidebar';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import EmergencyModal from '@/components/EmergencyModal';
+import StudentAccess from '@/components/StudentAccess';
 
 export default function Home() {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [activeSection, setActiveSection] = useState<string>('dashboard');
   const [activeCampus, setActiveCampus] = useState<Campus>('Campus Metropolitano');
   const [incidents, setIncidents] = useState<Incident[]>(mockIncidents);
-  const [accessLogs] = useState<AccessLog[]>(mockAccessLogs);
+  const [accessLogs, setAccessLogs] = useState<AccessLog[]>(mockAccessLogs);
   const [activeEmergency, setActiveEmergency] = useState<Incident | null>(null);
   
   // Login states
@@ -105,6 +106,10 @@ export default function Home() {
     if (newIncident.category !== 'SOS') {
         setActiveSection('dashboard');
     }
+  };
+
+  const handleAddAccessLog = (newLog: AccessLog) => {
+    setAccessLogs(prev => [newLog, ...prev]);
   };
 
   const handleUpdateIncidentStatus = (id: number, status: 'atendido' | 'despachado') => {
@@ -339,7 +344,8 @@ export default function Home() {
             />
           )}
           {activeSection === 'mapa' && <PerimeterMap campus={activeCampus} incidents={incidents} />}
-          {activeSection === 'accesos' && <AccessControl logs={accessLogs} />}
+          {activeSection === 'accesos' && currentUser.role === 'autoridad' && <AccessControl logs={accessLogs} />}
+          {activeSection === 'accesos' && currentUser.role === 'alumno' && <StudentAccess user={currentUser} logs={accessLogs} onRegisterAccess={handleAddAccessLog} />}
           {activeSection === 'gestion' && <IncidentManagement incidents={incidents} onResolve={handleUpdateIncidentStatus} />}
           {activeSection === 'reportar' && <ReportIncident onReport={handleAddIncident} userName={currentUser.name} />}
         </div>
