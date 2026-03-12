@@ -7,6 +7,7 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { ROLES_CONFIG, CAMPUSES, MOCK_USERS } from '@/lib/mocks';
 import { Role, User, Incident, AccessLog, Campus } from '@/lib/types';
 import Dashboard from '@/components/Dashboard';
@@ -123,7 +124,7 @@ export default function Home() {
                 lastLogin: serverTimestamp() 
             }, { merge: true });
 
-            // 2. Register Authorization (Shadow Collections)
+            // 2. Register Authorization
             if (user.role === 'autoridad') {
                 const adminAuthRef = doc(db, 'globalAdmins', fbUid);
                 await setDoc(adminAuthRef, { active: true });
@@ -200,27 +201,51 @@ export default function Home() {
                   <TabsTrigger value="email" className="rounded-xl font-bold text-xs uppercase">Credenciales</TabsTrigger>
                 </TabsList>
 
-                <TabsContent value="biometric" className="space-y-4">
-                  <Button variant="outline" onClick={() => startBiometricLogin('alumno_metro')} className="w-full justify-between h-16 rounded-2xl border-slate-200 group">
-                    <div className="flex items-center gap-4">
-                        <UserCheck className="w-6 h-6 text-slate-400 group-hover:text-primary" />
-                        <div className="text-left">
-                            <p className="text-sm font-black text-primary leading-none">Alumno Metropolitano</p>
-                            <p className="text-[10px] text-slate-400">ISSU Campus Metro</p>
+                <TabsContent value="biometric">
+                  <ScrollArea className="h-64 pr-4">
+                    <div className="space-y-3">
+                      <Button variant="outline" onClick={() => startBiometricLogin('admin_global')} className="w-full justify-between h-14 rounded-xl border-secondary/20 group">
+                        <div className="flex items-center gap-3">
+                            <Landmark className="w-5 h-5 text-slate-400 group-hover:text-secondary" />
+                            <div className="text-left">
+                                <p className="text-xs font-black text-primary leading-none">Admin Global C5</p>
+                                <p className="text-[9px] text-slate-400 uppercase">Supervisión Total</p>
+                            </div>
                         </div>
-                    </div>
-                    <ChevronRight className="w-4 h-4" />
-                  </Button>
-                  <Button variant="outline" onClick={() => startBiometricLogin('admin_global')} className="w-full justify-between h-16 rounded-2xl border-secondary/20 group">
-                    <div className="flex items-center gap-4">
-                        <Landmark className="w-6 h-6 text-slate-400 group-hover:text-secondary" />
-                        <div className="text-left">
-                            <p className="text-sm font-black text-primary leading-none">Admin Global</p>
-                            <p className="text-[10px] text-slate-400">Centro de Mando C5</p>
+                        <ChevronRight className="w-4 h-4" />
+                      </Button>
+                      <Button variant="outline" onClick={() => startBiometricLogin('alumno_metro')} className="w-full justify-between h-14 rounded-xl border-slate-200 group">
+                        <div className="flex items-center gap-3">
+                            <UserCheck className="w-5 h-5 text-slate-400 group-hover:text-primary" />
+                            <div className="text-left">
+                                <p className="text-xs font-black text-primary leading-none">Mariana López</p>
+                                <p className="text-[9px] text-slate-400 uppercase">Campus Metropolitano</p>
+                            </div>
                         </div>
+                        <ChevronRight className="w-4 h-4" />
+                      </Button>
+                      <Button variant="outline" onClick={() => startBiometricLogin('alumno_tec')} className="w-full justify-between h-14 rounded-xl border-slate-200 group">
+                        <div className="flex items-center gap-3">
+                            <UserCheck className="w-5 h-5 text-slate-400 group-hover:text-primary" />
+                            <div className="text-left">
+                                <p className="text-xs font-black text-primary leading-none">Roberto García</p>
+                                <p className="text-[9px] text-slate-400 uppercase">Campus Tecnológico</p>
+                            </div>
+                        </div>
+                        <ChevronRight className="w-4 h-4" />
+                      </Button>
+                      <Button variant="outline" onClick={() => startBiometricLogin('alumno_oriente')} className="w-full justify-between h-14 rounded-xl border-slate-200 group">
+                        <div className="flex items-center gap-3">
+                            <UserCheck className="w-5 h-5 text-slate-400 group-hover:text-primary" />
+                            <div className="text-left">
+                                <p className="text-xs font-black text-primary leading-none">Sofía Pérez</p>
+                                <p className="text-[9px] text-slate-400 uppercase">Campus Oriente</p>
+                            </div>
+                        </div>
+                        <ChevronRight className="w-4 h-4" />
+                      </Button>
                     </div>
-                    <ChevronRight className="w-4 h-4" />
-                  </Button>
+                  </ScrollArea>
                 </TabsContent>
 
                 <TabsContent value="email">
@@ -249,7 +274,7 @@ export default function Home() {
                 </div>
                 <div className="face-scan-line"></div>
               </div>
-              <h2 className="text-2xl font-black text-primary mb-2 uppercase tracking-tight">Escaneando Biometría</h2>
+              <h2 className="text-2xl font-black text-primary mb-2 uppercase tracking-tight text-center">Escaneando Biometría</h2>
               <div className="w-full bg-slate-100 h-3 rounded-full overflow-hidden mb-6">
                 <div className="h-full bg-primary transition-all duration-100" style={{ width: `${scanProgress}%` }}></div>
               </div>
@@ -301,9 +326,9 @@ export default function Home() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="rounded-2xl border-slate-200">
-                    {CAMPUSES.map(c => (
-                      <SelectItem key={c} value={c} className="font-bold text-xs uppercase">{c}</SelectItem>
-                    ))}
+                    <SelectItem value="Campus Metropolitano" className="font-bold text-xs uppercase">Campus Metropolitano</SelectItem>
+                    <SelectItem value="Campus Tecnológico" className="font-bold text-xs uppercase">Campus Tecnológico</SelectItem>
+                    <SelectItem value="Campus Oriente" className="font-bold text-xs uppercase">Campus Oriente</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

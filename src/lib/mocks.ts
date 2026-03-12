@@ -7,6 +7,15 @@ export const CAMPUSES: Exclude<Campus, 'Global'>[] = [
 ];
 
 export const MOCK_USERS: Record<string, User & { password?: string }> = {
+  'admin_global': {
+    id: 'ADMIN-01',
+    name: 'Dra. Elena Vance',
+    role: 'autoridad',
+    roleDisplay: 'Directora de Seguridad ISSU',
+    campus: 'Global',
+    email: 'e.vance@issu.edu.mx',
+    password: 'admin'
+  },
   'alumno_metro': {
     id: 'ISS-7821',
     name: 'Mariana López',
@@ -16,14 +25,23 @@ export const MOCK_USERS: Record<string, User & { password?: string }> = {
     email: 'm.lopez@issu.edu.mx',
     password: 'password123'
   },
-  'admin_global': {
-    id: 'ADMIN-01',
-    name: 'Dra. Elena Vance',
-    role: 'autoridad',
-    roleDisplay: 'Directora de Seguridad ISSU',
-    campus: 'Global',
-    email: 'e.vance@issu.edu.mx',
-    password: 'admin'
+  'alumno_tec': {
+    id: 'ISS-9902',
+    name: 'Roberto García',
+    role: 'alumno',
+    roleDisplay: 'Estudiante ISSU',
+    campus: 'Campus Tecnológico',
+    email: 'r.garcia@issu.edu.mx',
+    password: 'password123'
+  },
+  'alumno_oriente': {
+    id: 'ISS-4410',
+    name: 'Sofía Pérez',
+    role: 'alumno',
+    roleDisplay: 'Estudiante ISSU',
+    campus: 'Campus Oriente',
+    email: 's.perez@issu.edu.mx',
+    password: 'password123'
   }
 };
 
@@ -36,21 +54,10 @@ export const mockIncidents: Incident[] = [
     campus: 'Campus Metropolitano',
     status: 'pendiente',
     severity: 'media',
-    user: 'Sistema de Red',
+    userId: 'SYSTEM',
+    userName: 'Sistema de Red',
     time: '09:00 AM',
     coords: { top: '25%', left: '45%' }
-  },
-  {
-    id: 2,
-    category: 'SOS',
-    description: 'BOTÓN DE PÁNICO: SOLICITUD DE APOYO MÉDICO',
-    zone: 'Laboratorio 3',
-    campus: 'Campus Metropolitano',
-    status: 'pendiente',
-    severity: 'critica',
-    user: 'Javier Solís',
-    time: '11:45 AM',
-    coords: { top: '40%', left: '55%' }
   }
 ];
 
@@ -60,22 +67,31 @@ export const campusMarkers: Record<string, MapMarker[]> = {
     { id: 'm2', type: 'salida', label: 'Salida de Emergencia Sur', coords: { top: '90%', left: '40%' } },
     { id: 'm3', type: 'falla', label: 'Luminaria Fundida L-42', coords: { top: '75%', left: '15%' } },
     { id: 'm4', type: 'estudiante', label: 'Densidad Alta: Cafetería', coords: { top: '55%', left: '65%' } },
-    { id: 'm5', type: 'entrada', label: 'Acceso Peatonal B', coords: { top: '30%', left: '85%' } },
+  ],
+  'Campus Tecnológico': [
+    { id: 't1', type: 'entrada', label: 'Puerta de Ingeniería', coords: { top: '20%', left: '30%' } },
+    { id: 't2', type: 'falla', label: 'Cámara C-12 Offline', coords: { top: '45%', left: '80%' } },
+  ],
+  'Campus Oriente': [
+    { id: 'o1', type: 'entrada', label: 'Acceso Peatonal Oriente', coords: { top: '80%', left: '20%' } },
+    { id: 'o2', type: 'salida', label: 'Salida Vehicular', coords: { top: '10%', left: '70%' } },
   ]
 };
 
 export const campusZones: Record<string, ZoneOverlay[]> = {
   'Campus Metropolitano': [
     { id: 'z1', name: 'ZONA ROJA: Riesgo por Obra en Curso', type: 'danger-high', coords: { top: '15%', left: '10%', width: '25%', height: '20%' } },
-    { id: 'z2', name: 'ZONA AMARILLA: Precaución - Iluminación Parcial', type: 'danger-low', coords: { top: '65%', left: '70%', width: '20%', height: '20%' } },
     { id: 'z3', name: 'Santuario de Seguridad: Punto de Reunión', type: 'safe', coords: { top: '45%', left: '45%', width: '10%', height: '10%' } }
+  ],
+  'Campus Tecnológico': [
+    { id: 'zt1', name: 'Punto de Encuentro Seguro', type: 'safe', coords: { top: '30%', left: '30%', width: '15%', height: '15%' } }
+  ],
+  'Campus Oriente': [
+    { id: 'zo1', name: 'Área de Vigilancia Reforzada', type: 'danger-low', coords: { top: '60%', left: '20%', width: '30%', height: '20%' } }
   ]
 };
 
-export const mockAccessLogs: AccessLog[] = [
-  { id: '1', time: '08:00 AM', person: 'Mariana López', role: 'Alumno', gate: 'Acceso Principal A', type: 'Entrada', campus: 'Campus Metropolitano', status: 'Autorizado' },
-  { id: '2', time: '08:15 AM', person: 'Elena Vance', role: 'Autoridad', gate: 'Acceso Principal A', type: 'Entrada', campus: 'Campus Metropolitano', status: 'Autorizado' }
-];
+export const mockAccessLogs: AccessLog[] = [];
 
 export const ROLES_CONFIG = {
   alumno: {
