@@ -74,7 +74,7 @@ export default function Dashboard({ role, campus, incidents = [], onNavigate }: 
               <h3 className="text-2xl md:text-3xl font-black">{criticalReports > 0 ? 'CRÍTICO' : 'SEGURO'}</h3>
             </div>
             <span className="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-background/20 p-2 border border-background/30">
-              <img src="/iconos/ICONOS-10.png" alt="Estatus" className="w-full h-full object-contain" />
+              <img src="/iconos/ICONOS-10.svg" alt="Estatus" className="w-full h-full object-contain" />
             </span>
           </div>
           <div className="mt-4 flex items-center gap-2 relative z-10">
@@ -90,7 +90,7 @@ export default function Dashboard({ role, campus, incidents = [], onNavigate }: 
               <h3 className="text-2xl md:text-3xl font-black text-primary">Normal</h3>
             </div>
             <div className="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-background flex items-center justify-center text-primary border border-muted/40">
-              <img src="/iconos/Qr.png" alt="Acceso" className="w-5 h-5 md:w-6 md:h-6 object-contain" />
+              <img src="/iconos/Qr.svg" alt="Acceso" className="w-5 h-5 md:w-6 md:h-6 object-contain" />
             </div>
           </div>
           <p className="text-[10px] text-muted-foreground mt-4 font-medium">Validación Comunidad Alerta</p>
@@ -116,7 +116,7 @@ export default function Dashboard({ role, campus, incidents = [], onNavigate }: 
               <h3 className="text-2xl md:text-3xl font-black text-primary">Activo</h3>
             </div>
             <div className="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-background flex items-center justify-center text-primary border border-muted/35">
-              <img src="/iconos/ICONOS-12.png" alt="Central C5" className="w-5 h-5 md:w-6 md:h-6 object-contain" />
+              <img src="/iconos/ICONOS-12.svg" alt="Central C5" className="w-5 h-5 md:w-6 md:h-6 object-contain" />
             </div>
           </div>
           <p className="text-[10px] text-muted-foreground mt-4 font-medium">Respuesta Táctica Directa</p>
@@ -127,7 +127,7 @@ export default function Dashboard({ role, campus, incidents = [], onNavigate }: 
         <Card className="lg:col-span-2 p-0 overflow-hidden flex flex-col min-h-[400px] md:min-h-[500px] border-muted/30 shadow-xl rounded-[2.5rem] bg-muted/10 relative group">
           <div className="p-4 md:p-6 border-b border-muted/30 flex justify-between items-center bg-background/95 backdrop-blur-md z-30 absolute top-0 left-0 w-full">
             <h4 className="font-extrabold text-sm md:text-base text-primary uppercase tracking-tight flex items-center gap-2">
-              <img src="/iconos/ICONOS-03.png" alt="Mapa" className="w-4 h-4 object-contain" /> MONITOREO URBANO: {campusDisplay}
+              <img src="/iconos/ICONOS-03.svg" alt="Mapa" className="w-4 h-4 object-contain" /> MONITOREO URBANO: {campusDisplay}
             </h4>
             <button 
                 onClick={() => onNavigate('mapa')}
@@ -180,7 +180,7 @@ export default function Dashboard({ role, campus, incidents = [], onNavigate }: 
 
             <div className="w-[85%] md:w-2/3 h-1/2 map-building rounded-[3rem] flex flex-col items-center justify-center relative shadow-2xl overflow-hidden bg-background/90 backdrop-blur-[4px] z-10 border-4 border-background group-hover:scale-[1.02] transition-transform">
                <div className="absolute inset-0 bg-primary/5"></div>
-              <img src="/iconos/Logo.png" alt="Comunidad Alerta" className="w-14 h-14 md:w-20 md:h-20 object-contain mb-2 opacity-90" />
+              <img src="/iconos/Logo.svg" alt="Comunidad Alerta" className="w-14 h-14 md:w-20 md:h-20 object-contain mb-2 opacity-90" />
                <span className="text-primary font-black uppercase tracking-[0.2em] text-sm md:text-xl font-headline relative z-10 text-center px-6 leading-tight">
                 COMUNIDAD ALERTA
               </span>

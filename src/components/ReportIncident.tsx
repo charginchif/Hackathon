@@ -85,7 +85,7 @@ export default function ReportIncident({ onReport, user }: ReportIncidentProps) 
             onClick={handleSOSQuick}
             className="bg-background text-secondary h-16 px-8 rounded-2xl font-black text-xl shadow-2xl animate-pulse flex gap-3"
           >
-            <img src="/iconos/Alerta.png" alt="Alerta" className="w-9 h-9 object-contain" />
+            <img src="/iconos/Alerta.svg" alt="Alerta" className="w-9 h-9 object-contain" />
             <Zap className="w-8 h-8 fill-current" /> ACTIVAR SOS
           </Button>
         </div>
@@ -94,7 +94,7 @@ export default function ReportIncident({ onReport, user }: ReportIncidentProps) 
       <Card className="shadow-xl p-8 bg-background border border-muted/35 rounded-3xl">
         <div className="text-center mb-10">
           <div className="w-24 h-24 bg-background border border-muted/35 rounded-3xl flex items-center justify-center mx-auto mb-4 shadow-lg overflow-hidden p-3">
-            <img src="/iconos/ICONOS-08.png" alt="Icono de reporte" className="w-full h-full object-contain" />
+            <img src="/iconos/ICONOS-08.svg" alt="Icono de reporte" className="w-full h-full object-contain" />
           </div>
           <h3 className="text-2xl font-bold text-primary">Reporte de Seguridad</h3>
           <p className="text-muted-foreground mt-1">Colabora con Comunidad Alerta.</p>
@@ -147,7 +147,7 @@ export default function ReportIncident({ onReport, user }: ReportIncidentProps) 
           </div>
 
           <Button type="submit" className="w-full bg-primary h-14 text-lg font-bold gap-2 shadow-lg rounded-xl">
-            <img src="/iconos/ICONOS-06.png" alt="Enviar" className="w-5 h-5 object-contain" />
+            <img src="/iconos/ICONOS-06.svg" alt="Enviar" className="w-5 h-5 object-contain" />
             <Send className="w-5 h-5" /> ENVIAR AL CENTRO DE MANDO
           </Button>
         </form>
@@ -156,7 +156,7 @@ export default function ReportIncident({ onReport, user }: ReportIncidentProps) 
       <Dialog open={showSuccess} onOpenChange={setShowSuccess}>
         <DialogContent className="sm:max-w-md p-10 text-center rounded-[2rem]">
           <div className="w-24 h-24 bg-primary/10 rounded-3xl flex items-center justify-center mx-auto mb-6 border border-primary/30 p-3">
-            <img src="/iconos/ICONOS-07.png" alt="Confirmado" className="w-full h-full object-contain" />
+            <img src="/iconos/ICONOS-07.svg" alt="Confirmado" className="w-full h-full object-contain" />
           </div>
           <DialogHeader>
             <DialogTitle className="text-2xl font-black text-primary text-center uppercase">¡Reporte Enviado!</DialogTitle>

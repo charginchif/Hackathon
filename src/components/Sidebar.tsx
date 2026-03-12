@@ -6,11 +6,11 @@ import { MapPin } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const navIconBySection: Record<string, string> = {
-  dashboard: '/iconos/ICONOS-02.png',
-  mapa: '/iconos/ICONOS-03.png',
-  accesos: '/iconos/Qr.png',
-  reportar: '/iconos/Alerta.png',
-  gestion: '/iconos/ICONOS-12.png',
+  dashboard: '/iconos/ICONOS-02.svg',
+  mapa: '/iconos/ICONOS-03.svg',
+  accesos: '/iconos/Qr.svg',
+  reportar: '/iconos/Alerta.svg',
+  gestion: '/iconos/ICONOS-12.svg',
 };
 
 interface SidebarProps {
@@ -29,7 +29,7 @@ export default function Sidebar({ role, activeSection, onSectionChange, onLogout
       <div className="p-8 lg:p-10 border-b border-primary-foreground/20 bg-primary/95">
         <div className="flex items-center gap-4 text-primary-foreground mb-5">
           <div className="w-20 h-20 lg:w-24 lg:h-24 bg-background rounded-[1.5rem] flex items-center justify-center shadow-2xl border border-muted/40 overflow-hidden p-2">
-            <img src="/iconos/IconoLogo.png" alt="Comunidad Alerta Logo" className="w-full h-full object-contain" />
+            <img src="/iconos/IconoLogo.svg" alt="Comunidad Alerta Logo" className="w-full h-full object-contain" />
           </div>
           <div className="flex flex-col">
             <span className="font-black text-lg lg:text-xl tracking-tighter leading-none uppercase">Comunidad</span>
@@ -49,7 +49,7 @@ export default function Sidebar({ role, activeSection, onSectionChange, onLogout
       <nav className="flex-1 overflow-y-auto p-6 lg:p-8 space-y-3 lg:space-y-4">
         {config.nav.map(item => {
           const isActive = activeSection === item.id;
-          const iconSrc = navIconBySection[item.id] || '/iconos/ICONOS-05.png';
+          const iconSrc = navIconBySection[item.id] || '/iconos/ICONOS-05.svg';
           return (
             <button 
               key={item.id}
@@ -81,7 +81,7 @@ export default function Sidebar({ role, activeSection, onSectionChange, onLogout
           className="w-full flex items-center justify-center gap-3 p-4 lg:p-5 rounded-[1rem] lg:rounded-[1.25rem] text-primary-foreground/70 hover:bg-background/20 hover:text-primary-foreground transition-all font-black text-[10px] lg:text-xs uppercase tracking-widest"
         >
           <span className="w-7 h-7 rounded-lg bg-primary-foreground/10 border border-primary-foreground/25 p-1.5">
-            <img src="/iconos/ICONOS-11.png" alt="Salir" className="w-full h-full object-contain" />
+            <img src="/iconos/ICONOS-11.svg" alt="Salir" className="w-full h-full object-contain" />
           </span>
           DESCONECTAR TERMINAL
         </button>

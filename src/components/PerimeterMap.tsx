@@ -26,22 +26,22 @@ const CAMPUS_CONFIG: Record<string, CampusConfig> = {
 };
 
 const MARKER_ICON_BY_TYPE: Record<string, string> = {
-  entrada: '/iconos/ICONOS-02.png',
-  salida: '/iconos/ICONOS-11.png',
-  falla: '/iconos/ICONOS-06.png',
-  estudiante: '/iconos/ICONOS-05.png',
-  incidente: '/iconos/Alerta.png',
-  cctv: '/iconos/ICONOS-10.png',
-  iluminacion: '/iconos/ICONOS-09.png',
-  edificio: '/iconos/Logo.png',
-  calle: '/iconos/ICONOS-03.png',
-  parking: '/iconos/ICONOS-12.png',
-  hospital: '/iconos/Hospital.png',
-  comercio: '/iconos/ICONOS-08.png',
-  parque: '/iconos/ICONOS-07.png',
-  policia: '/iconos/ICONOS-12.png',
-  farmacia: '/iconos/ICONOS-08.png',
-  cafeteria: '/iconos/ICONOS-07.png',
+  entrada: '/iconos/ICONOS-02.svg',
+  salida: '/iconos/ICONOS-11.svg',
+  falla: '/iconos/ICONOS-06.svg',
+  estudiante: '/iconos/ICONOS-05.svg',
+  incidente: '/iconos/Alerta.svg',
+  cctv: '/iconos/ICONOS-10.svg',
+  iluminacion: '/iconos/ICONOS-09.svg',
+  edificio: '/iconos/Logo.svg',
+  calle: '/iconos/ICONOS-03.svg',
+  parking: '/iconos/ICONOS-12.svg',
+  hospital: '/iconos/Hospital.svg',
+  comercio: '/iconos/ICONOS-08.svg',
+  parque: '/iconos/ICONOS-07.svg',
+  policia: '/iconos/ICONOS-12.svg',
+  farmacia: '/iconos/ICONOS-08.svg',
+  cafeteria: '/iconos/ICONOS-07.svg',
 };
 
 const LON_SPAN = 0.045;
@@ -212,7 +212,7 @@ export default function PerimeterMap({ incidents, campus }: PerimeterMapProps) {
 
     markers.forEach((marker) => {
       const [lng, lat] = percentToLngLat(marker.coords, campusConfig);
-      const icon = MARKER_ICON_BY_TYPE[marker.type] || '/iconos/ICONOS-08.png';
+      const icon = MARKER_ICON_BY_TYPE[marker.type] || '/iconos/ICONOS-08.svg';
 
       const el = document.createElement('button');
       el.type = 'button';
@@ -254,7 +254,7 @@ export default function PerimeterMap({ incidents, campus }: PerimeterMapProps) {
       el.style.alignItems = 'center';
       el.style.justifyContent = 'center';
       el.style.padding = '8px';
-      el.innerHTML = '<img src="/iconos/Alerta.png" alt="Alerta" style="width:100%;height:100%;object-fit:contain;" />';
+      el.innerHTML = '<img src="/iconos/Alerta.svg" alt="Alerta" style="width:100%;height:100%;object-fit:contain;" />';
 
       const popup = new mapboxgl.Popup({ offset: 12 }).setHTML(
         `<div style="font-family:Segoe UI Variable,Segoe UI,sans-serif;min-width:220px;">

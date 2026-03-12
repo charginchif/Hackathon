@@ -187,7 +187,7 @@ export default function Home() {
             <>
               <div className="text-center mb-8 md:mb-10 flex flex-col items-center">
                 <div className="mb-4 md:mb-6 flex items-center justify-center w-full h-32 md:h-40 overflow-hidden relative">
-                   <img src="/iconos/IconoLogo.png" alt="Comunidad Alerta Icono" className="h-full object-contain drop-shadow-[0_8px_18px_rgba(227,121,9,0.35)]" />
+                   <img src="/iconos/IconoLogo.svg" alt="Comunidad Alerta Icono" className="h-full object-contain drop-shadow-[0_8px_18px_rgba(227,121,9,0.35)]" />
                 </div>
                 <h1 className="text-2xl md:text-3xl font-black text-primary tracking-tighter mb-1 md:2 font-headline uppercase leading-none">Comunidad Alerta</h1>
                 <p className="text-muted-foreground text-[10px] md:text-xs font-bold uppercase tracking-[0.2em]">Unidos por un entorno más seguro</p>
@@ -204,7 +204,7 @@ export default function Home() {
                     <div className="space-y-3">
                         <Button variant="outline" onClick={() => startBiometricLogin('admin_global')} className="w-full justify-between h-14 rounded-xl border-secondary/30 group bg-background hover:bg-secondary hover:text-secondary-foreground">
                         <div className="flex items-center gap-3">
-                          <img src="/iconos/ICONOS-12.png" alt="Admin" className="w-5 h-5 object-contain" />
+                          <img src="/iconos/ICONOS-12.svg" alt="Admin" className="w-5 h-5 object-contain" />
                             <div className="text-left">
                                 <p className="text-xs font-black text-primary leading-none group-hover:text-secondary-foreground">Admin Global C5</p>
                             <p className="text-[9px] text-muted uppercase group-hover:text-secondary-foreground/85">Supervisión Comunidad Alerta</p>
@@ -214,7 +214,7 @@ export default function Home() {
                       </Button>
                         <Button variant="outline" onClick={() => startBiometricLogin('alumno_metro')} className="w-full justify-between h-14 rounded-xl border-muted/40 group bg-background hover:bg-secondary hover:text-secondary-foreground">
                         <div className="flex items-center gap-3">
-                          <img src="/iconos/ICONOS-05.png" alt="Alumno" className="w-5 h-5 object-contain" />
+                          <img src="/iconos/ICONOS-05.svg" alt="Alumno" className="w-5 h-5 object-contain" />
                             <div className="text-left">
                                 <p className="text-xs font-black text-primary leading-none group-hover:text-secondary-foreground">Mariana López</p>
                             <p className="text-[9px] text-muted uppercase group-hover:text-secondary-foreground/85">Campus Metropolitano</p>
@@ -224,7 +224,7 @@ export default function Home() {
                       </Button>
                         <Button variant="outline" onClick={() => startBiometricLogin('alumno_tec')} className="w-full justify-between h-14 rounded-xl border-muted/40 group bg-background hover:bg-secondary hover:text-secondary-foreground">
                         <div className="flex items-center gap-3">
-                          <img src="/iconos/ICONOS-05.png" alt="Alumno" className="w-5 h-5 object-contain" />
+                          <img src="/iconos/ICONOS-05.svg" alt="Alumno" className="w-5 h-5 object-contain" />
                             <div className="text-left">
                                 <p className="text-xs font-black text-primary leading-none group-hover:text-secondary-foreground">Roberto García</p>
                             <p className="text-[9px] text-muted uppercase group-hover:text-secondary-foreground/85">Campus Tecnológico</p>
@@ -234,7 +234,7 @@ export default function Home() {
                       </Button>
                         <Button variant="outline" onClick={() => startBiometricLogin('alumno_oriente')} className="w-full justify-between h-14 rounded-xl border-muted/40 group bg-background hover:bg-secondary hover:text-secondary-foreground">
                         <div className="flex items-center gap-3">
-                          <img src="/iconos/ICONOS-05.png" alt="Alumno" className="w-5 h-5 object-contain" />
+                          <img src="/iconos/ICONOS-05.svg" alt="Alumno" className="w-5 h-5 object-contain" />
                             <div className="text-left">
                                 <p className="text-xs font-black text-primary leading-none group-hover:text-secondary-foreground">Sofía Pérez</p>
                             <p className="text-[9px] text-muted uppercase group-hover:text-secondary-foreground/85">Campus Oriente</p>
@@ -329,7 +329,7 @@ export default function Home() {
             
             <div className="flex flex-col">
               <h2 className="text-lg md:text-2xl font-black text-primary font-headline tracking-tighter uppercase leading-none flex items-center gap-2">
-                <img src="/iconos/ICONOS-09.png" alt="Seccion" className="w-5 h-5 md:w-6 md:h-6 object-contain" />
+                <img src="/iconos/ICONOS-09.svg" alt="Seccion" className="w-5 h-5 md:w-6 md:h-6 object-contain" />
                 {ROLES_CONFIG[currentUser.role].nav.find(n => n.id === activeSection)?.text || 'Operaciones'}
               </h2>
               <div className="flex items-center gap-2 mt-0.5 md:mt-1">
