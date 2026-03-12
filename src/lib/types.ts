@@ -10,8 +10,9 @@ export interface User {
   email?: string;
 }
 
-export type IncidentCategory = 'Infraestructura' | 'Sospechoso' | 'Emergencia' | 'Acoso';
-export type IncidentStatus = 'pendiente' | 'atendido';
+export type IncidentCategory = 'Infraestructura' | 'Sospechoso' | 'Emergencia' | 'Acoso' | 'SOS';
+export type IncidentStatus = 'pendiente' | 'atendido' | 'despachado';
+export type IncidentSeverity = 'baja' | 'media' | 'alta' | 'critica';
 
 export interface Incident {
   id: number;
@@ -20,6 +21,7 @@ export interface Incident {
   zone: string;
   campus: Exclude<Campus, 'Global'>;
   status: IncidentStatus;
+  severity: IncidentSeverity;
   user: string;
   time: string;
   coords: {
@@ -36,4 +38,16 @@ export interface AccessLog {
   gate: string;
   campus: Exclude<Campus, 'Global'>;
   status: 'Autorizado' | 'Denegado';
+}
+
+export interface ZoneOverlay {
+  id: string;
+  name: string;
+  type: 'danger' | 'safe';
+  coords: {
+    top: string;
+    left: string;
+    width: string;
+    height: string;
+  };
 }

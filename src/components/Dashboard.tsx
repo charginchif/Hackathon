@@ -2,8 +2,9 @@
 
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { CheckCircle2, IdCard, AlertTriangle, Network, MapPin, ChevronRight, Landmark, ShieldCheck } from 'lucide-react';
+import { CheckCircle2, IdCard, AlertTriangle, Network, MapPin, ChevronRight, Landmark, ShieldCheck, Zap } from 'lucide-react';
 import { Role, Incident, Campus } from '@/lib/types';
+import { cn } from '@/lib/utils';
 
 interface DashboardProps {
   role: Role;
@@ -15,10 +16,9 @@ interface DashboardProps {
 export default function Dashboard({ role, campus, incidents, onNavigate }: DashboardProps) {
   const campusDisplay = campus === 'Global' ? 'Todos los Planteles' : campus;
   
-  // Si el rol es alumno, solo ve incidentes de su plantel.
-  // Si es autoridad, ve los del campus seleccionado.
   const campusIncidents = incidents.filter(i => campus === 'Global' ? true : i.campus === campus);
   const activeReports = campusIncidents.filter(i => i.status === 'pendiente').length;
+  const criticalReports = campusIncidents.filter(i => i.severity === 'critica' && i.status === 'pendiente').length;
 
   return (
     <div className="space-y-8">
@@ -27,68 +27,69 @@ export default function Dashboard({ role, campus, incidents, onNavigate }: Dashb
           <h1 className="text-3xl font-extrabold text-primary font-headline">Panel UNE <span className="text-secondary tracking-tight">Escuela Segura</span></h1>
           <p className="text-slate-500 font-medium">Monitoreo activo: <strong className="text-primary">{campusDisplay}</strong></p>
         </div>
-        {role === 'alumno' && (
-          <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100 border-emerald-200 px-4 py-2 rounded-xl text-xs font-bold gap-2">
-            <ShieldCheck className="w-4 h-4" /> CONEXIÓN SEGURA VERIFICADA
+        {criticalReports > 0 && (
+          <Badge className="bg-red-600 text-white animate-pulse px-4 py-2 rounded-xl text-xs font-bold gap-2">
+            <Zap className="w-4 h-4 fill-white" /> {criticalReports} ALERTA(S) SOS EN CURSO
           </Badge>
         )}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card className="bg-primary text-white border-none p-6 shadow-xl relative overflow-hidden group">
-          <div className="absolute top-0 right-0 w-24 h-24 bg-secondary/10 rounded-bl-full transform translate-x-8 -translate-y-8 transition-transform group-hover:scale-110"></div>
+        <Card className={cn(
+            "text-white border-none p-6 shadow-xl relative overflow-hidden group transition-all",
+            criticalReports > 0 ? "bg-red-600 animate-pulse" : "bg-primary"
+        )}>
+          <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-bl-full transform translate-x-8 -translate-y-8"></div>
           <div className="flex justify-between items-start relative z-10">
             <div>
-              <p className="text-slate-300 text-xs font-bold uppercase tracking-widest mb-1">Estatus Perímetro</p>
-              <h3 className="text-3xl font-black">SEGURIDAD A+</h3>
+              <p className="text-white/60 text-xs font-bold uppercase tracking-widest mb-1">Estatus General</p>
+              <h3 className="text-3xl font-black">{criticalReports > 0 ? 'CRÍTICO' : 'SEGURO'}</h3>
             </div>
             <Landmark className="w-10 h-10 text-secondary opacity-50" />
           </div>
           <div className="mt-4 flex items-center gap-2 relative z-10">
-            <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
-            <p className="text-[10px] font-bold text-emerald-400">PROTECCIÓN ACTIVA</p>
+            <span className={cn("w-2 h-2 rounded-full", criticalReports > 0 ? "bg-white" : "bg-emerald-400")}></span>
+            <p className="text-[10px] font-bold uppercase tracking-widest">{criticalReports > 0 ? 'Protocolo SOS Activo' : 'Protección Activa'}</p>
           </div>
         </Card>
 
         <Card className="p-6 border-slate-100 shadow-lg hover:shadow-xl transition-shadow bg-white">
           <div className="flex justify-between items-start">
             <div>
-              <p className="text-muted-foreground text-xs font-bold uppercase tracking-widest mb-1">Accesos (Hoy)</p>
-              <h3 className="text-3xl font-black text-primary">1,248</h3>
+              <p className="text-muted-foreground text-xs font-bold uppercase tracking-widest mb-1">Flujo Peatonal</p>
+              <h3 className="text-3xl font-black text-primary">Normal</h3>
             </div>
             <div className="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-primary border border-slate-100">
               <IdCard className="w-6 h-6" />
             </div>
           </div>
-          <p className="text-xs text-muted-foreground mt-4 font-medium">
-            <span className="text-primary font-bold">↑ 8%</span> flujo normalizado
-          </p>
+          <p className="text-xs text-muted-foreground mt-4 font-medium">Sincronizado con Accesos</p>
         </Card>
 
         <Card className="p-6 border-slate-100 shadow-lg hover:shadow-xl transition-shadow bg-white">
           <div className="flex justify-between items-start">
             <div>
-              <p className="text-muted-foreground text-xs font-bold uppercase tracking-widest mb-1">Alertas Activas</p>
+              <p className="text-muted-foreground text-xs font-bold uppercase tracking-widest mb-1">Incidentes</p>
               <h3 className="text-3xl font-black text-primary">{activeReports}</h3>
             </div>
             <div className={`w-12 h-12 rounded-2xl flex items-center justify-center border ${activeReports > 0 ? 'bg-amber-50 text-amber-500 border-amber-100' : 'bg-slate-50 text-slate-400 border-slate-100'}`}>
               <AlertTriangle className="w-6 h-6" />
             </div>
           </div>
-          <p className="text-xs text-muted-foreground mt-4 font-medium">En proceso de atención</p>
+          <p className="text-xs text-muted-foreground mt-4 font-medium">Bandeja de atención</p>
         </Card>
 
         <Card className="p-6 border-slate-100 shadow-lg hover:shadow-xl transition-shadow bg-white">
           <div className="flex justify-between items-start">
             <div>
-              <p className="text-muted-foreground text-xs font-bold uppercase tracking-widest mb-1">Red Vigilancia</p>
-              <h3 className="text-3xl font-black text-primary">Operativo</h3>
+              <p className="text-muted-foreground text-xs font-bold uppercase tracking-widest mb-1">Red C5 UNE</p>
+              <h3 className="text-3xl font-black text-primary">Activa</h3>
             </div>
             <div className="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-primary border border-slate-100">
               <Network className="w-6 h-6" />
             </div>
           </div>
-          <p className="text-xs text-muted-foreground mt-4 font-medium">Sincronizado con C5 UNE</p>
+          <p className="text-xs text-muted-foreground mt-4 font-medium">Enlace Directo Autoridades</p>
         </Card>
       </div>
 
@@ -96,50 +97,58 @@ export default function Dashboard({ role, campus, incidents, onNavigate }: Dashb
         <Card className="lg:col-span-2 p-0 overflow-hidden flex flex-col min-h-[450px] border-slate-100 shadow-xl rounded-3xl bg-white">
           <div className="p-6 border-b flex justify-between items-center bg-white z-10">
             <h4 className="font-extrabold text-primary uppercase tracking-tight">Geolocalización UNE: {campusDisplay}</h4>
-            {role === 'autoridad' && (
-              <button 
+            <button 
                 onClick={() => onNavigate('mapa')}
                 className="text-xs font-bold text-secondary hover:text-primary transition-colors flex items-center gap-1 bg-secondary/10 px-3 py-1.5 rounded-full"
-              >
-                MODO MAPA COMPLETO <ChevronRight className="w-4 h-4" />
-              </button>
-            )}
+            >
+                MAPA COMPLETO <ChevronRight className="w-4 h-4" />
+            </button>
           </div>
           <div className="flex-1 bg-grid-pattern relative flex items-center justify-center bg-slate-50">
-            <div className="w-3/4 h-2/3 map-building rounded-3xl flex items-center justify-center relative shadow-2xl overflow-hidden">
-               <div className="absolute inset-0 bg-blue-50/30"></div>
+            <div className="w-3/4 h-2/3 map-building rounded-3xl flex items-center justify-center relative shadow-2xl overflow-hidden bg-slate-100">
+               <div className="absolute inset-0 bg-blue-50/20"></div>
               <span className="text-slate-300 font-black uppercase tracking-[0.2em] text-2xl font-headline relative z-10">
                 {campus === 'Global' ? 'SISTEMA UNE' : campus.split(' ').pop()}
               </span>
               
-              <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-5 h-5 bg-primary rounded-full border-4 border-white shadow-lg"></div>
-              
-              {campusIncidents.filter(i => i.status === 'pendiente').slice(0, 2).map((inc, idx) => (
+              {campusIncidents.filter(i => i.status === 'pendiente').map((inc) => (
                 <div 
                   key={inc.id}
-                  className="absolute w-5 h-5 bg-red-600 rounded-full border-4 border-white shadow-lg pulse-red z-20"
-                  style={{ top: idx === 0 ? '20%' : '70%', left: idx === 0 ? '15%' : '85%' }}
+                  className={cn(
+                      "absolute w-5 h-5 rounded-full border-4 border-white shadow-lg z-20",
+                      inc.severity === 'critica' ? "bg-red-600 animate-ping" : "bg-amber-500"
+                  )}
+                  style={inc.coords}
                 />
               ))}
             </div>
           </div>
         </Card>
 
-        <Card className="p-8 flex flex-col h-[450px] border-slate-100 shadow-xl rounded-3xl bg-white">
+        <Card className="p-8 flex flex-col h-[450px] border-slate-100 shadow-xl rounded-3xl bg-white overflow-hidden">
           <h4 className="font-extrabold text-primary mb-6 border-b pb-4 uppercase tracking-tight flex items-center justify-between">
-            ALERTAS LOCALES
+            ÚLTIMAS ALERTAS
             <Badge className="bg-primary text-secondary">VIVO</Badge>
           </h4>
           <div className="flex-1 overflow-y-auto space-y-4 pr-2 custom-scrollbar">
-            {campusIncidents.length > 0 ? campusIncidents.slice(0, 6).map(inc => (
-              <div key={inc.id} className={`flex gap-4 items-start p-4 rounded-2xl border transition-all hover:scale-[1.02] ${inc.status === 'pendiente' ? 'bg-amber-50/50 border-amber-100' : 'bg-slate-50 border-slate-100'}`}>
-                <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 shadow-sm ${inc.status === 'pendiente' ? 'bg-amber-100 text-amber-600' : 'bg-primary/10 text-primary'}`}>
-                  {inc.status === 'pendiente' ? <AlertTriangle className="w-5 h-5" /> : <CheckCircle2 className="w-5 h-5" />}
+            {campusIncidents.length > 0 ? campusIncidents.slice(0, 10).map(inc => (
+              <div key={inc.id} className={cn(
+                  "flex gap-4 items-start p-4 rounded-2xl border transition-all hover:scale-[1.02]",
+                  inc.severity === 'critica' ? "bg-red-50 border-red-200" : (inc.status === 'pendiente' ? "bg-amber-50/50 border-amber-100" : "bg-slate-50 border-slate-100")
+              )}>
+                <div className={cn(
+                    "w-10 h-10 rounded-xl flex items-center justify-center shrink-0 shadow-sm",
+                    inc.severity === 'critica' ? "bg-red-600 text-white" : (inc.status === 'pendiente' ? "bg-amber-100 text-amber-600" : "bg-primary/10 text-primary")
+                )}>
+                  {inc.category === 'SOS' ? <Zap className="w-5 h-5 fill-current" /> : (inc.status === 'pendiente' ? <AlertTriangle className="w-5 h-5" /> : <CheckCircle2 className="w-5 h-5" />)}
                 </div>
-                <div>
-                  <p className="text-sm font-extrabold text-primary leading-tight">{inc.category}</p>
-                  <p className="text-xs text-slate-500 font-medium mb-1">{inc.zone}</p>
-                  <p className="text-[10px] text-slate-400 font-bold uppercase">{inc.time} • {inc.status}</p>
+                <div className="flex-1">
+                  <p className={cn("text-sm font-extrabold leading-tight", inc.severity === 'critica' ? "text-red-700" : "text-primary")}>{inc.category}</p>
+                  <p className="text-xs text-slate-500 font-medium mb-1 truncate">{inc.description}</p>
+                  <div className="flex justify-between items-center">
+                    <p className="text-[10px] text-slate-400 font-bold uppercase">{inc.time}</p>
+                    {inc.severity === 'critica' && <span className="text-[8px] font-black text-red-600 animate-pulse">URGENTE</span>}
+                  </div>
                 </div>
               </div>
             )) : (

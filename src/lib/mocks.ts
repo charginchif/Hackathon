@@ -1,4 +1,4 @@
-import { Incident, AccessLog, Campus, User, Role } from './types';
+import { Incident, AccessLog, Campus, User, ZoneOverlay } from './types';
 
 export const CAMPUSES: Exclude<Campus, 'Global'>[] = [
   'UNE Campus Central',
@@ -25,15 +25,6 @@ export const MOCK_USERS: Record<string, User & { password?: string }> = {
     email: 'r.gomez@une.edu.mx',
     password: 'password123'
   },
-  'alumno_tlaquepaque': {
-    id: 'U-3315',
-    name: 'Sofía Castro',
-    role: 'alumno',
-    roleDisplay: 'Estudiante UNE',
-    campus: 'UNE Campus Tlaquepaque',
-    email: 's.castro@une.edu.mx',
-    password: 'password123'
-  },
   'admin_global': {
     id: 'A-101',
     name: 'Ing. Alejandro Silva',
@@ -53,45 +44,55 @@ export const mockIncidents: Incident[] = [
     zone: 'Puerta Sur',
     campus: 'UNE Campus Central',
     status: 'pendiente',
+    severity: 'media',
     user: 'Guardia Nocturno',
     time: '10:15 AM',
     coords: { top: '75%', left: '45%' }
   },
   {
     id: 2,
-    category: 'Sospechoso',
-    description: 'Persona ajena a la institución merodeando en perímetro.',
-    zone: 'Calle Lateral Poniente',
-    campus: 'UNE Campus Américas',
-    status: 'atendido',
-    user: 'Monitorista C5',
-    time: '08:30 AM',
-    coords: { top: '50%', left: '20%' }
+    category: 'SOS',
+    description: 'ALERTA DE PÁNICO ACTIVADA: EMERGENCIA EN CURSO',
+    zone: 'Edificio de Laboratorios',
+    campus: 'UNE Campus Central',
+    status: 'pendiente',
+    severity: 'critica',
+    user: 'Mariana López',
+    time: '11:20 AM',
+    coords: { top: '40%', left: '55%' }
   },
   {
     id: 3,
-    category: 'Emergencia',
-    description: 'Alumno con golpe de calor en áreas deportivas.',
-    zone: 'Canchas UNE',
-    campus: 'UNE Campus Tlaquepaque',
-    status: 'pendiente',
-    user: 'Prefecto',
-    time: '12:45 PM',
-    coords: { top: '30%', left: '70%' }
+    category: 'Sospechoso',
+    description: 'Persona ajena merodeando en perímetro.',
+    zone: 'Calle Lateral Poniente',
+    campus: 'UNE Campus Américas',
+    status: 'atendido',
+    severity: 'baja',
+    user: 'Monitorista C5',
+    time: '08:30 AM',
+    coords: { top: '50%', left: '20%' }
   }
 ];
 
+export const campusZones: Record<string, ZoneOverlay[]> = {
+  'UNE Campus Central': [
+    { id: 'z1', name: 'Zona de Alto Riesgo - Estacionamiento Sur', type: 'danger', coords: { top: '70%', left: '40%', width: '15%', height: '15%' } },
+    { id: 'z2', name: 'Zona Segura - Explanada Principal', type: 'safe', coords: { top: '45%', left: '45%', width: '10%', height: '10%' } },
+    { id: 'z3', name: 'Ruta de Evacuación Norte', type: 'safe', coords: { top: '20%', left: '48%', width: '4%', height: '20%' } }
+  ]
+};
+
 export const mockAccessLogs: AccessLog[] = [
   { id: '1', time: '11:45 AM', person: 'Mariana López', role: 'Alumno', gate: 'Puerta Principal', campus: 'UNE Campus Central', status: 'Autorizado' },
-  { id: '2', time: '11:30 AM', person: 'Carlos G.', role: 'Proveedor', gate: 'Acceso B', campus: 'UNE Campus Américas', status: 'Autorizado' },
-  { id: '3', time: '11:15 AM', person: 'Desconocido', role: 'Sin Registro', gate: 'Puerta Sur', campus: 'UNE Campus Central', status: 'Denegado' },
-  { id: '4', time: '11:00 AM', person: 'Prof. Roberto', role: 'Docente', gate: 'Acceso Peatonal', campus: 'UNE Campus Tlaquepaque', status: 'Autorizado' }
+  { id: '2', time: '11:30 AM', person: 'Carlos G.', role: 'Proveedor', gate: 'Acceso B', campus: 'UNE Campus Américas', status: 'Autorizado' }
 ];
 
 export const ROLES_CONFIG = {
   alumno: {
     nav: [
       { id: 'dashboard', icon: 'Home', text: 'Mi Campus' },
+      { id: 'mapa', icon: 'Map', text: 'Mapa Seguro' },
       { id: 'reportar', icon: 'Megaphone', text: 'Nueva Alerta' }
     ],
     defaultSection: 'dashboard'

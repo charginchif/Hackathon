@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { ShieldCheck, UserCheck, ChevronRight, Bell, User as UserIcon, ScanFace, Mail, Lock, Landmark, Loader2 } from 'lucide-react';
+import { ShieldCheck, UserCheck, ChevronRight, Bell, User as UserIcon, ScanFace, Mail, Lock, Landmark, Loader2, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -16,6 +16,7 @@ import IncidentManagement from '@/components/IncidentManagement';
 import ReportIncident from '@/components/ReportIncident';
 import Sidebar from '@/components/Sidebar';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import EmergencyModal from '@/components/EmergencyModal';
 
 export default function Home() {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
@@ -23,6 +24,7 @@ export default function Home() {
   const [activeCampus, setActiveCampus] = useState<Campus>('UNE Campus Central');
   const [incidents, setIncidents] = useState<Incident[]>(mockIncidents);
   const [accessLogs] = useState<AccessLog[]>(mockAccessLogs);
+  const [activeEmergency, setActiveEmergency] = useState<Incident | null>(null);
   
   // Login states
   const [isScanning, setIsScanning] = useState(false);
@@ -32,7 +34,16 @@ export default function Home() {
   const [loginError, setLoginError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  // Biometric login flow
+  // Monitor SOS events for admin
+  useEffect(() => {
+    if (currentUser?.role === 'autoridad') {
+      const emergency = incidents.find(i => i.category === 'SOS' && i.status === 'pendiente');
+      if (emergency) {
+        setActiveEmergency(emergency);
+      }
+    }
+  }, [incidents, currentUser]);
+
   const startBiometricLogin = (userId: string) => {
     setIsScanning(true);
     setScanProgress(0);
@@ -91,11 +102,30 @@ export default function Home() {
 
   const handleAddIncident = (newIncident: Incident) => {
     setIncidents(prev => [newIncident, ...prev]);
-    setActiveSection('dashboard');
+    if (newIncident.category !== 'SOS') {
+        setActiveSection('dashboard');
+    }
   };
 
-  const handleUpdateIncidentStatus = (id: number, status: 'atendido') => {
+  const handleUpdateIncidentStatus = (id: number, status: 'atendido' | 'despachado') => {
     setIncidents(prev => prev.map(inc => inc.id === id ? { ...inc, status } : inc));
+    if (activeEmergency?.id === id) setActiveEmergency(null);
+  };
+
+  const handleSOS = () => {
+    const newSOS: Incident = {
+        id: Date.now(),
+        category: 'SOS',
+        description: 'ALERTA SOS: USUARIO SOLICITA AUXILIO INMEDIATO',
+        zone: 'ZONA DE RIESGO DETECTADA',
+        campus: currentUser?.campus as Exclude<Campus, 'Global'>,
+        status: 'pendiente',
+        severity: 'critica',
+        user: currentUser?.name || 'Usuario Anónimo',
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        coords: { top: '50%', left: '50%' }
+    };
+    handleAddIncident(newSOS);
   };
 
   if (!currentUser) {
@@ -140,21 +170,6 @@ export default function Home() {
                         <div className="text-left">
                           <p className="text-xs font-bold text-primary leading-none">Alumno Campus Central</p>
                           <p className="text-[10px] text-slate-400">Mariana López</p>
-                        </div>
-                      </div>
-                      <ChevronRight className="w-4 h-4 text-slate-300" />
-                    </Button>
-
-                    <Button 
-                      variant="outline" 
-                      onClick={() => startBiometricLogin('alumno_americas')}
-                      className="justify-between h-14 border-slate-200 hover:border-secondary hover:bg-secondary/5 rounded-xl group"
-                    >
-                      <div className="flex items-center gap-3">
-                        <UserCheck className="w-5 h-5 text-slate-400 group-hover:text-primary" />
-                        <div className="text-left">
-                          <p className="text-xs font-bold text-primary leading-none">Alumno Campus Américas</p>
-                          <p className="text-[10px] text-slate-400">Roberto Gómez</p>
                         </div>
                       </div>
                       <ChevronRight className="w-4 h-4 text-slate-300" />
@@ -218,7 +233,6 @@ export default function Home() {
                       {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Acceder al Sistema'}
                     </Button>
                   </form>
-                  <p className="text-[10px] text-center text-slate-400 italic">Prueba con: admin@une.edu.mx / admin</p>
                 </TabsContent>
               </Tabs>
             </>
@@ -276,6 +290,15 @@ export default function Home() {
           </div>
           
           <div className="flex items-center gap-6">
+            {currentUser.role === 'alumno' && (
+                <Button 
+                    onClick={handleSOS}
+                    className="bg-red-600 hover:bg-red-700 text-white font-black px-6 py-4 rounded-xl shadow-xl animate-pulse flex gap-2 border-4 border-red-200"
+                >
+                    <Zap className="w-5 h-5 fill-white" /> BOTÓN SOS
+                </Button>
+            )}
+
             {currentUser.role === 'autoridad' && (
               <div className="hidden md:flex items-center gap-2">
                 <span className="text-xs font-bold text-slate-400">PLANTEL:</span>
@@ -317,12 +340,20 @@ export default function Home() {
               onNavigate={setActiveSection} 
             />
           )}
-          {activeSection === 'mapa' && <PerimeterMap campus={activeCampus as Exclude<Campus, 'Global'>} incidents={incidents} />}
-          {activeSection === 'accesos' && <AccessControl logs={accessLogs} campus={activeCampus as Exclude<Campus, 'Global'>} />}
-          {activeSection === 'gestion' && <IncidentManagement incidents={incidents} onResolve={handleUpdateIncidentStatus} campus={activeCampus as Exclude<Campus, 'Global'>} />}
-          {activeSection === 'reportar' && <ReportIncident onReport={handleAddIncident} userName={currentUser.name} campus={activeCampus as Exclude<Campus, 'Global'>} />}
+          {activeSection === 'mapa' && <PerimeterMap campus={activeCampus} incidents={incidents} />}
+          {activeSection === 'accesos' && <AccessControl logs={accessLogs} />}
+          {activeSection === 'gestion' && <IncidentManagement incidents={incidents} onResolve={handleUpdateIncidentStatus} />}
+          {activeSection === 'reportar' && <ReportIncident onReport={handleAddIncident} userName={currentUser.name} />}
         </div>
       </main>
+
+      {activeEmergency && (
+        <EmergencyModal 
+            incident={activeEmergency} 
+            onClose={() => setActiveEmergency(null)} 
+            onDispatch={(id) => handleUpdateIncidentStatus(id, 'despachado')}
+        />
+      )}
     </div>
   );
 }
