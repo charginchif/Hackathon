@@ -210,7 +210,9 @@ export default function Home() {
                             <p className="text-[9px] text-muted uppercase group-hover:text-secondary-foreground/85">Supervisión Comunidad Alerta</p>
                             </div>
                         </div>
-                        <ChevronRight className="w-4 h-4 group-hover:text-secondary-foreground" />
+                        <span className="w-7 h-7 rounded-lg bg-background/90 border border-muted/30 p-1 shadow-sm group-hover:bg-background/95 group-hover:border-background/70">
+                          <img src="/iconos/ICONOS-12.svg" alt="Admin" className="w-full h-full object-contain" />
+                        </span>
                       </Button>
                         <Button variant="outline" onClick={() => startBiometricLogin('alumno_metro')} className="w-full justify-between h-14 rounded-xl border-muted/40 group bg-background hover:bg-secondary hover:text-secondary-foreground">
                         <div className="flex items-center gap-3">
@@ -219,11 +221,10 @@ export default function Home() {
                                 <p className="text-xs font-black text-primary leading-none group-hover:text-secondary-foreground">Mariana López</p>
                             <p className="text-[9px] text-muted uppercase group-hover:text-secondary-foreground/85">Campus Metropolitano</p>
                             </div>
-                          <span className="w-6 h-6 rounded-lg bg-background/90 border border-muted/30 p-1">
-                            <img src="/iconos/ICONOS-12.svg" alt="Logo administrador" className="w-full h-full object-contain" />
-                          </span>
                         </div>
-                        <ChevronRight className="w-4 h-4 group-hover:text-secondary-foreground" />
+                        <span className="w-7 h-7 rounded-lg bg-background/90 border border-muted/30 p-1 shadow-sm group-hover:bg-background/95 group-hover:border-background/70">
+                          <img src="/iconos/ICONOS-12.svg" alt="Administrador" className="w-full h-full object-contain" />
+                        </span>
                       </Button>
                         <Button variant="outline" onClick={() => startBiometricLogin('alumno_tec')} className="w-full justify-between h-14 rounded-xl border-muted/40 group bg-background hover:bg-secondary hover:text-secondary-foreground">
                         <div className="flex items-center gap-3">
@@ -232,11 +233,10 @@ export default function Home() {
                                 <p className="text-xs font-black text-primary leading-none group-hover:text-secondary-foreground">Roberto García</p>
                             <p className="text-[9px] text-muted uppercase group-hover:text-secondary-foreground/85">Campus Tecnológico</p>
                             </div>
-                          <span className="w-6 h-6 rounded-lg bg-background/90 border border-muted/30 p-1">
-                            <img src="/iconos/ICONOS-12.svg" alt="Logo administrador" className="w-full h-full object-contain" />
-                          </span>
                         </div>
-                        <ChevronRight className="w-4 h-4 group-hover:text-secondary-foreground" />
+                        <span className="w-7 h-7 rounded-lg bg-background/90 border border-muted/30 p-1 shadow-sm group-hover:bg-background/95 group-hover:border-background/70">
+                          <img src="/iconos/ICONOS-12.svg" alt="Administrador" className="w-full h-full object-contain" />
+                        </span>
                       </Button>
                         <Button variant="outline" onClick={() => startBiometricLogin('alumno_oriente')} className="w-full justify-between h-14 rounded-xl border-muted/40 group bg-background hover:bg-secondary hover:text-secondary-foreground">
                         <div className="flex items-center gap-3">
@@ -245,11 +245,10 @@ export default function Home() {
                                 <p className="text-xs font-black text-primary leading-none group-hover:text-secondary-foreground">Sofía Pérez</p>
                             <p className="text-[9px] text-muted uppercase group-hover:text-secondary-foreground/85">Campus Oriente</p>
                             </div>
-                          <span className="w-6 h-6 rounded-lg bg-background/90 border border-muted/30 p-1">
-                            <img src="/iconos/ICONOS-12.svg" alt="Logo administrador" className="w-full h-full object-contain" />
-                          </span>
                         </div>
-                        <ChevronRight className="w-4 h-4 group-hover:text-secondary-foreground" />
+                        <span className="w-7 h-7 rounded-lg bg-background/90 border border-muted/30 p-1 shadow-sm group-hover:bg-background/95 group-hover:border-background/70">
+                          <img src="/iconos/ICONOS-12.svg" alt="Administrador" className="w-full h-full object-contain" />
+                        </span>
                       </Button>
                     </div>
                   </ScrollArea>
