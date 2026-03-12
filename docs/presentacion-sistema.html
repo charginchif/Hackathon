@@ -1,0 +1,1106 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Comunidad Alerta — Presentación del Sistema</title>
+  <style>
+    /* ─── Tokens ─────────────────────────────────────────────── */
+    :root {
+      --orange:   #E37909;
+      --orange2:  #F59E0B;
+      --red:      #C51617;
+      --offwhite: #FFFFFB;
+      --gray:     #96939B;
+      --dark:     #1a1a2e;
+      --card-bg:  rgba(255,255,251,0.97);
+      --shadow:   0 12px 40px rgba(0,0,0,0.12);
+      --radius:   18px;
+    }
+
+    /* ─── Reset ──────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Segoe UI Variable","Segoe UI",system-ui,sans-serif;
+      background: #0f0f1a;
+      color: var(--dark);
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 12px;
+    }
+
+    /* ─── Deck ───────────────────────────────────────────────── */
+    .deck {
+      width: min(1160px, 98vw);
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.5);
+      background: var(--offwhite);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    /* ─── Slides ─────────────────────────────────────────────── */
+    .slides { position: relative; }
+
+    .slide {
+      display: none;
+      min-height: 680px;
+      position: absolute;
+      inset: 0;
+      animation: fadeIn 0.35s ease;
+    }
+
+    .slide.active { display: flex; flex-direction: column; position: relative; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ─── Slide body area ────────────────────────────────────── */
+    .slide-inner {
+      flex: 1;
+      padding: 42px 48px 28px;
+      overflow: hidden;
+    }
+
+    /* ─── Slide header helpers ───────────────────────────────── */
+    .slide-tag {
+      display: inline-block;
+      font-size: 0.68rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--orange);
+      background: rgba(227,121,9,0.12);
+      border: 1px solid rgba(227,121,9,0.35);
+      border-radius: 999px;
+      padding: 4px 12px;
+      margin-bottom: 10px;
+    }
+
+    .slide-title {
+      font-size: clamp(1.5rem, 2.8vw, 2.5rem);
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      color: var(--red);
+      line-height: 1.15;
+      margin-bottom: 6px;
+    }
+
+    .slide-sub {
+      font-size: 0.98rem;
+      color: #555;
+      max-width: 820px;
+      line-height: 1.55;
+      margin-bottom: 22px;
+    }
+
+    /* ─── Grid utilities ─────────────────────────────────────── */
+    .grid   { display: grid; gap: 14px; }
+    .g-12   { grid-template-columns: repeat(12, 1fr); }
+    .g-3    { grid-template-columns: repeat(3, 1fr); }
+    .g-4    { grid-template-columns: repeat(4, 1fr); }
+    .g-2    { grid-template-columns: repeat(2, 1fr); }
+    .g-52   { grid-template-columns: 5fr 4fr; }
+    .g-25   { grid-template-columns: 4fr 5fr; }
+    .s-12   { grid-column: span 12; }
+    .s-6    { grid-column: span 6; }
+    .s-4    { grid-column: span 4; }
+    .s-3    { grid-column: span 3; }
+    .s-8    { grid-column: span 8; }
+
+    /* ─── Cards ──────────────────────────────────────────────── */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid rgba(150,147,155,0.22);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .card-title {
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--red);
+      margin-bottom: 10px;
+    }
+
+    .card p, .card li { font-size: 0.88rem; color: #444; line-height: 1.55; }
+    .card ul { padding-left: 18px; }
+    .card li { margin-bottom: 5px; }
+
+    /* ─── Badges ─────────────────────────────────────────────── */
+    .badge-row { display: flex; flex-wrap: wrap; gap: 10px; }
+    .badge {
+      font-size: 0.72rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.07em;
+      padding: 7px 14px; border-radius: 999px; border: 1px solid transparent;
+    }
+    .b-orange { background: rgba(227,121,9,0.18);  color: #ffa940; border-color: rgba(227,121,9,0.4); }
+    .b-red    { background: rgba(197,22,23,0.18);   color: #ff6b6b; border-color: rgba(197,22,23,0.4); }
+    .b-blue   { background: rgba(59,130,246,0.18);  color: #93c5fd; border-color: rgba(59,130,246,0.4); }
+    .b-green  { background: rgba(16,185,129,0.18);  color: #6ee7b7; border-color: rgba(16,185,129,0.4); }
+    .b-gray   { background: rgba(255,255,255,0.1);  color: rgba(255,255,255,0.7); border-color: rgba(255,255,255,0.2); }
+
+    /* ─── Problem icon rows ──────────────────────────────────── */
+    .prob-icon-row { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
+    .prob-icon {
+      width: 40px; height: 40px; border-radius: 12px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .prob-icon img { width: 22px; height: 22px; object-fit: contain; }
+    .pi-red    { background: rgba(197,22,23,0.1); }
+    .pi-orange { background: rgba(227,121,9,0.1); }
+    .pi-blue   { background: rgba(59,130,246,0.1); }
+    .prob-text h4 { font-size: 0.88rem; font-weight: 700; color: #222; margin-bottom: 3px; }
+    .prob-text p  { font-size: 0.8rem; color: #666; line-height: 1.45; }
+
+    /* ══════════════════════════════════════════════════════════
+       SLIDE 1 — PORTADA (dark hero)
+    ══════════════════════════════════════════════════════════ */
+    .hero-slide {
+      background: radial-gradient(ellipse at 0% 0%, rgba(227,121,9,0.25), transparent 55%),
+                  radial-gradient(ellipse at 100% 100%, rgba(197,22,23,0.2), transparent 55%),
+                  linear-gradient(145deg, #1a1a2e, #16213e 50%, #0f3460);
+      color: white;
+      min-height: 680px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 60px 64px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-slide::before {
+      content: ''; position: absolute;
+      width: 500px; height: 500px; border-radius: 50%;
+      border: 1.5px solid rgba(227,121,9,0.15);
+      top: -120px; right: -120px; pointer-events: none;
+    }
+    .hero-slide::after {
+      content: ''; position: absolute;
+      width: 320px; height: 320px; border-radius: 50%;
+      border: 1px solid rgba(197,22,23,0.1);
+      bottom: -60px; left: 30%; pointer-events: none;
+    }
+    .hero-logo { width: 260px; margin-bottom: 32px; filter: brightness(0) invert(1); opacity: 0.95; }
+    .hero-eyebrow { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.18em; color: var(--orange); margin-bottom: 16px; }
+    .hero-h1 { font-size: clamp(2.4rem,5vw,4.2rem); font-weight: 900; line-height: 1.1; text-transform: uppercase; letter-spacing: -0.01em; margin-bottom: 16px; }
+    .hero-h1 span { color: var(--orange); }
+    .hero-desc { font-size: 1.08rem; color: rgba(255,255,255,0.72); max-width: 580px; line-height: 1.65; margin-bottom: 30px; }
+
+    /* floating phone decoration */
+    .hero-mockup {
+      position: absolute; right: 60px; top: 50%;
+      transform: translateY(-50%); width: 280px;
+    }
+    .phone-frame {
+      background: #0f0f1a; border-radius: 32px;
+      border: 3px solid rgba(255,255,255,0.12); padding: 16px 14px;
+      box-shadow: 0 40px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05);
+    }
+    .phone-frame::before { content: ''; display: block; height: 10px; background: rgba(255,255,255,0.07); border-radius: 4px; margin-bottom: 10px; }
+    .phone-screen { background: linear-gradient(160deg,#16213e,#1a1a2e); border-radius: 18px; padding: 18px 14px; overflow: hidden; }
+    .ps-logo { width: 100px; margin: 0 auto 14px; display: block; filter: brightness(0) invert(1); opacity: 0.9; }
+    .ps-btn { display: flex; align-items: center; gap: 8px; background: rgba(227,121,9,0.18); border: 1px solid rgba(227,121,9,0.4); border-radius: 10px; padding: 9px 12px; margin-bottom: 8px; font-size: 0.72rem; font-weight: 700; color: #ffa940; text-transform: uppercase; letter-spacing: 0.06em; }
+    .ps-icon { width: 22px; height: 22px; background: rgba(227,121,9,0.25); border-radius: 6px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+    .ps-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--orange); }
+
+    /* ══════════════════════════════════════════════════════════
+       SLIDE 2 — PROBLEMA (stat boxes)
+    ══════════════════════════════════════════════════════════ */
+    .stat-box { text-align: center; padding: 22px 16px; background: var(--card-bg); border: 1px solid rgba(150,147,155,0.2); border-radius: var(--radius); box-shadow: var(--shadow); }
+    .stat-num { font-size: 2.6rem; font-weight: 900; color: var(--red); line-height: 1; margin-bottom: 6px; }
+    .stat-label { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #666; }
+
+    /* ══════════════════════════════════════════════════════════
+       SLIDE 3 — SOLUCIÓN (pillars)
+    ══════════════════════════════════════════════════════════ */
+    .pillar { background: var(--card-bg); border-radius: var(--radius); padding: 24px 20px; border: 1px solid rgba(150,147,155,0.2); box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 10px; }
+    .pillar-icon { width: 54px; height: 54px; border-radius: 16px; display: flex; align-items: center; justify-content: center; margin-bottom: 4px; }
+    .pillar-icon img { width: 32px; height: 32px; object-fit: contain; }
+    .pi-bg1 { background: linear-gradient(135deg,rgba(227,121,9,0.15),rgba(245,158,11,0.15)); }
+    .pi-bg2 { background: linear-gradient(135deg,rgba(197,22,23,0.15),rgba(239,68,68,0.15)); }
+    .pi-bg3 { background: linear-gradient(135deg,rgba(59,130,246,0.15),rgba(99,102,241,0.15)); }
+    .pi-bg4 { background: linear-gradient(135deg,rgba(16,185,129,0.15),rgba(52,211,153,0.15)); }
+    .pillar h3 { font-size: 1rem; font-weight: 800; color: #1a1a2e; }
+    .pillar p  { font-size: 0.84rem; color: #555; line-height: 1.5; }
+    .pillar ul { padding-left: 16px; }
+    .pillar li { font-size: 0.83rem; color: #555; line-height: 1.5; margin-bottom: 4px; }
+
+    /* ══════════════════════════════════════════════════════════
+       SLIDE 4 — LOGIN MOCKUP
+    ══════════════════════════════════════════════════════════ */
+    .app-mockup {
+      background: linear-gradient(160deg,#16213e,#1a1a2e 60%,#0f0f1a);
+      border-radius: var(--radius); padding: 28px;
+      border: 1px solid rgba(255,255,255,0.08); box-shadow: var(--shadow);
+      position: relative; overflow: hidden;
+    }
+    .app-mockup::before {
+      content: ''; position: absolute;
+      width: 300px; height: 300px; border-radius: 50%;
+      background: radial-gradient(circle,rgba(227,121,9,0.12),transparent 70%);
+      top: -80px; right: -60px; pointer-events: none;
+    }
+    .mock-logo { width: 150px; display: block; margin: 0 auto 20px; filter: brightness(0) invert(1); opacity: 0.92; }
+    .mock-title { text-align: center; color: rgba(255,255,255,0.9); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 16px; }
+    .mock-btn { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-radius: 12px; border: 1px solid rgba(227,121,9,0.35); background: rgba(227,121,9,0.1); margin-bottom: 10px; }
+    .mock-btn-icon { width: 34px; height: 34px; background: rgba(227,121,9,0.2); border-radius: 9px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .mock-btn-icon img { width: 20px; height: 20px; object-fit: contain; filter: brightness(0) saturate(100%) invert(55%) sepia(90%) saturate(600%) hue-rotate(5deg); }
+    .mock-btn-text { font-size: 0.78rem; font-weight: 700; color: #ffa940; text-transform: uppercase; letter-spacing: 0.06em; }
+
+    /* ══════════════════════════════════════════════════════════
+       SLIDE 5 — DASHBOARD MOCKUP
+    ══════════════════════════════════════════════════════════ */
+    .dash-container { background: #f1f5f9; border-radius: var(--radius); overflow: hidden; border: 1px solid rgba(150,147,155,0.2); box-shadow: var(--shadow); display: flex; height: 360px; }
+    .dash-sidebar-mock { width: 60px; background: linear-gradient(180deg,#1a1a2e,#16213e); display: flex; flex-direction: column; align-items: center; padding: 14px 0; gap: 16px; }
+    .ds-logo { width: 36px; height: 36px; border-radius: 10px; background: rgba(227,121,9,0.25); display: flex; align-items: center; justify-content: center; margin-bottom: 4px; }
+    .ds-nav-item { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; background: transparent; }
+    .ds-nav-item.active-nav { background: rgba(227,121,9,0.25); }
+    .ds-nav-item img { width: 18px; height: 18px; object-fit: contain; filter: brightness(0) invert(1); opacity: 0.75; }
+    .ds-nav-item.active-nav img { opacity: 1; }
+    .dash-main { flex: 1; padding: 18px 16px; overflow: hidden; }
+    .dash-header-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+    .dash-header-bar span { font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: #1a1a2e; }
+    .dash-pill { font-size: 0.6rem; font-weight: 700; padding: 3px 9px; border-radius: 999px; background: rgba(197,22,23,0.1); color: var(--red); border: 1px solid rgba(197,22,23,0.25); }
+    .dash-stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; margin-bottom: 14px; }
+    .dash-stat { background: white; border-radius: 10px; padding: 10px 12px; border: 1px solid rgba(150,147,155,0.15); }
+    .dash-stat-num { font-size: 1.35rem; font-weight: 900; color: var(--red); }
+    .dash-stat-lbl { font-size: 0.58rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: #888; }
+    .dash-panels { display: grid; grid-template-columns: 1.4fr 1fr; gap: 8px; }
+    .dash-panel { background: white; border-radius: 10px; padding: 10px 12px; border: 1px solid rgba(150,147,155,0.15); }
+    .dash-panel-title { font-size: 0.62rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: #444; margin-bottom: 8px; }
+    .incident-row { display: flex; align-items: center; gap: 8px; margin-bottom: 7px; }
+    .inc-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .inc-dot.red    { background: var(--red); }
+    .inc-dot.orange { background: var(--orange); }
+    .inc-dot.green  { background: #10b981; }
+    .inc-text { font-size: 0.62rem; color: #444; line-height: 1.3; }
+    .inc-text strong { color: #1a1a2e; }
+    .inc-badge { margin-left: auto; font-size: 0.56rem; font-weight: 700; padding: 2px 7px; border-radius: 999px; }
+    .ib-red    { background: rgba(197,22,23,0.1);  color: var(--red); }
+    .ib-orange { background: rgba(227,121,9,0.1);  color: var(--orange); }
+    .ib-green  { background: rgba(16,185,129,0.1); color: #10b981; }
+    .donut-mock { width: 80px; height: 80px; border-radius: 50%; background: conic-gradient(var(--red) 0deg 130deg,var(--orange) 130deg 230deg,#10b981 230deg 295deg,#e5e7eb 295deg 360deg); margin: 0 auto; display: flex; align-items: center; justify-content: center; }
+    .donut-inner { width: 52px; height: 52px; border-radius: 50%; background: white; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; font-weight: 800; color: #1a1a2e; }
+
+    /* ══════════════════════════════════════════════════════════
+       SLIDE 6 — MAPA MOCKUP
+    ══════════════════════════════════════════════════════════ */
+    .map-mock { background: linear-gradient(165deg,#1a1a2e,#162032 40%,#1e293b); border-radius: var(--radius); overflow: hidden; height: 350px; position: relative; border: 1px solid rgba(255,255,255,0.07); box-shadow: var(--shadow); }
+    .map-mock::before { content: ''; position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,0.04) 1px,transparent 1px), linear-gradient(90deg,rgba(255,255,255,0.04) 1px,transparent 1px); background-size: 40px 40px; }
+    .map-road { position: absolute; background: rgba(255,255,255,0.07); border-radius: 2px; }
+    .road-h { height: 6px; left: 0; right: 0; }
+    .road-v { width: 6px; top: 0; bottom: 0; }
+    .map-zone { position: absolute; border-radius: 10px; border: 2px solid; opacity: 0.55; }
+    .mz-red    { border-color: var(--red);    background: rgba(197,22,23,0.12); }
+    .mz-orange { border-color: var(--orange); background: rgba(227,121,9,0.12); }
+    .mz-blue   { border-color: #3b82f6;       background: rgba(59,130,246,0.12); }
+    .map-marker { position: absolute; width: 28px; height: 28px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); display: flex; align-items: center; justify-content: center; }
+    .map-marker::after { content: ''; display: block; width: 10px; height: 10px; border-radius: 50%; background: white; transform: rotate(45deg); }
+    .mm-red    { background: var(--red); }
+    .mm-orange { background: var(--orange); }
+    .mm-blue   { background: #3b82f6; }
+    .map-overlay { position: absolute; top: 12px; left: 12px; background: rgba(26,26,46,0.88); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 10px 14px; backdrop-filter: blur(8px); }
+    .map-overlay h4 { font-size: 0.72rem; font-weight: 800; color: white; margin-bottom: 4px; }
+    .map-overlay p  { font-size: 0.65rem; color: rgba(255,255,255,0.55); }
+    .map-legend { position: absolute; bottom: 12px; right: 12px; background: rgba(26,26,46,0.88); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 10px 14px; backdrop-filter: blur(8px); }
+    .legend-item { display: flex; align-items: center; gap: 7px; margin-bottom: 5px; font-size: 0.62rem; color: rgba(255,255,255,0.7); font-weight: 600; }
+    .legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .campus-selector-mock { background: var(--card-bg); border: 1px solid rgba(150,147,155,0.2); border-radius: var(--radius); padding: 16px 20px; box-shadow: var(--shadow); }
+    .campus-tab-row { display: flex; gap: 8px; flex-wrap: wrap; }
+    .campus-tab { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; padding: 6px 14px; border-radius: 999px; border: 1px solid rgba(150,147,155,0.3); color: #666; }
+    .campus-tab.active { background: var(--red); color: white; border-color: var(--red); }
+    .campus-stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-top: 12px; }
+    .campus-stat-box { text-align: center; background: rgba(227,121,9,0.05); border: 1px solid rgba(227,121,9,0.15); border-radius: 10px; padding: 10px; }
+    .csb-num { font-size: 1.4rem; font-weight: 900; color: var(--orange); }
+    .csb-lbl { font-size: 0.62rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #888; }
+
+    /* ══════════════════════════════════════════════════════════
+       SLIDE 7 — SOS FLOW
+    ══════════════════════════════════════════════════════════ */
+    .sos-flow { display: grid; grid-template-columns: repeat(5,1fr); gap: 6px; align-items: center; }
+    .sos-step { background: var(--card-bg); border: 1px solid rgba(150,147,155,0.2); border-radius: 16px; padding: 18px 14px; text-align: center; box-shadow: var(--shadow); }
+    .sos-step-icon { width: 50px; height: 50px; border-radius: 50%; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; }
+    .sos-step-icon img { width: 28px; height: 28px; object-fit: contain; }
+    .si-bg1 { background: rgba(59,130,246,0.12); }
+    .si-bg2 { background: rgba(227,121,9,0.12); }
+    .si-bg3 { background: rgba(197,22,23,0.12); }
+    .si-bg4 { background: rgba(16,185,129,0.12); }
+    .si-bg5 { background: rgba(139,92,246,0.12); }
+    .sos-step h4 { font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: #1a1a2e; margin-bottom: 4px; }
+    .sos-step p  { font-size: 0.73rem; color: #666; line-height: 1.4; }
+    .sos-arrow { text-align: center; color: var(--orange); font-size: 1.2rem; font-weight: 900; }
+    .sos-modal-mock { background: white; border-radius: 18px; overflow: hidden; border: 1px solid rgba(150,147,155,0.2); box-shadow: 0 20px 50px rgba(0,0,0,0.18); }
+    .smm-header { background: #dc2626; padding: 16px 20px; display: flex; align-items: center; gap: 12px; }
+    .smm-header-icon { width: 40px; height: 40px; background: rgba(255,255,255,0.2); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+    .smm-header h3 { font-size: 0.9rem; font-weight: 900; color: white; text-transform: uppercase; }
+    .smm-header p  { font-size: 0.72rem; color: rgba(255,255,255,0.75); }
+    .smm-body { padding: 16px; }
+    .smm-info { background: #f8fafc; border-radius: 10px; padding: 12px; border: 1px solid #e2e8f0; margin-bottom: 12px; }
+    .smm-tag { font-size: 0.58rem; font-weight: 800; text-transform: uppercase; background: rgba(197,22,23,0.08); color: var(--red); padding: 2px 8px; border-radius: 999px; display: inline-block; margin-bottom: 6px; }
+    .smm-info p { font-size: 0.75rem; color: #555; }
+    .smm-info strong { color: #1a1a2e; }
+    .smm-dispatch { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
+    .smm-dispatch-btn { border-radius: 10px; padding: 12px 6px; text-align: center; font-size: 0.62rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .sdb-blue  { background: #2563eb; color: white; }
+    .sdb-green { background: #059669; color: white; }
+    .sdb-fire  { background: #d97706; color: white; }
+
+    /* ══════════════════════════════════════════════════════════
+       SLIDE 8 — ACCESOS QR
+    ══════════════════════════════════════════════════════════ */
+    .qr-mock { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; background: var(--card-bg); border-radius: var(--radius); border: 1px solid rgba(150,147,155,0.2); box-shadow: var(--shadow); }
+    .qr-box { width: 110px; height: 110px; border: 3px solid var(--orange); border-radius: 14px; margin-bottom: 12px; display: grid; grid-template-columns: repeat(7,1fr); grid-template-rows: repeat(7,1fr); gap: 2px; padding: 6px; }
+    .qr-cell { border-radius: 2px; }
+    .qr-cell.on { background: #1a1a2e; }
+    .log-row { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 8px; margin-bottom: 5px; font-size: 0.75rem; }
+    .log-row:nth-child(odd) { background: rgba(150,147,155,0.06); }
+    .log-time { color: var(--gray); font-size: 0.68rem; }
+    .log-name { font-weight: 700; color: #222; flex: 1; }
+    .la-in  { color: #059669; background: rgba(5,150,105,0.1); padding: 2px 8px; border-radius: 999px; font-weight: 700; font-size: 0.65rem; }
+    .la-out { color: var(--red); background: rgba(197,22,23,0.1); padding: 2px 8px; border-radius: 999px; font-weight: 700; font-size: 0.65rem; }
+
+    /* ══════════════════════════════════════════════════════════
+       SLIDE 9 — STACK TÉCNICO
+    ══════════════════════════════════════════════════════════ */
+    .tech-layer { background: #0f0f1a; border: 1px solid rgba(255,255,255,0.08); border-radius: var(--radius); padding: 16px 20px; box-shadow: var(--shadow); margin-bottom: 10px; }
+    .tech-layer-title { font-size: 0.68rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.35); margin-bottom: 10px; }
+    .tech-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+    .tech-tag { font-size: 0.78rem; font-weight: 700; padding: 6px 14px; border-radius: 10px; border: 1px solid transparent; }
+    .tt-react   { background: rgba(97,218,251,0.12);  color: #22d3ee; border-color: rgba(97,218,251,0.3); }
+    .tt-next    { background: rgba(255,255,255,0.06);  color: #f1f5f9; border-color: rgba(255,255,255,0.15); }
+    .tt-tw      { background: rgba(56,189,248,0.12);   color: #38bdf8; border-color: rgba(56,189,248,0.3); }
+    .tt-ts      { background: rgba(59,130,246,0.12);   color: #60a5fa; border-color: rgba(59,130,246,0.3); }
+    .tt-mapbox  { background: rgba(227,121,9,0.12);    color: #ffa940; border-color: rgba(227,121,9,0.3); }
+    .tt-firebase{ background: rgba(255,196,0,0.12);    color: #fbbf24; border-color: rgba(255,196,0,0.3); }
+    .tt-vercel  { background: rgba(255,255,255,0.06);  color: #e2e8f0; border-color: rgba(255,255,255,0.15); }
+    .tt-shadcn  { background: rgba(16,185,129,0.12);   color: #34d399; border-color: rgba(16,185,129,0.3); }
+    .arch-diagram { background: #0f0f1a; border-radius: var(--radius); border: 1px solid rgba(255,255,255,0.07); padding: 24px; box-shadow: var(--shadow); }
+    .arch-row { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+    .arch-box { padding: 10px 14px; border-radius: 12px; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; text-align: center; flex: 1; }
+    .ab-orange { background: rgba(227,121,9,0.18); color: #ffa940; border: 1px solid rgba(227,121,9,0.35); }
+    .ab-blue   { background: rgba(59,130,246,0.18); color: #93c5fd; border: 1px solid rgba(59,130,246,0.35); }
+    .ab-green  { background: rgba(16,185,129,0.18); color: #6ee7b7; border: 1px solid rgba(16,185,129,0.35); }
+    .ab-gray   { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.65); border: 1px solid rgba(255,255,255,0.15); }
+    .arch-arrow { color: rgba(255,255,255,0.3); font-size: 1rem; text-align: center; padding: 4px 0; }
+
+    /* ══════════════════════════════════════════════════════════
+       SLIDE 10 — IMPACTO
+    ══════════════════════════════════════════════════════════ */
+    .kpi-box { text-align: center; background: linear-gradient(145deg,rgba(227,121,9,0.08),rgba(197,22,23,0.06)); border: 1px solid rgba(227,121,9,0.2); border-radius: var(--radius); padding: 24px 16px; box-shadow: var(--shadow); }
+    .kpi-num   { font-size: 2.8rem; font-weight: 900; color: var(--orange); line-height: 1; margin-bottom: 6px; }
+    .kpi-label { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #555; }
+    .roadmap-item { display: flex; align-items: flex-start; gap: 14px; padding: 12px 16px; background: var(--card-bg); border: 1px solid rgba(150,147,155,0.2); border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.06); margin-bottom: 8px; }
+    .roadmap-phase { font-size: 0.62rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; padding: 4px 10px; border-radius: 999px; white-space: nowrap; flex-shrink: 0; }
+    .rp-now  { background: rgba(197,22,23,0.12); color: var(--red); border: 1px solid rgba(197,22,23,0.3); }
+    .rp-next { background: rgba(227,121,9,0.12); color: var(--orange); border: 1px solid rgba(227,121,9,0.3); }
+    .rp-fut  { background: rgba(59,130,246,0.12); color: #3b82f6; border: 1px solid rgba(59,130,246,0.3); }
+    .roadmap-item h4 { font-size: 0.85rem; font-weight: 700; color: #1a1a2e; margin-bottom: 3px; }
+    .roadmap-item p  { font-size: 0.78rem; color: #666; }
+
+    /* ══════════════════════════════════════════════════════════
+       CONTROLS BAR
+    ══════════════════════════════════════════════════════════ */
+    .controls { display: flex; align-items: center; justify-content: space-between; padding: 14px 22px; border-top: 1px solid rgba(150,147,155,0.2); background: rgba(255,255,251,0.95); gap: 12px; }
+    .btn { background: var(--orange); color: white; border: none; border-radius: 10px; padding: 10px 20px; font-size: 0.82rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; cursor: pointer; transition: background 0.18s ease, transform 0.1s ease; }
+    .btn:hover { background: var(--red); transform: translateY(-1px); }
+    .btn:active { transform: translateY(0); }
+    .dots { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; justify-content: center; }
+    .dot { width: 10px; height: 10px; border-radius: 50%; border: 1.5px solid var(--gray); background: transparent; cursor: pointer; transition: all 0.18s ease; }
+    .dot.active { background: var(--red); border-color: var(--red); transform: scale(1.3); }
+    .slide-count { font-size: 0.82rem; color: #888; font-weight: 600; white-space: nowrap; }
+    .slide-title-bar { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #555; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 220px; }
+
+    /* ══════════════════════════════════════════════════════════
+       RESPONSIVE
+    ══════════════════════════════════════════════════════════ */
+    @media (max-width: 900px) {
+      .hero-mockup { display: none; }
+      .hero-slide { padding: 44px 32px; }
+      .slide-inner { padding: 28px 22px 20px; }
+      .g-3, .g-4 { grid-template-columns: repeat(2,1fr); }
+      .g-52, .g-25 { grid-template-columns: 1fr; }
+      .sos-flow { grid-template-columns: 1fr 1fr; }
+      .sos-arrow { display: none; }
+      .dash-stats { grid-template-columns: repeat(2,1fr); }
+      .dash-panels { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 600px) {
+      .g-2, .g-3, .g-4 { grid-template-columns: 1fr; }
+      .controls { flex-wrap: wrap; justify-content: center; }
+      .slide-title-bar { display: none; }
+    }
+  </style>
+</head>
+<body>
+<div class="deck">
+  <div class="slides" id="slides">
+
+    <!-- ══════════ SLIDE 1: PORTADA ══════════ -->
+    <section class="slide active">
+      <div class="hero-slide">
+        <p class="hero-eyebrow">Hackathon 2026 · Seguridad Universitaria</p>
+        <img src="../public/iconos/logo-principal.png" class="hero-logo" alt="Comunidad Alerta" />
+        <h1 class="hero-h1">Seguridad en<br><span>tiempo real</span><br>para tu campus</h1>
+        <p class="hero-desc">
+          Plataforma web de monitoreo, reporte y respuesta inmediata ante incidentes de seguridad
+          en entornos universitarios multi-campus.
+        </p>
+        <div class="badge-row">
+          <span class="badge b-orange">Prevención</span>
+          <span class="badge b-red">Respuesta Rápida</span>
+          <span class="badge b-blue">Multi Campus</span>
+          <span class="badge b-green">Tiempo Real</span>
+          <span class="badge b-gray">Next.js · Mapbox · Firebase</span>
+        </div>
+      </div>
+      <!-- Phone decoration -->
+      <div class="hero-mockup">
+        <div class="phone-frame">
+          <div class="phone-screen">
+            <img src="../public/iconos/logo-principal.png" class="ps-logo" alt="logo" />
+            <p style="font-size:0.6rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.5);text-align:center;margin-bottom:12px;">Elige tu perfil de acceso</p>
+            <div class="ps-btn"><div class="ps-icon"><div class="ps-dot"></div></div>Estudiante</div>
+            <div class="ps-btn"><div class="ps-icon"><div class="ps-dot"></div></div>Autoridad</div>
+            <div class="ps-btn"><div class="ps-icon"><div class="ps-dot"></div></div>Personal de Seguridad</div>
+            <div class="ps-btn"><div class="ps-icon"><div class="ps-dot"></div></div>Administrativo</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ SLIDE 2: PROBLEMA ══════════ -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div class="slide-tag">El Problema</div>
+        <h2 class="slide-title">¿Qué pasa cuando hay una emergencia en el campus?</h2>
+        <p class="slide-sub">La falta de comunicación centralizada provoca retrasos críticos, pérdida de información y respuestas descoordinadas ante incidentes de seguridad.</p>
+
+        <div class="grid g-4" style="margin-bottom:18px">
+          <div class="stat-box"><div class="stat-num">+73%</div><div class="stat-label">de reportes se hacen por WhatsApp o llamada</div></div>
+          <div class="stat-box"><div class="stat-num">8–15 min</div><div class="stat-label">tiempo promedio de respuesta sin sistema</div></div>
+          <div class="stat-box"><div class="stat-num">60%</div><div class="stat-label">de incidentes sin seguimiento ni cierre formal</div></div>
+          <div class="stat-box"><div class="stat-num">0</div><div class="stat-label">visibilidad geoespacial en tiempo real</div></div>
+        </div>
+
+        <div class="grid g-3">
+          <div class="card">
+            <div class="card-title">Comunicación Fragmentada</div>
+            <div class="prob-icon-row">
+              <div class="prob-icon pi-red"><img src="../public/iconos/Alerta.svg" alt="alerta" style="filter:invert(18%) sepia(90%) saturate(700%) hue-rotate(338deg) brightness(95%);" /></div>
+              <div class="prob-text"><h4>Sin canal único</h4><p>Cada guardia, campus y coordinador usa un canal distinto. La información se pierde o duplica.</p></div>
+            </div>
+            <div class="prob-icon-row">
+              <div class="prob-icon pi-red"><img src="../public/iconos/ICONOS-05.svg" alt="ubicacion" /></div>
+              <div class="prob-text"><h4>Sin geolocalización</h4><p>El personal no sabe en qué zona exacta ocurre el evento cuando recibe la alerta.</p></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">Falta de Trazabilidad</div>
+            <div class="prob-icon-row">
+              <div class="prob-icon pi-orange"><img src="../public/iconos/ICONOS-03.svg" alt="mapa" /></div>
+              <div class="prob-text"><h4>Sin historial de incidentes</h4><p>No existe un registro organizado de qué pasó, quién atendió y cuánto tardó la respuesta.</p></div>
+            </div>
+            <div class="prob-icon-row">
+              <div class="prob-icon pi-orange"><img src="../public/iconos/ICONOS-12.svg" alt="perfil" /></div>
+              <div class="prob-text"><h4>Sin perfiles diferenciados</h4><p>Todos ven lo mismo. No hay vistas especializadas por rol: estudiante, guardia o autoridad.</p></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">Baja Confianza Estudiantil</div>
+            <div class="prob-icon-row">
+              <div class="prob-icon pi-blue"><img src="../public/iconos/ICONOS-04.svg" alt="usuario" /></div>
+              <div class="prob-text"><h4>Sin acceso al estado</h4><p>El estudiante reporta pero nunca sabe si alguien lo atendió o cuándo llegó ayuda.</p></div>
+            </div>
+            <div class="prob-icon-row">
+              <div class="prob-icon pi-blue"><img src="../public/iconos/Qr.svg" alt="qr" /></div>
+              <div class="prob-text"><h4>Sin control de accesos</h4><p>Los accesos físicos a instalaciones no se registran ni auditan en tiempo real.</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ SLIDE 3: SOLUCIÓN ══════════ -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div class="slide-tag">La Solución</div>
+        <h2 class="slide-title">Comunidad Alerta: 4 pilares en una plataforma</h2>
+        <p class="slide-sub">Un sistema centralizado que unifica monitoreo, reportes, respuesta y control de accesos para todos los actores del campus.</p>
+        <div class="grid g-4">
+          <div class="pillar">
+            <div class="pillar-icon pi-bg1"><img src="../public/iconos/ICONOS-02.svg" alt="dashboard" /></div>
+            <h3>Monitoreo en Tiempo Real</h3>
+            <p>Dashboard de seguridad con métricas vivas, alertas activas e historial de incidentes por campus.</p>
+            <ul>
+              <li>Indicadores de estado (activo, pendiente, atendido)</li>
+              <li>Vista filtrada por campus y tipo de incidente</li>
+              <li>Gráficas de tendencia de alertas</li>
+            </ul>
+          </div>
+          <div class="pillar">
+            <div class="pillar-icon pi-bg2"><img src="../public/iconos/Alerta.svg" alt="alerta" /></div>
+            <h3>Alertas SOS y Reportes</h3>
+            <p>Cualquier usuario puede activar una alerta de emergencia o reportar un incidente categorizado con ubicación.</p>
+            <ul>
+              <li>Botón SOS de un toque con geolocalización</li>
+              <li>Reporte manual: categoría, zona, descripción</li>
+              <li>Modal de despacho para policía, médicos, bomberos</li>
+            </ul>
+          </div>
+          <div class="pillar">
+            <div class="pillar-icon pi-bg3"><img src="../public/iconos/ICONOS-03.svg" alt="mapa" /></div>
+            <h3>Mapa Perimetral Interactivo</h3>
+            <p>Visualización geoespacial del campus sobre Mapbox con zonas de riesgo, marcadores y rutas de emergencia.</p>
+            <ul>
+              <li>Escena única por campus (bearing, pitch, zoom)</li>
+              <li>Zonas coloreadas por nivel de riesgo</li>
+              <li>Línea de ruta de evacuación en mapa</li>
+            </ul>
+          </div>
+          <div class="pillar">
+            <div class="pillar-icon pi-bg4"><img src="../public/iconos/Qr.svg" alt="qr" /></div>
+            <h3>Control de Accesos QR</h3>
+            <p>Registro de entradas y salidas de instalaciones mediante QR, con bitácora auditada en tiempo real.</p>
+            <ul>
+              <li>Generación de QR por usuario y rol</li>
+              <li>Log de accesos con timestamp</li>
+              <li>Alertas de acceso no autorizado</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ SLIDE 4: LOGIN & PERFILES ══════════ -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div class="slide-tag">Acceso al Sistema</div>
+        <h2 class="slide-title">Perfiles de Usuario</h2>
+        <p class="slide-sub">El sistema reconoce 4 roles con vistas y capacidades diferenciadas. El acceso es biométrico con autenticación por perfil.</p>
+        <div class="grid g-25" style="gap:18px;align-items:start">
+          <!-- Login mockup -->
+          <div class="app-mockup">
+            <img src="../public/iconos/logo-principal.png" class="mock-logo" alt="Comunidad Alerta" />
+            <p class="mock-title">Elige tu método de acceso</p>
+            <div class="mock-btn"><div class="mock-btn-icon"><img src="../public/iconos/ICONOS-12.svg" alt="icono" /></div><span class="mock-btn-text">Estudiante</span></div>
+            <div class="mock-btn"><div class="mock-btn-icon"><img src="../public/iconos/ICONOS-12.svg" alt="icono" /></div><span class="mock-btn-text">Autoridad</span></div>
+            <div class="mock-btn"><div class="mock-btn-icon"><img src="../public/iconos/ICONOS-12.svg" alt="icono" /></div><span class="mock-btn-text">Personal de Seguridad</span></div>
+            <div class="mock-btn"><div class="mock-btn-icon"><img src="../public/iconos/ICONOS-12.svg" alt="icono" /></div><span class="mock-btn-text">Administrativo</span></div>
+            <div style="margin-top:16px;display:flex;gap:8px;justify-content:center;">
+              <div style="width:8px;height:3px;border-radius:2px;background:var(--orange);"></div>
+              <div style="width:8px;height:3px;border-radius:2px;background:rgba(255,255,255,0.2);"></div>
+              <div style="width:8px;height:3px;border-radius:2px;background:rgba(255,255,255,0.2);"></div>
+            </div>
+          </div>
+          <!-- Role cards -->
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div class="card">
+              <div class="card-title">👨‍🎓 Estudiante / Personal</div>
+              <p style="margin-bottom:8px;">Vista simplificada orientada al reporte y la consulta de estado del campus.</p>
+              <div style="display:flex;flex-wrap:wrap;gap:6px;">
+                <span class="badge b-orange" style="padding:4px 10px;font-size:0.65rem;">Reportar incidente</span>
+                <span class="badge b-orange" style="padding:4px 10px;font-size:0.65rem;">Botón SOS</span>
+                <span class="badge b-orange" style="padding:4px 10px;font-size:0.65rem;">Ver mapa</span>
+                <span class="badge b-orange" style="padding:4px 10px;font-size:0.65rem;">QR de acceso</span>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-title">🛡️ Autoridad / Seguridad</div>
+              <p style="margin-bottom:8px;">Centro de mando completo: monitoreo, despacho y gestión de incidentes.</p>
+              <div style="display:flex;flex-wrap:wrap;gap:6px;">
+                <span class="badge b-red" style="padding:4px 10px;font-size:0.65rem;">Dashboard completo</span>
+                <span class="badge b-red" style="padding:4px 10px;font-size:0.65rem;">Despachar unidades</span>
+                <span class="badge b-red" style="padding:4px 10px;font-size:0.65rem;">Cambio de campus</span>
+                <span class="badge b-red" style="padding:4px 10px;font-size:0.65rem;">Gestión de alertas</span>
+                <span class="badge b-red" style="padding:4px 10px;font-size:0.65rem;">Bitácora de accesos</span>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-title">🏛️ Administrativo</div>
+              <p style="margin-bottom:8px;">Vista de reportes, estadísticas y seguimiento de resolución de incidentes.</p>
+              <div style="display:flex;flex-wrap:wrap;gap:6px;">
+                <span class="badge" style="padding:4px 10px;font-size:0.65rem;background:rgba(59,130,246,0.1);color:#3b82f6;border:1px solid rgba(59,130,246,0.3);">Reportes históricos</span>
+                <span class="badge" style="padding:4px 10px;font-size:0.65rem;background:rgba(59,130,246,0.1);color:#3b82f6;border:1px solid rgba(59,130,246,0.3);">Estadísticas</span>
+                <span class="badge" style="padding:4px 10px;font-size:0.65rem;background:rgba(59,130,246,0.1);color:#3b82f6;border:1px solid rgba(59,130,246,0.3);">Cierre de incidentes</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ SLIDE 5: DASHBOARD ══════════ -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div class="slide-tag">Funcionalidad Principal</div>
+        <h2 class="slide-title">Dashboard de Seguridad</h2>
+        <p class="slide-sub">Centro de control en tiempo real: métricas de campus, listado de incidentes activos, distribución de tipos de alerta y acceso a herramientas de despacho.</p>
+
+        <div class="dash-container">
+          <!-- Sidebar mock -->
+          <div class="dash-sidebar-mock">
+            <div class="ds-logo"><img src="../public/iconos/IconoLogo.svg" alt="logo" style="width:22px;height:22px;filter:brightness(0) invert(1);opacity:0.85;" /></div>
+            <div class="ds-nav-item active-nav"><img src="../public/iconos/ICONOS-02.svg" alt="dashboard" /></div>
+            <div class="ds-nav-item"><img src="../public/iconos/ICONOS-03.svg" alt="mapa" /></div>
+            <div class="ds-nav-item"><img src="../public/iconos/Qr.svg" alt="qr" /></div>
+            <div class="ds-nav-item"><img src="../public/iconos/Alerta.svg" alt="alerta" /></div>
+            <div class="ds-nav-item"><img src="../public/iconos/ICONOS-12.svg" alt="gestion" /></div>
+          </div>
+          <!-- Main area -->
+          <div class="dash-main">
+            <div class="dash-header-bar">
+              <span>Dashboard · Campus Metropolitano</span>
+              <span class="dash-pill">● 3 Alertas Activas</span>
+            </div>
+            <div class="dash-stats">
+              <div class="dash-stat"><div class="dash-stat-num">3</div><div class="dash-stat-lbl">Alertas activas</div></div>
+              <div class="dash-stat"><div class="dash-stat-num">12</div><div class="dash-stat-lbl">Incidentes hoy</div></div>
+              <div class="dash-stat"><div class="dash-stat-num">4 min</div><div class="dash-stat-lbl">Resp. promedio</div></div>
+              <div class="dash-stat"><div class="dash-stat-num">94%</div><div class="dash-stat-lbl">Resueltos</div></div>
+            </div>
+            <div class="dash-panels">
+              <div class="dash-panel">
+                <div class="dash-panel-title">Incidentes Recientes</div>
+                <div class="incident-row"><div class="inc-dot red"></div><div class="inc-text"><strong>SOS Activo</strong> — Edificio A, Piso 3</div><span class="inc-badge ib-red">Crítico</span></div>
+                <div class="incident-row"><div class="inc-dot orange"></div><div class="inc-text"><strong>Robo</strong> — Estacionamiento Norte</div><span class="inc-badge ib-orange">Pendiente</span></div>
+                <div class="incident-row"><div class="inc-dot green"></div><div class="inc-text"><strong>Vandalismo</strong> — Auditorio</div><span class="inc-badge ib-green">Atendido</span></div>
+                <div class="incident-row"><div class="inc-dot orange"></div><div class="inc-text"><strong>Persona sospechosa</strong> — Biblioteca</div><span class="inc-badge ib-orange">Pendiente</span></div>
+              </div>
+              <div class="dash-panel" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;">
+                <div class="dash-panel-title" style="text-align:center;">Tipo de Incidentes</div>
+                <div class="donut-mock"><div class="donut-inner">12 hoy</div></div>
+                <div style="font-size:0.58rem;color:#888;text-align:center;line-height:1.6;">
+                  <span style="color:var(--red);">■</span> SOS · <span style="color:var(--orange);">■</span> Robo · <span style="color:#10b981;">■</span> Resuelto
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid g-3" style="margin-top:14px">
+          <div class="card" style="padding:12px 16px;"><div class="card-title">Filtros por Campus</div><p>Selector compacto para cambiar entre Campus Metro, Tecnológico y Oriente sin recargar la página.</p></div>
+          <div class="card" style="padding:12px 16px;"><div class="card-title">Actualizaciones en Vivo</div><p>Los incidentes nuevos aparecen automáticamente sin necesidad de refrescar. Datos en tiempo real vía Firebase.</p></div>
+          <div class="card" style="padding:12px 16px;"><div class="card-title">Acceso Directo a Despacho</div><p>Desde cualquier alerta activa se abre inmediatamente el modal de despacho de unidades de emergencia.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ SLIDE 6: MAPA ══════════ -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div class="slide-tag">Geolocalización</div>
+        <h2 class="slide-title">Mapa Perimetral Interactivo</h2>
+        <p class="slide-sub">Cada campus tiene su escena Mapbox única con ángulo, inclinación y zoom configurados. Las zonas de riesgo y los marcadores de incidentes se superponen en tiempo real.</p>
+
+        <div class="grid g-52" style="gap:14px;align-items:start">
+          <!-- Map mockup -->
+          <div class="map-mock">
+            <div class="map-road road-h" style="top:35%;"></div>
+            <div class="map-road road-h" style="top:62%;"></div>
+            <div class="map-road road-v" style="left:30%;"></div>
+            <div class="map-road road-v" style="left:68%;"></div>
+            <div class="map-zone mz-red" style="left:32%;top:20%;width:22%;height:28%;"></div>
+            <div class="map-zone mz-orange" style="left:60%;top:38%;width:20%;height:24%;"></div>
+            <div class="map-zone mz-blue" style="left:12%;top:45%;width:18%;height:20%;"></div>
+            <div class="map-marker mm-red" style="left:38%;top:22%;"></div>
+            <div class="map-marker mm-orange" style="left:65%;top:42%;"></div>
+            <div class="map-marker mm-blue" style="left:16%;top:50%;"></div>
+            <svg style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;" viewBox="0 0 400 350">
+              <polyline points="60,200 120,170 200,140 265,155 310,180 350,140" fill="none" stroke="#E37909" stroke-width="2.5" stroke-dasharray="8,5" opacity="0.7"/>
+            </svg>
+            <div class="map-overlay"><h4>Campus Metropolitano</h4><p>Bearing: -18° · Pitch: 52°</p><p style="color:#ffa940;margin-top:2px;">● 3 alertas activas</p></div>
+            <div class="map-legend">
+              <div class="legend-item"><span class="legend-dot" style="background:var(--red);"></span>Zona crítica</div>
+              <div class="legend-item"><span class="legend-dot" style="background:var(--orange);"></span>Zona precaución</div>
+              <div class="legend-item"><span class="legend-dot" style="background:#3b82f6;"></span>Zona segura</div>
+              <div class="legend-item"><span class="legend-dot" style="background:var(--orange);"></span>Ruta evacuación</div>
+            </div>
+          </div>
+
+          <!-- Campus selector + info -->
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <div class="campus-selector-mock">
+              <p style="font-size:0.68rem;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#888;margin-bottom:10px;">Seleccionar Campus</p>
+              <div class="campus-tab-row">
+                <div class="campus-tab active">Metro</div>
+                <div class="campus-tab">Tecnológico</div>
+                <div class="campus-tab">Oriente</div>
+                <div class="campus-tab">Global</div>
+              </div>
+              <div class="campus-stats">
+                <div class="campus-stat-box"><div class="csb-num">3</div><div class="csb-lbl">Alertas</div></div>
+                <div class="campus-stat-box"><div class="csb-num">7</div><div class="csb-lbl">Zonas</div></div>
+                <div class="campus-stat-box"><div class="csb-num">24</div><div class="csb-lbl">Marcadores</div></div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-title">Parámetros por Campus</div>
+              <ul>
+                <li><strong>Metro:</strong> Bearing -18°, Pitch 52°, Zoom 15.4</li>
+                <li><strong>Tecnológico:</strong> Bearing 22°, Pitch 58°, Zoom 15.1</li>
+                <li><strong>Oriente:</strong> Bearing -36°, Pitch 48°, Zoom 15.6</li>
+                <li><strong>Global:</strong> Bearing 0°, Pitch 0°, Zoom panorámico</li>
+              </ul>
+            </div>
+            <div class="card">
+              <div class="card-title">Elementos en el Mapa</div>
+              <ul>
+                <li>Polígonos de zonas con color por nivel de riesgo</li>
+                <li>Iconos de hospitales, accesos, patrullas</li>
+                <li>Marcadores de incidentes activos en tiempo real</li>
+                <li>Ruta de evacuación (línea naranja discontinua)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ SLIDE 7: ALERTAS SOS ══════════ -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div class="slide-tag">Emergencias</div>
+        <h2 class="slide-title">Sistema de Alertas SOS y Despacho</h2>
+        <p class="slide-sub">Desde la activación del SOS hasta el cierre del incidente, todo el flujo ocurre dentro de la plataforma sin llamadas externas ni aplicaciones adicionales.</p>
+
+        <div class="sos-flow" style="margin-bottom:18px;">
+          <div class="sos-step"><div class="sos-step-icon si-bg1"><img src="../public/iconos/ICONOS-12.svg" alt="usuario" /></div><h4>1. Detecta peligro</h4><p>Presiona SOS. La alerta registra zona, campus y hora exacta.</p></div>
+          <div class="sos-arrow">→</div>
+          <div class="sos-step"><div class="sos-step-icon si-bg2"><img src="../public/iconos/Alerta.svg" alt="alerta" /></div><h4>2. Alerta al sistema</h4><p>El incidente aparece en el dashboard con estado "Crítico" y notificación.</p></div>
+          <div class="sos-arrow">→</div>
+          <div class="sos-step"><div class="sos-step-icon si-bg3"><img src="../public/iconos/ICONOS-09.svg" alt="despacho" /></div><h4>3. Abre modal</h4><p>Modal de despacho con detalles: quién, dónde y descripción del evento.</p></div>
+          <div class="sos-arrow">→</div>
+          <div class="sos-step"><div class="sos-step-icon si-bg4"><img src="../public/iconos/Hospital.svg" alt="hospital" /></div><h4>4. Despacho</h4><p>Elige entre Policía/C5, Ambulancia o Bomberos. Confirmación instantánea.</p></div>
+          <div class="sos-arrow">→</div>
+          <div class="sos-step"><div class="sos-step-icon si-bg5"><img src="../public/iconos/ICONOS-10.svg" alt="check" /></div><h4>5. Cierre</h4><p>La alerta se marca atendida. Queda en el historial con todos los detalles.</p></div>
+        </div>
+
+        <div class="grid g-52" style="gap:18px;align-items:start;">
+          <div class="sos-modal-mock">
+            <div class="smm-header">
+              <div class="smm-header-icon">🛡️</div>
+              <div><h3>ALERTA SOS ACTIVA</h3><p>Ana García ha solicitado auxilio inmediato</p></div>
+            </div>
+            <div class="smm-body">
+              <div class="smm-info">
+                <span class="smm-tag">Prioridad Crítica</span>
+                <p><strong>Situación:</strong> Persona siendo intimidada en estacionamiento Sur.</p>
+                <p style="margin-top:4px;"><strong>Ubicación:</strong> Estacionamiento Sur — Campus Metropolitano</p>
+                <p style="margin-top:4px;color:#888;font-size:0.7rem;">Registrado: 14:23:07 hrs</p>
+              </div>
+              <div class="smm-dispatch">
+                <div class="smm-dispatch-btn sdb-blue">🚨<span>Policía / C5</span></div>
+                <div class="smm-dispatch-btn sdb-green">🚑<span>Ambulancia</span></div>
+                <div class="smm-dispatch-btn sdb-fire">🔥<span>Bomberos</span></div>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div class="card">
+              <div class="card-title">Tipos de Reporte</div>
+              <ul>
+                <li><strong>SOS:</strong> Peligro inminente, respuesta inmediata</li>
+                <li><strong>Robo:</strong> Registro detallado con zona y descripción</li>
+                <li><strong>Vandalismo:</strong> Daño a infraestructura del campus</li>
+                <li><strong>Persona sospechosa:</strong> Alerta de prevención</li>
+                <li><strong>Accidente:</strong> Atención médica requerida</li>
+              </ul>
+            </div>
+            <div class="card">
+              <div class="card-title">Confirmación de Despacho</div>
+              <p>Al seleccionar una unidad, el sistema muestra una pantalla de éxito con animación y confirma a qué zona se dirige la unidad. El usuario también recibe feedback visual del estado de su alerta.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ SLIDE 8: ACCESOS QR ══════════ -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div class="slide-tag">Control de Accesos</div>
+        <h2 class="slide-title">Sistema de Control de Accesos por QR</h2>
+        <p class="slide-sub">Registro automatizado de entradas y salidas mediante códigos QR únicos por usuario, con bitácora auditada en tiempo real.</p>
+
+        <div class="grid g-25" style="gap:18px;align-items:start">
+          <div style="display:flex;flex-direction:column;gap:14px;">
+            <div class="qr-mock">
+              <p style="font-size:0.72rem;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#888;margin-bottom:14px;">Tu código de acceso</p>
+              <div class="qr-box">
+                <div class="qr-cell on"></div><div class="qr-cell on"></div><div class="qr-cell on"></div><div class="qr-cell"></div><div class="qr-cell on"></div><div class="qr-cell on"></div><div class="qr-cell on"></div>
+                <div class="qr-cell on"></div><div class="qr-cell"></div><div class="qr-cell on"></div><div class="qr-cell"></div><div class="qr-cell on"></div><div class="qr-cell"></div><div class="qr-cell on"></div>
+                <div class="qr-cell on"></div><div class="qr-cell"></div><div class="qr-cell on"></div><div class="qr-cell"></div><div class="qr-cell on"></div><div class="qr-cell"></div><div class="qr-cell on"></div>
+                <div class="qr-cell on"></div><div class="qr-cell on"></div><div class="qr-cell on"></div><div class="qr-cell on"></div><div class="qr-cell on"></div><div class="qr-cell on"></div><div class="qr-cell on"></div>
+                <div class="qr-cell on"></div><div class="qr-cell"></div><div class="qr-cell"></div><div class="qr-cell on"></div><div class="qr-cell"></div><div class="qr-cell on"></div><div class="qr-cell"></div>
+                <div class="qr-cell"></div><div class="qr-cell on"></div><div class="qr-cell on"></div><div class="qr-cell"></div><div class="qr-cell on"></div><div class="qr-cell on"></div><div class="qr-cell"></div>
+                <div class="qr-cell on"></div><div class="qr-cell on"></div><div class="qr-cell"></div><div class="qr-cell on"></div><div class="qr-cell on"></div><div class="qr-cell"></div><div class="qr-cell on"></div>
+              </div>
+              <p style="font-size:0.75rem;font-weight:700;color:#1a1a2e;letter-spacing:0.12em;">ALUMNO-2026-MX-0472</p>
+              <p style="font-size:0.68rem;color:#888;margin-top:4px;">Válido 24 horas · Renovación automática</p>
+            </div>
+            <div class="card">
+              <div class="card-title">Bitácora de Accesos — Hoy</div>
+              <div class="log-row"><span class="log-time">07:45</span><span class="log-name">Carlos M.</span><span class="la-in">Entrada</span><span style="font-size:0.65rem;color:#888;">Biblioteca</span></div>
+              <div class="log-row"><span class="log-time">08:12</span><span class="log-name">Ana G.</span><span class="la-in">Entrada</span><span style="font-size:0.65rem;color:#888;">Lab. A</span></div>
+              <div class="log-row"><span class="log-time">09:30</span><span class="log-name">ID desconocido</span><span class="la-out">⚠ Rechazado</span><span style="font-size:0.65rem;color:#888;">Gym</span></div>
+              <div class="log-row"><span class="log-time">11:05</span><span class="log-name">Luis R.</span><span class="la-out" style="color:#888;background:rgba(150,147,155,0.1);">Salida</span><span style="font-size:0.65rem;color:#888;">Biblioteca</span></div>
+              <div class="log-row"><span class="log-time">12:48</span><span class="log-name">María F.</span><span class="la-in">Entrada</span><span style="font-size:0.65rem;color:#888;">Auditorio</span></div>
+            </div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <div class="card">
+              <div class="card-title">¿Cómo Funciona?</div>
+              <div class="prob-icon-row">
+                <div class="prob-icon pi-orange" style="min-width:36px;min-height:36px;"><img src="../public/iconos/Qr.svg" alt="qr" /></div>
+                <div class="prob-text"><h4>Generación de QR único</h4><p>Cada usuario recibe un QR vinculado a su perfil y rol, con validez temporal configurable.</p></div>
+              </div>
+              <div class="prob-icon-row">
+                <div class="prob-icon pi-blue" style="min-width:36px;min-height:36px;"><img src="../public/iconos/ICONOS-08.svg" alt="scan" /></div>
+                <div class="prob-text"><h4>Escaneo en punto de acceso</h4><p>Los lectores registran el evento con timestamp, ubicación e identidad del portador.</p></div>
+              </div>
+              <div class="prob-icon-row">
+                <div class="prob-icon pi-red" style="min-width:36px;min-height:36px;"><img src="../public/iconos/Alerta.svg" alt="alerta" style="filter:invert(18%) sepia(90%) saturate(700%) hue-rotate(338deg) brightness(95%);" /></div>
+                <div class="prob-text"><h4>Alerta por acceso no autorizado</h4><p>Si un QR es rechazado o un acceso ocurre fuera de horario, se genera alerta inmediata al panel de autoridad.</p></div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-title">Instalaciones Monitoreadas</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px;">
+                <div style="background:rgba(227,121,9,0.06);border:1px solid rgba(227,121,9,0.15);border-radius:10px;padding:8px 12px;font-size:0.8rem;color:#555;">📚 Biblioteca</div>
+                <div style="background:rgba(227,121,9,0.06);border:1px solid rgba(227,121,9,0.15);border-radius:10px;padding:8px 12px;font-size:0.8rem;color:#555;">🔬 Laboratorios</div>
+                <div style="background:rgba(227,121,9,0.06);border:1px solid rgba(227,121,9,0.15);border-radius:10px;padding:8px 12px;font-size:0.8rem;color:#555;">🏟️ Auditorio</div>
+                <div style="background:rgba(227,121,9,0.06);border:1px solid rgba(227,121,9,0.15);border-radius:10px;padding:8px 12px;font-size:0.8rem;color:#555;">🏋️ Gimnasio</div>
+                <div style="background:rgba(227,121,9,0.06);border:1px solid rgba(227,121,9,0.15);border-radius:10px;padding:8px 12px;font-size:0.8rem;color:#555;">🚗 Estacionamiento</div>
+                <div style="background:rgba(227,121,9,0.06);border:1px solid rgba(227,121,9,0.15);border-radius:10px;padding:8px 12px;font-size:0.8rem;color:#555;">🏢 Rectoría</div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-title">Capacidades de Auditoría</div>
+              <ul>
+                <li>Filtro por instalación, usuario o rango de fecha</li>
+                <li>Exportación de bitácora en CSV</li>
+                <li>Alertas automáticas por aforo máximo superado</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ SLIDE 9: ARQUITECTURA TÉCNICA ══════════ -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div class="slide-tag">Tecnología</div>
+        <h2 class="slide-title">Arquitectura y Stack Tecnológico</h2>
+        <p class="slide-sub">Construido sobre tecnologías de producción modernas, con despliegue en la nube y capacidad de escala universitaria. Sin dependencia de infraestructura propia.</p>
+
+        <div class="grid g-52" style="gap:18px;align-items:start">
+          <div>
+            <div class="tech-layer">
+              <div class="tech-layer-title">Frontend · Capa de Presentación</div>
+              <div class="tech-tags">
+                <span class="tech-tag tt-next">Next.js 15 (App Router)</span>
+                <span class="tech-tag tt-react">React 19</span>
+                <span class="tech-tag tt-ts">TypeScript</span>
+                <span class="tech-tag tt-tw">Tailwind CSS</span>
+                <span class="tech-tag tt-shadcn">shadcn/ui</span>
+              </div>
+            </div>
+            <div class="tech-layer">
+              <div class="tech-layer-title">Servicios Externos</div>
+              <div class="tech-tags">
+                <span class="tech-tag tt-mapbox">Mapbox GL JS</span>
+                <span class="tech-tag tt-firebase">Firebase Firestore</span>
+                <span class="tech-tag tt-firebase">Firebase Auth</span>
+              </div>
+            </div>
+            <div class="tech-layer">
+              <div class="tech-layer-title">Infraestructura · Deploy</div>
+              <div class="tech-tags">
+                <span class="tech-tag tt-vercel">Vercel (Edge Network)</span>
+                <span class="tech-tag" style="background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.5);border-color:rgba(255,255,255,0.1);">.env variables</span>
+                <span class="tech-tag" style="background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.5);border-color:rgba(255,255,255,0.1);">GitHub CI/CD</span>
+              </div>
+            </div>
+            <div class="grid g-2" style="gap:10px;margin-top:12px;">
+              <div class="card" style="padding:12px 16px;"><div class="card-title">Seguridad</div><ul><li>Tokens por env var (SSR seguro)</li><li>Sanitización de inputs</li><li>Autenticación por rol</li></ul></div>
+              <div class="card" style="padding:12px 16px;"><div class="card-title">Performance</div><ul><li>Server Components por defecto</li><li>Lazy load del mapa Mapbox</li><li>Edge deploy &lt;100ms TTFB</li></ul></div>
+            </div>
+          </div>
+
+          <div class="arch-diagram">
+            <p style="font-size:0.65rem;font-weight:800;text-transform:uppercase;letter-spacing:0.12em;color:rgba(255,255,255,0.3);margin-bottom:16px;">Flujo de Datos</p>
+            <div class="arch-row"><div class="arch-box ab-orange">👤 Usuario (Browser)</div></div>
+            <div class="arch-arrow">↕</div>
+            <div class="arch-row"><div class="arch-box ab-blue">⚡ Next.js Server (Vercel Edge)</div></div>
+            <div class="arch-arrow">↕</div>
+            <div class="arch-row" style="gap:8px;">
+              <div class="arch-box ab-green" style="font-size:0.7rem;">🗺️ Mapbox GL JS</div>
+              <div class="arch-box ab-green" style="font-size:0.7rem;">🔥 Firebase</div>
+            </div>
+            <div class="arch-arrow">↕</div>
+            <div class="arch-row"><div class="arch-box ab-gray">🗄️ Firestore (Realtime DB)</div></div>
+            <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.08);">
+              <p style="font-size:0.62rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.3);margin-bottom:10px;">Tipos de Dato Principales</p>
+              <div style="display:flex;flex-wrap:wrap;gap:6px;">
+                <span style="font-size:0.68rem;padding:4px 10px;border-radius:8px;background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.5);border:1px solid rgba(255,255,255,0.1);">Incident</span>
+                <span style="font-size:0.68rem;padding:4px 10px;border-radius:8px;background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.5);border:1px solid rgba(255,255,255,0.1);">MapMarker</span>
+                <span style="font-size:0.68rem;padding:4px 10px;border-radius:8px;background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.5);border:1px solid rgba(255,255,255,0.1);">ZoneOverlay</span>
+                <span style="font-size:0.68rem;padding:4px 10px;border-radius:8px;background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.5);border:1px solid rgba(255,255,255,0.1);">Campus</span>
+                <span style="font-size:0.68rem;padding:4px 10px;border-radius:8px;background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.5);border:1px solid rgba(255,255,255,0.1);">User</span>
+                <span style="font-size:0.68rem;padding:4px 10px;border-radius:8px;background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.5);border:1px solid rgba(255,255,255,0.1);">Role</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ SLIDE 10: IMPACTO Y PRÓXIMOS PASOS ══════════ -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div class="slide-tag">Impacto y Visión</div>
+        <h2 class="slide-title">Impacto Esperado y Próximos Pasos</h2>
+        <p class="slide-sub">Comunidad Alerta está diseñado para escalar de un campus piloto a toda la red institucional sin cambios de infraestructura, con impacto medible desde el primer día.</p>
+
+        <div class="grid g-4" style="margin-bottom:20px">
+          <div class="kpi-box"><div class="kpi-num">−68%</div><div class="kpi-label">en tiempo de respuesta a emergencias</div></div>
+          <div class="kpi-box"><div class="kpi-num">100%</div><div class="kpi-label">trazabilidad de incidentes y despachos</div></div>
+          <div class="kpi-box"><div class="kpi-num">3x</div><div class="kpi-label">campus monitoreados simultáneamente</div></div>
+          <div class="kpi-box"><div class="kpi-num">24/7</div><div class="kpi-label">disponibilidad en la nube sin infraestructura propia</div></div>
+        </div>
+
+        <div class="grid g-25" style="gap:18px">
+          <div>
+            <h3 style="font-size:0.9rem;font-weight:800;text-transform:uppercase;letter-spacing:0.08em;color:#333;margin-bottom:12px;">Hoja de Ruta</h3>
+            <div class="roadmap-item"><span class="roadmap-phase rp-now">Ahora ✓</span><div><h4>MVP Funcional Activo</h4><p>Dashboard, mapa por campus, SOS, reportes, accesos QR y despacho. Desplegado en Vercel.</p></div></div>
+            <div class="roadmap-item"><span class="roadmap-phase rp-next">Próximo</span><div><h4>Integración Firebase en Producción</h4><p>Reemplazar datos mock por Firestore live. Notificaciones push en tiempo real para autoridades.</p></div></div>
+            <div class="roadmap-item"><span class="roadmap-phase rp-next">Próximo</span><div><h4>App Móvil (PWA)</h4><p>Empaquetar como Progressive Web App. Soporte offline para reporte de incidentes sin conexión.</p></div></div>
+            <div class="roadmap-item"><span class="roadmap-phase rp-fut">Futuro</span><div><h4>IA para Predicción de Zonas de Riesgo</h4><p>Análisis de patrones históricos para recomendar patrullaje en zonas con alta incidencia.</p></div></div>
+            <div class="roadmap-item"><span class="roadmap-phase rp-fut">Futuro</span><div><h4>Integración C5 / Gobierno Local</h4><p>API de sincronización con centros de comando para amplificación externa de respuesta.</p></div></div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <div class="card" style="background:linear-gradient(140deg,rgba(227,121,9,0.06),rgba(197,22,23,0.05));border-color:rgba(227,121,9,0.2);">
+              <div class="card-title">¿Por Qué Comunidad Alerta?</div>
+              <div class="prob-icon-row" style="margin-bottom:12px;">
+                <div class="prob-icon pi-orange" style="min-width:36px;min-height:36px;"><img src="../public/iconos/ICONOS-02.svg" alt="icon" /></div>
+                <div class="prob-text"><h4>Sin App que descargar</h4><p>Funciona en cualquier navegador moderno desde el primer uso.</p></div>
+              </div>
+              <div class="prob-icon-row" style="margin-bottom:12px;">
+                <div class="prob-icon pi-red" style="min-width:36px;min-height:36px;"><img src="../public/iconos/ICONOS-03.svg" alt="icon" /></div>
+                <div class="prob-text"><h4>Multi campus desde el día 1</h4><p>Arquitectura pensada para operar varios campus con data separada por institución.</p></div>
+              </div>
+              <div class="prob-icon-row">
+                <div class="prob-icon pi-blue" style="min-width:36px;min-height:36px;"><img src="../public/iconos/Hospital.svg" alt="icon" /></div>
+                <div class="prob-text"><h4>Respuesta coordinada real</h4><p>Policía, médicos y bomberos en un solo click desde el centro de mando.</p></div>
+              </div>
+            </div>
+            <div style="background:linear-gradient(120deg,var(--orange),var(--red));border-radius:var(--radius);padding:24px 22px;color:white;text-align:center;box-shadow:var(--shadow);">
+              <img src="../public/iconos/logo-principal.png" alt="Comunidad Alerta" style="width:160px;filter:brightness(0) invert(1);margin-bottom:14px;display:block;margin-left:auto;margin-right:auto;" />
+              <p style="font-size:1rem;font-weight:900;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">Seguridad que une a la comunidad</p>
+              <p style="font-size:0.82rem;opacity:0.82;">Una plataforma. Todos los campus. Un solo objetivo: que nadie enfrente una emergencia solo.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div><!-- /slides -->
+
+  <!-- ─── Controls ─────────────────────────────────────────── -->
+  <div class="controls">
+    <button class="btn" id="prevBtn" type="button">← Anterior</button>
+    <div class="dots" id="dots" aria-label="Navegación de diapositivas"></div>
+    <div class="slide-count" id="slideCount">1 / 10</div>
+    <div class="slide-title-bar" id="slideTitle">Portada</div>
+    <button class="btn" id="nextBtn" type="button">Siguiente →</button>
+  </div>
+</div><!-- /deck -->
+
+<script>
+  (function () {
+    const slideTitles = [
+      'Portada', 'El Problema', 'La Solución', 'Perfiles de Usuario',
+      'Dashboard', 'Mapa Perimetral', 'Alertas SOS',
+      'Control de Accesos', 'Arquitectura Técnica', 'Impacto y Próximos Pasos'
+    ];
+
+    const slides   = Array.from(document.querySelectorAll('.slide'));
+    const dotsHost = document.getElementById('dots');
+    const countEl  = document.getElementById('slideCount');
+    const titleEl  = document.getElementById('slideTitle');
+    const prevBtn  = document.getElementById('prevBtn');
+    const nextBtn  = document.getElementById('nextBtn');
+    const total    = slides.length;
+    let index = 0;
+
+    /* measure tallest slide so deck doesn't jump */
+    function setDeckHeight() {
+      const slidesEl = document.querySelector('.slides');
+      let maxH = 0;
+      slides.forEach(s => {
+        const prev = s.className;
+        s.style.display = 'flex';
+        s.style.position = 'relative';
+        maxH = Math.max(maxH, s.scrollHeight);
+        s.style.display = '';
+        s.style.position = '';
+      });
+      slidesEl.style.minHeight = Math.max(maxH, 680) + 'px';
+    }
+
+    function renderDots() {
+      dotsHost.innerHTML = '';
+      slides.forEach((_, i) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'dot' + (i === index ? ' active' : '');
+        btn.setAttribute('aria-label', 'Diapositiva ' + (i + 1));
+        btn.addEventListener('click', () => goTo(i));
+        dotsHost.appendChild(btn);
+      });
+    }
+
+    function goTo(i) {
+      index = ((i % total) + total) % total;
+      slides.forEach((s, pos) => s.classList.toggle('active', pos === index));
+      countEl.textContent = (index + 1) + ' / ' + total;
+      titleEl.textContent = slideTitles[index] || '';
+      renderDots();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    prevBtn.addEventListener('click', () => goTo(index - 1));
+    nextBtn.addEventListener('click', () => goTo(index + 1));
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') goTo(index + 1);
+      if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   goTo(index - 1);
+    });
+
+    let touchX = null;
+    document.addEventListener('touchstart', e => { touchX = e.touches[0].clientX; });
+    document.addEventListener('touchend',   e => {
+      if (touchX === null) return;
+      const dx = e.changedTouches[0].clientX - touchX;
+      if (Math.abs(dx) > 50) goTo(dx < 0 ? index + 1 : index - 1);
+      touchX = null;
+    });
+
+    setDeckHeight();
+    renderDots();
+  })();
+</script>
+</body>
+</html>
