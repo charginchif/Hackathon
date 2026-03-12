@@ -204,47 +204,39 @@ export default function Home() {
                     <div className="space-y-3">
                         <Button variant="outline" onClick={() => startBiometricLogin('admin_global')} className="w-full justify-between h-14 rounded-xl border-secondary/30 group bg-background hover:bg-secondary hover:text-secondary-foreground">
                         <div className="flex items-center gap-3">
+                          <img src="/iconos/ICONOS-12.svg" alt="Admin" className="w-5 h-5 object-contain" />
                             <div className="text-left">
                                 <p className="text-xs font-black text-primary leading-none group-hover:text-secondary-foreground">Admin Global C5</p>
                             <p className="text-[9px] text-muted uppercase group-hover:text-secondary-foreground/85">Supervisión Comunidad Alerta</p>
                             </div>
                         </div>
-                        <span className="w-7 h-7 rounded-lg bg-background/90 border border-muted/30 p-1 shadow-sm group-hover:bg-background/95 group-hover:border-background/70">
-                          <img src="/iconos/ICONOS-12.svg" alt="Admin" className="w-full h-full object-contain" />
-                        </span>
                       </Button>
                         <Button variant="outline" onClick={() => startBiometricLogin('alumno_metro')} className="w-full justify-between h-14 rounded-xl border-muted/40 group bg-background hover:bg-secondary hover:text-secondary-foreground">
                         <div className="flex items-center gap-3">
+                          <img src="/iconos/ICONOS-05.svg" alt="Alumno" className="w-5 h-5 object-contain" />
                             <div className="text-left">
                                 <p className="text-xs font-black text-primary leading-none group-hover:text-secondary-foreground">Mariana López</p>
                             <p className="text-[9px] text-muted uppercase group-hover:text-secondary-foreground/85">Campus Metropolitano</p>
                             </div>
                         </div>
-                        <span className="w-7 h-7 rounded-lg bg-background/90 border border-muted/30 p-1 shadow-sm group-hover:bg-background/95 group-hover:border-background/70">
-                          <img src="/iconos/ICONOS-05.svg" alt="Alumno" className="w-full h-full object-contain" />
-                        </span>
                       </Button>
                         <Button variant="outline" onClick={() => startBiometricLogin('alumno_tec')} className="w-full justify-between h-14 rounded-xl border-muted/40 group bg-background hover:bg-secondary hover:text-secondary-foreground">
                         <div className="flex items-center gap-3">
+                          <img src="/iconos/ICONOS-05.svg" alt="Alumno" className="w-5 h-5 object-contain" />
                             <div className="text-left">
                                 <p className="text-xs font-black text-primary leading-none group-hover:text-secondary-foreground">Roberto García</p>
                             <p className="text-[9px] text-muted uppercase group-hover:text-secondary-foreground/85">Campus Tecnológico</p>
                             </div>
                         </div>
-                        <span className="w-7 h-7 rounded-lg bg-background/90 border border-muted/30 p-1 shadow-sm group-hover:bg-background/95 group-hover:border-background/70">
-                          <img src="/iconos/ICONOS-05.svg" alt="Alumno" className="w-full h-full object-contain" />
-                        </span>
                       </Button>
                         <Button variant="outline" onClick={() => startBiometricLogin('alumno_oriente')} className="w-full justify-between h-14 rounded-xl border-muted/40 group bg-background hover:bg-secondary hover:text-secondary-foreground">
                         <div className="flex items-center gap-3">
+                          <img src="/iconos/ICONOS-05.svg" alt="Alumno" className="w-5 h-5 object-contain" />
                             <div className="text-left">
                                 <p className="text-xs font-black text-primary leading-none group-hover:text-secondary-foreground">Sofía Pérez</p>
                             <p className="text-[9px] text-muted uppercase group-hover:text-secondary-foreground/85">Campus Oriente</p>
                             </div>
                         </div>
-                        <span className="w-7 h-7 rounded-lg bg-background/90 border border-muted/30 p-1 shadow-sm group-hover:bg-background/95 group-hover:border-background/70">
-                          <img src="/iconos/ICONOS-05.svg" alt="Alumno" className="w-full h-full object-contain" />
-                        </span>
                       </Button>
                     </div>
                   </ScrollArea>
