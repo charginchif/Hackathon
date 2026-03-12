@@ -2,7 +2,7 @@
 
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { CheckCircle2, IdCard, AlertTriangle, Network, MapPin, ChevronRight, Landmark } from 'lucide-react';
+import { CheckCircle2, IdCard, AlertTriangle, Network, MapPin, ChevronRight, Landmark, ShieldCheck } from 'lucide-react';
 import { Role, Incident, Campus } from '@/lib/types';
 
 interface DashboardProps {
@@ -13,16 +13,25 @@ interface DashboardProps {
 }
 
 export default function Dashboard({ role, campus, incidents, onNavigate }: DashboardProps) {
-  const campusIncidents = incidents.filter(i => i.campus === campus);
+  const campusDisplay = campus === 'Global' ? 'Todos los Planteles' : campus;
+  
+  // Si el rol es alumno, solo ve incidentes de su plantel.
+  // Si es autoridad, ve los del campus seleccionado.
+  const campusIncidents = incidents.filter(i => campus === 'Global' ? true : i.campus === campus);
   const activeReports = campusIncidents.filter(i => i.status === 'pendiente').length;
 
   return (
     <div className="space-y-8">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold text-primary font-headline">Panel de Control <span className="text-secondary tracking-tight">UNE</span></h1>
-          <p className="text-slate-500 font-medium">Monitoreo activo para: <strong className="text-primary">{campus}</strong></p>
+          <h1 className="text-3xl font-extrabold text-primary font-headline">Panel UNE <span className="text-secondary tracking-tight">Escuela Segura</span></h1>
+          <p className="text-slate-500 font-medium">Monitoreo activo: <strong className="text-primary">{campusDisplay}</strong></p>
         </div>
+        {role === 'alumno' && (
+          <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100 border-emerald-200 px-4 py-2 rounded-xl text-xs font-bold gap-2">
+            <ShieldCheck className="w-4 h-4" /> CONEXIÓN SEGURA VERIFICADA
+          </Badge>
+        )}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -30,7 +39,7 @@ export default function Dashboard({ role, campus, incidents, onNavigate }: Dashb
           <div className="absolute top-0 right-0 w-24 h-24 bg-secondary/10 rounded-bl-full transform translate-x-8 -translate-y-8 transition-transform group-hover:scale-110"></div>
           <div className="flex justify-between items-start relative z-10">
             <div>
-              <p className="text-slate-300 text-xs font-bold uppercase tracking-widest mb-1">Estatus Perimetral</p>
+              <p className="text-slate-300 text-xs font-bold uppercase tracking-widest mb-1">Estatus Perímetro</p>
               <h3 className="text-3xl font-black">SEGURIDAD A+</h3>
             </div>
             <Landmark className="w-10 h-10 text-secondary opacity-50" />
@@ -41,10 +50,10 @@ export default function Dashboard({ role, campus, incidents, onNavigate }: Dashb
           </div>
         </Card>
 
-        <Card className="p-6 border-slate-100 shadow-lg hover:shadow-xl transition-shadow">
+        <Card className="p-6 border-slate-100 shadow-lg hover:shadow-xl transition-shadow bg-white">
           <div className="flex justify-between items-start">
             <div>
-              <p className="text-muted-foreground text-xs font-bold uppercase tracking-widest mb-1">Biometría (Hoy)</p>
+              <p className="text-muted-foreground text-xs font-bold uppercase tracking-widest mb-1">Accesos (Hoy)</p>
               <h3 className="text-3xl font-black text-primary">1,248</h3>
             </div>
             <div className="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-primary border border-slate-100">
@@ -52,11 +61,11 @@ export default function Dashboard({ role, campus, incidents, onNavigate }: Dashb
             </div>
           </div>
           <p className="text-xs text-muted-foreground mt-4 font-medium">
-            <span className="text-primary font-bold">↑ 8%</span> incremento de flujo
+            <span className="text-primary font-bold">↑ 8%</span> flujo normalizado
           </p>
         </Card>
 
-        <Card className="p-6 border-slate-100 shadow-lg hover:shadow-xl transition-shadow">
+        <Card className="p-6 border-slate-100 shadow-lg hover:shadow-xl transition-shadow bg-white">
           <div className="flex justify-between items-start">
             <div>
               <p className="text-muted-foreground text-xs font-bold uppercase tracking-widest mb-1">Alertas Activas</p>
@@ -66,27 +75,27 @@ export default function Dashboard({ role, campus, incidents, onNavigate }: Dashb
               <AlertTriangle className="w-6 h-6" />
             </div>
           </div>
-          <p className="text-xs text-muted-foreground mt-4 font-medium">Incidentes en resolución</p>
+          <p className="text-xs text-muted-foreground mt-4 font-medium">En proceso de atención</p>
         </Card>
 
-        <Card className="p-6 border-slate-100 shadow-lg hover:shadow-xl transition-shadow">
+        <Card className="p-6 border-slate-100 shadow-lg hover:shadow-xl transition-shadow bg-white">
           <div className="flex justify-between items-start">
             <div>
-              <p className="text-muted-foreground text-xs font-bold uppercase tracking-widest mb-1">Módulos Vigilancia</p>
-              <h3 className="text-3xl font-black text-primary">32</h3>
+              <p className="text-muted-foreground text-xs font-bold uppercase tracking-widest mb-1">Red Vigilancia</p>
+              <h3 className="text-3xl font-black text-primary">Operativo</h3>
             </div>
             <div className="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-primary border border-slate-100">
               <Network className="w-6 h-6" />
             </div>
           </div>
-          <p className="text-xs text-muted-foreground mt-4 font-medium">Red de respuesta UNE</p>
+          <p className="text-xs text-muted-foreground mt-4 font-medium">Sincronizado con C5 UNE</p>
         </Card>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <Card className="lg:col-span-2 p-0 overflow-hidden flex flex-col min-h-[450px] border-slate-100 shadow-xl rounded-3xl">
+        <Card className="lg:col-span-2 p-0 overflow-hidden flex flex-col min-h-[450px] border-slate-100 shadow-xl rounded-3xl bg-white">
           <div className="p-6 border-b flex justify-between items-center bg-white z-10">
-            <h4 className="font-extrabold text-primary uppercase tracking-tight">Geolocalización UNE: {campus}</h4>
+            <h4 className="font-extrabold text-primary uppercase tracking-tight">Geolocalización UNE: {campusDisplay}</h4>
             {role === 'autoridad' && (
               <button 
                 onClick={() => onNavigate('mapa')}
@@ -99,10 +108,9 @@ export default function Dashboard({ role, campus, incidents, onNavigate }: Dashb
           <div className="flex-1 bg-grid-pattern relative flex items-center justify-center bg-slate-50">
             <div className="w-3/4 h-2/3 map-building rounded-3xl flex items-center justify-center relative shadow-2xl overflow-hidden">
                <div className="absolute inset-0 bg-blue-50/30"></div>
-              <span className="text-slate-300 font-black uppercase tracking-[0.2em] text-2xl font-headline relative z-10">{campus.split(' ').pop()}</span>
-              {/* Fake Campus Structure */}
-              <div className="absolute top-1/4 left-1/4 w-12 h-12 bg-white border border-slate-200 rounded shadow-sm z-10"></div>
-              <div className="absolute bottom-1/4 right-1/4 w-12 h-12 bg-white border border-slate-200 rounded shadow-sm z-10"></div>
+              <span className="text-slate-300 font-black uppercase tracking-[0.2em] text-2xl font-headline relative z-10">
+                {campus === 'Global' ? 'SISTEMA UNE' : campus.split(' ').pop()}
+              </span>
               
               <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-5 h-5 bg-primary rounded-full border-4 border-white shadow-lg"></div>
               
@@ -117,9 +125,9 @@ export default function Dashboard({ role, campus, incidents, onNavigate }: Dashb
           </div>
         </Card>
 
-        <Card className="p-8 flex flex-col h-[450px] border-slate-100 shadow-xl rounded-3xl">
+        <Card className="p-8 flex flex-col h-[450px] border-slate-100 shadow-xl rounded-3xl bg-white">
           <h4 className="font-extrabold text-primary mb-6 border-b pb-4 uppercase tracking-tight flex items-center justify-between">
-            ALERTA TEMPRANA
+            ALERTAS LOCALES
             <Badge className="bg-primary text-secondary">VIVO</Badge>
           </h4>
           <div className="flex-1 overflow-y-auto space-y-4 pr-2 custom-scrollbar">
@@ -137,7 +145,7 @@ export default function Dashboard({ role, campus, incidents, onNavigate }: Dashb
             )) : (
               <div className="flex flex-col items-center justify-center h-full opacity-30">
                 <ShieldCheck className="w-16 h-16 text-slate-300 mb-2" />
-                <p className="text-xs font-bold text-slate-400">SIN INCIDENTES ACTIVOS</p>
+                <p className="text-xs font-bold text-slate-400">ENTORNO SEGURO</p>
               </div>
             )}
           </div>

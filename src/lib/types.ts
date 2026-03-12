@@ -1,11 +1,13 @@
 export type Role = 'alumno' | 'autoridad';
-export type Campus = 'UNE Campus Central' | 'UNE Campus Américas' | 'UNE Campus Tlaquepaque';
+export type Campus = 'UNE Campus Central' | 'UNE Campus Américas' | 'UNE Campus Tlaquepaque' | 'Global';
 
 export interface User {
   id: string;
   name: string;
   role: Role;
   roleDisplay: string;
+  campus: Campus;
+  email?: string;
 }
 
 export type IncidentCategory = 'Infraestructura' | 'Sospechoso' | 'Emergencia' | 'Acoso';
@@ -16,7 +18,7 @@ export interface Incident {
   category: IncidentCategory;
   description: string;
   zone: string;
-  campus: Campus;
+  campus: Exclude<Campus, 'Global'>;
   status: IncidentStatus;
   user: string;
   time: string;
@@ -32,6 +34,6 @@ export interface AccessLog {
   person: string;
   role: string;
   gate: string;
-  campus: Campus;
+  campus: Exclude<Campus, 'Global'>;
   status: 'Autorizado' | 'Denegado';
 }

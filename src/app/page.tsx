@@ -1,10 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { ShieldCheck, UserCheck, School, ChevronRight, LogOut, Bell, User as UserIcon, ScanFace, Loader2, Landmark } from 'lucide-react';
+import { ShieldCheck, UserCheck, ChevronRight, Bell, User as UserIcon, ScanFace, Mail, Lock, Landmark, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { ROLES_CONFIG, mockIncidents, mockAccessLogs, CAMPUSES } from '@/lib/mocks';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ROLES_CONFIG, mockIncidents, mockAccessLogs, CAMPUSES, MOCK_USERS } from '@/lib/mocks';
 import { Role, User, Incident, AccessLog, Campus } from '@/lib/types';
 import Dashboard from '@/components/Dashboard';
 import PerimeterMap from '@/components/PerimeterMap';
@@ -21,38 +24,59 @@ export default function Home() {
   const [incidents, setIncidents] = useState<Incident[]>(mockIncidents);
   const [accessLogs] = useState<AccessLog[]>(mockAccessLogs);
   
-  // Biometric login states
+  // Login states
   const [isScanning, setIsScanning] = useState(false);
   const [scanProgress, setScanProgress] = useState(0);
-  const [pendingRole, setPendingRole] = useState<Role | null>(null);
+  const [loginEmail, setLoginEmail] = useState('');
+  const [loginPass, setLoginPass] = useState('');
+  const [loginError, setLoginError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  const startLoginFlow = (role: Role) => {
-    setPendingRole(role);
+  // Biometric login flow
+  const startBiometricLogin = (userId: string) => {
     setIsScanning(true);
     setScanProgress(0);
+    setLoginError('');
+    
+    const interval = setInterval(() => {
+      setScanProgress(prev => {
+        if (prev >= 100) {
+          clearInterval(interval);
+          setTimeout(() => {
+            const user = MOCK_USERS[userId];
+            handleLoginSuccess(user);
+          }, 600);
+          return 100;
+        }
+        return prev + 5;
+      });
+    }, 100);
   };
 
-  useEffect(() => {
-    if (isScanning && scanProgress < 100) {
-      const timer = setTimeout(() => setScanProgress(p => p + 5), 100);
-      return () => clearTimeout(timer);
-    } else if (isScanning && scanProgress >= 100) {
-      setTimeout(() => {
-        if (pendingRole) completeLogin(pendingRole);
-      }, 500);
-    }
-  }, [isScanning, scanProgress, pendingRole]);
+  const handleEmailLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setLoginError('');
 
-  const completeLogin = (role: Role) => {
-    const config = ROLES_CONFIG[role];
-    const user: User = {
-      id: role === 'alumno' ? 'U-7821' : 'A-101',
-      name: config.name,
-      role: role,
-      roleDisplay: config.roleDisplay
-    };
+    setTimeout(() => {
+      const userFound = Object.values(MOCK_USERS).find(u => u.email === loginEmail && u.password === loginPass);
+      if (userFound) {
+        handleLoginSuccess(userFound);
+      } else {
+        setLoginError('Credenciales inválidas. Por favor intente de nuevo.');
+      }
+      setIsLoading(false);
+    }, 1500);
+  };
+
+  const handleLoginSuccess = (user: User) => {
     setCurrentUser(user);
-    setActiveSection(config.defaultSection);
+    if (user.role === 'alumno') {
+      setActiveCampus(user.campus);
+    } else {
+      setActiveCampus('UNE Campus Central');
+    }
+    setActiveSection(ROLES_CONFIG[user.role].defaultSection);
     setIsScanning(false);
   };
 
@@ -60,6 +84,9 @@ export default function Home() {
     setCurrentUser(null);
     setIsScanning(false);
     setScanProgress(0);
+    setLoginEmail('');
+    setLoginPass('');
+    setLoginError('');
   };
 
   const handleAddIncident = (newIncident: Incident) => {
@@ -76,73 +103,149 @@ export default function Home() {
       <div className="h-screen w-full flex items-center justify-center bg-slate-900 px-4 relative overflow-hidden">
         <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] pointer-events-none"></div>
         
-        <div className="max-w-md w-full bg-white rounded-3xl shadow-2xl p-10 text-center relative z-10 border border-secondary/20">
+        <div className="max-w-md w-full bg-white rounded-3xl shadow-2xl p-8 relative z-10 border border-secondary/20">
           {!isScanning ? (
             <>
-              <div className="mb-6 inline-flex items-center justify-center w-24 h-24 bg-primary rounded-2xl text-secondary shadow-lg">
-                <ShieldCheck className="w-14 h-14" />
+              <div className="text-center mb-8">
+                <div className="mb-4 inline-flex items-center justify-center w-20 h-20 bg-primary rounded-2xl text-secondary shadow-lg">
+                  <ShieldCheck className="w-12 h-12" />
+                </div>
+                <h1 className="text-2xl font-black text-primary tracking-tight mb-1 font-headline uppercase">RETO 2026: Escuelas Seguras</h1>
+                <p className="text-slate-500 text-sm font-medium">Universidad de Especialidades (UNE)</p>
               </div>
-              <h1 className="text-3xl font-extrabold text-primary tracking-tight mb-1 font-headline">ESCUELAS SEGURAS UNE</h1>
-              <p className="text-slate-500 mb-8 font-medium">Plataforma Institucional de Prevención</p>
-              
-              <div className="space-y-4 text-left">
-                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-2">
-                  <ScanFace className="w-4 h-4" /> Autenticación Biométrica FaceID
-                </p>
-                <button 
-                  onClick={() => startLoginFlow('alumno')}
-                  className="w-full flex items-center justify-between p-5 border border-slate-200 rounded-2xl hover:border-secondary hover:bg-secondary/5 transition-all group shadow-sm hover:shadow-md"
-                >
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center group-hover:bg-secondary group-hover:text-primary transition-colors">
-                      <UserCheck className="w-6 h-6 text-slate-500 group-hover:text-primary" />
-                    </div>
-                    <div>
-                      <span className="block font-bold text-primary">Comunidad Universitaria</span>
-                      <span className="text-xs text-slate-500">Alumnos, Docentes, Staff</span>
-                    </div>
-                  </div>
-                  <ChevronRight className="w-5 h-5 text-slate-300 group-hover:text-secondary" />
-                </button>
 
-                <button 
-                  onClick={() => startLoginFlow('autoridad')}
-                  className="w-full flex items-center justify-between p-5 border border-slate-200 rounded-2xl hover:border-primary hover:bg-primary/5 transition-all group shadow-sm hover:shadow-md"
-                >
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors">
-                      <Landmark className="w-6 h-6 text-slate-500 group-hover:text-white" />
+              <Tabs defaultValue="biometric" className="w-full">
+                <TabsList className="grid w-full grid-cols-2 mb-8 bg-slate-100 p-1 rounded-xl">
+                  <TabsTrigger value="biometric" className="rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm">Biometría</TabsTrigger>
+                  <TabsTrigger value="email" className="rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm">Credenciales</TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="biometric" className="space-y-4">
+                  <div className="bg-blue-50 p-4 rounded-xl border border-blue-100 mb-6">
+                    <div className="flex items-center gap-3 text-primary mb-2">
+                      <ScanFace className="w-5 h-5" />
+                      <span className="text-xs font-bold uppercase tracking-wider">Acceso FaceID Simulado</span>
                     </div>
-                    <div>
-                      <span className="block font-bold text-primary">Autoridad UNE</span>
-                      <span className="text-xs text-slate-500">Dirección, C5 Institucional</span>
-                    </div>
+                    <p className="text-[10px] text-slate-500 leading-relaxed">Seleccione un perfil para simular el reconocimiento biométrico automático del sistema UNE.</p>
                   </div>
-                  <ChevronRight className="w-5 h-5 text-slate-300 group-hover:text-primary" />
-                </button>
-              </div>
+
+                  <div className="grid gap-3">
+                    <Button 
+                      variant="outline" 
+                      onClick={() => startBiometricLogin('alumno_central')}
+                      className="justify-between h-14 border-slate-200 hover:border-secondary hover:bg-secondary/5 rounded-xl group"
+                    >
+                      <div className="flex items-center gap-3">
+                        <UserCheck className="w-5 h-5 text-slate-400 group-hover:text-primary" />
+                        <div className="text-left">
+                          <p className="text-xs font-bold text-primary leading-none">Alumno Campus Central</p>
+                          <p className="text-[10px] text-slate-400">Mariana López</p>
+                        </div>
+                      </div>
+                      <ChevronRight className="w-4 h-4 text-slate-300" />
+                    </Button>
+
+                    <Button 
+                      variant="outline" 
+                      onClick={() => startBiometricLogin('alumno_americas')}
+                      className="justify-between h-14 border-slate-200 hover:border-secondary hover:bg-secondary/5 rounded-xl group"
+                    >
+                      <div className="flex items-center gap-3">
+                        <UserCheck className="w-5 h-5 text-slate-400 group-hover:text-primary" />
+                        <div className="text-left">
+                          <p className="text-xs font-bold text-primary leading-none">Alumno Campus Américas</p>
+                          <p className="text-[10px] text-slate-400">Roberto Gómez</p>
+                        </div>
+                      </div>
+                      <ChevronRight className="w-4 h-4 text-slate-300" />
+                    </Button>
+
+                    <Button 
+                      variant="outline" 
+                      onClick={() => startBiometricLogin('admin_global')}
+                      className="justify-between h-14 border-primary/20 hover:border-primary hover:bg-primary/5 rounded-xl group"
+                    >
+                      <div className="flex items-center gap-3">
+                        <Landmark className="w-5 h-5 text-slate-400 group-hover:text-primary" />
+                        <div className="text-left">
+                          <p className="text-xs font-bold text-primary leading-none">Autoridad Institucional</p>
+                          <p className="text-[10px] text-slate-400">Dir. Seguridad Global</p>
+                        </div>
+                      </div>
+                      <ChevronRight className="w-4 h-4 text-slate-300" />
+                    </Button>
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="email" className="space-y-4">
+                  <form onSubmit={handleEmailLogin} className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="email" className="text-xs font-bold text-slate-500 uppercase">Correo Institucional</Label>
+                      <div className="relative">
+                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                        <Input 
+                          id="email" 
+                          type="email" 
+                          placeholder="usuario@une.edu.mx" 
+                          className="pl-10 rounded-xl h-12"
+                          value={loginEmail}
+                          onChange={(e) => setLoginEmail(e.target.value)}
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="pass" className="text-xs font-bold text-slate-500 uppercase">Contraseña</Label>
+                      <div className="relative">
+                        <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                        <Input 
+                          id="pass" 
+                          type="password" 
+                          placeholder="••••••••" 
+                          className="pl-10 rounded-xl h-12"
+                          value={loginPass}
+                          onChange={(e) => setLoginPass(e.target.value)}
+                          required
+                        />
+                      </div>
+                    </div>
+                    {loginError && <p className="text-[11px] text-red-500 font-bold bg-red-50 p-2 rounded-lg text-center">{loginError}</p>}
+                    <Button 
+                      type="submit" 
+                      className="w-full bg-primary hover:bg-primary/90 h-12 rounded-xl font-bold shadow-lg"
+                      disabled={isLoading}
+                    >
+                      {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Acceder al Sistema'}
+                    </Button>
+                  </form>
+                  <p className="text-[10px] text-center text-slate-400 italic">Prueba con: admin@une.edu.mx / admin</p>
+                </TabsContent>
+              </Tabs>
             </>
           ) : (
-            <div className="py-12 flex flex-col items-center">
+            <div className="py-10 flex flex-col items-center">
               <div className="relative w-48 h-48 mb-8">
                 <div className="absolute inset-0 rounded-3xl border-4 border-slate-100 overflow-hidden">
                   <div className="w-full h-full bg-slate-50 flex items-center justify-center">
                     <UserIcon className="w-24 h-24 text-slate-200" />
                   </div>
                 </div>
-                {/* Scan Overlay */}
                 <div className="face-scan-line"></div>
                 <div className={`absolute inset-0 border-4 border-secondary rounded-3xl transition-opacity duration-300 ${scanProgress > 90 ? 'opacity-100' : 'opacity-0 animate-pulse'}`}></div>
               </div>
-              <h2 className="text-2xl font-bold text-primary mb-2">Validando Biometría...</h2>
+              <h2 className="text-2xl font-bold text-primary mb-2 font-headline">Reconocimiento Facial</h2>
               <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden mb-4">
                 <div 
                   className="h-full bg-secondary transition-all duration-100 ease-out"
                   style={{ width: `${scanProgress}%` }}
                 ></div>
               </div>
-              <p className="text-slate-400 text-sm font-medium">Por favor, mantenga su rostro frente a la cámara.</p>
-              {scanProgress >= 100 && <div className="mt-4 text-emerald-500 flex items-center gap-2 font-bold animate-bounce"><ShieldCheck className="w-5 h-5" /> Acceso Concedido</div>}
+              <p className="text-slate-400 text-xs font-bold uppercase tracking-widest">Analizando biometría...</p>
+              {scanProgress >= 100 && (
+                <div className="mt-4 text-emerald-500 flex items-center gap-2 font-bold animate-bounce">
+                  <ShieldCheck className="w-5 h-5" /> Acceso Autorizado
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -156,7 +259,8 @@ export default function Home() {
         role={currentUser.role} 
         activeSection={activeSection} 
         onSectionChange={setActiveSection} 
-        onLogout={logout} 
+        onLogout={logout}
+        campus={currentUser.campus}
       />
 
       <main className="flex-1 flex flex-col h-full overflow-hidden relative">
@@ -167,24 +271,26 @@ export default function Home() {
             </h2>
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Sistema En Línea - UNE Red Segura</span>
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Red Segura UNE - Enlace Activo</span>
             </div>
           </div>
           
           <div className="flex items-center gap-6">
-            <div className="hidden md:flex items-center gap-2">
-              <span className="text-xs font-bold text-slate-400">PLANTEL:</span>
-              <Select value={activeCampus} onValueChange={(v: Campus) => setActiveCampus(v)}>
-                <SelectTrigger className="w-[220px] bg-slate-50 border-slate-200 font-bold text-primary rounded-xl h-10">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent className="rounded-xl border-slate-200">
-                  {CAMPUSES.map(c => (
-                    <SelectItem key={c} value={c} className="font-medium">{c}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+            {currentUser.role === 'autoridad' && (
+              <div className="hidden md:flex items-center gap-2">
+                <span className="text-xs font-bold text-slate-400">PLANTEL:</span>
+                <Select value={activeCampus as string} onValueChange={(v: Campus) => setActiveCampus(v)}>
+                  <SelectTrigger className="w-[220px] bg-slate-50 border-slate-200 font-bold text-primary rounded-xl h-10">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-xl border-slate-200">
+                    {CAMPUSES.map(c => (
+                      <SelectItem key={c} value={c} className="font-medium">{c}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
 
             <button className="relative text-slate-400 hover:text-primary transition group p-2 rounded-full hover:bg-slate-50">
               <Bell className="w-6 h-6" />
@@ -195,7 +301,7 @@ export default function Home() {
                 <p className="text-sm font-extrabold text-primary leading-tight">{currentUser.name}</p>
                 <p className="text-[10px] text-secondary font-bold uppercase tracking-tight">{currentUser.roleDisplay}</p>
               </div>
-              <div className="w-12 h-12 bg-primary text-secondary rounded-2xl flex items-center justify-center font-bold shadow-lg border-2 border-slate-100">
+              <div className="w-12 h-12 bg-primary text-secondary rounded-2xl flex items-center justify-center font-bold shadow-lg border-2 border-slate-100 overflow-hidden">
                 <UserIcon className="w-7 h-7" />
               </div>
             </div>
@@ -203,11 +309,18 @@ export default function Home() {
         </header>
 
         <div className="flex-1 overflow-y-auto p-6 lg:p-10 scroll-smooth">
-          {activeSection === 'dashboard' && <Dashboard role={currentUser.role} campus={activeCampus} incidents={incidents} onNavigate={setActiveSection} />}
-          {activeSection === 'mapa' && <PerimeterMap campus={activeCampus} incidents={incidents} />}
-          {activeSection === 'accesos' && <AccessControl logs={accessLogs} campus={activeCampus} />}
-          {activeSection === 'gestion' && <IncidentManagement incidents={incidents} onResolve={handleUpdateIncidentStatus} campus={activeCampus} />}
-          {activeSection === 'reportar' && <ReportIncident onReport={handleAddIncident} userName={currentUser.name} campus={activeCampus} />}
+          {activeSection === 'dashboard' && (
+            <Dashboard 
+              role={currentUser.role} 
+              campus={activeCampus as Campus} 
+              incidents={incidents} 
+              onNavigate={setActiveSection} 
+            />
+          )}
+          {activeSection === 'mapa' && <PerimeterMap campus={activeCampus as Exclude<Campus, 'Global'>} incidents={incidents} />}
+          {activeSection === 'accesos' && <AccessControl logs={accessLogs} campus={activeCampus as Exclude<Campus, 'Global'>} />}
+          {activeSection === 'gestion' && <IncidentManagement incidents={incidents} onResolve={handleUpdateIncidentStatus} campus={activeCampus as Exclude<Campus, 'Global'>} />}
+          {activeSection === 'reportar' && <ReportIncident onReport={handleAddIncident} userName={currentUser.name} campus={activeCampus as Exclude<Campus, 'Global'>} />}
         </div>
       </main>
     </div>

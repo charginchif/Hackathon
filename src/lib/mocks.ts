@@ -1,10 +1,49 @@
-import { Incident, AccessLog, Campus } from './types';
+import { Incident, AccessLog, Campus, User, Role } from './types';
 
-export const CAMPUSES: Campus[] = [
+export const CAMPUSES: Exclude<Campus, 'Global'>[] = [
   'UNE Campus Central',
   'UNE Campus Américas',
   'UNE Campus Tlaquepaque'
 ];
+
+export const MOCK_USERS: Record<string, User & { password?: string }> = {
+  'alumno_central': {
+    id: 'U-7821',
+    name: 'Mariana López',
+    role: 'alumno',
+    roleDisplay: 'Estudiante UNE',
+    campus: 'UNE Campus Central',
+    email: 'm.lopez@une.edu.mx',
+    password: 'password123'
+  },
+  'alumno_americas': {
+    id: 'U-9042',
+    name: 'Roberto Gómez',
+    role: 'alumno',
+    roleDisplay: 'Estudiante UNE',
+    campus: 'UNE Campus Américas',
+    email: 'r.gomez@une.edu.mx',
+    password: 'password123'
+  },
+  'alumno_tlaquepaque': {
+    id: 'U-3315',
+    name: 'Sofía Castro',
+    role: 'alumno',
+    roleDisplay: 'Estudiante UNE',
+    campus: 'UNE Campus Tlaquepaque',
+    email: 's.castro@une.edu.mx',
+    password: 'password123'
+  },
+  'admin_global': {
+    id: 'A-101',
+    name: 'Ing. Alejandro Silva',
+    role: 'autoridad',
+    roleDisplay: 'Director de Seguridad Institucional',
+    campus: 'Global',
+    email: 'a.silva@une.edu.mx',
+    password: 'admin'
+  }
+};
 
 export const mockIncidents: Incident[] = [
   {
@@ -51,8 +90,6 @@ export const mockAccessLogs: AccessLog[] = [
 
 export const ROLES_CONFIG = {
   alumno: {
-    name: 'Estudiante UNE',
-    roleDisplay: 'Comunidad Universitaria',
     nav: [
       { id: 'dashboard', icon: 'Home', text: 'Mi Campus' },
       { id: 'reportar', icon: 'Megaphone', text: 'Nueva Alerta' }
@@ -60,8 +97,6 @@ export const ROLES_CONFIG = {
     defaultSection: 'dashboard'
   },
   autoridad: {
-    name: 'Dir. Seguridad UNE',
-    roleDisplay: 'Autoridad Institucional',
     nav: [
       { id: 'dashboard', icon: 'PieChart', text: 'KPIs Globales' },
       { id: 'mapa', icon: 'Map', text: 'Mapa Perimetral' },

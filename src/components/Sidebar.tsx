@@ -1,8 +1,8 @@
 'use client';
 
-import { Role } from '@/lib/types';
+import { Role, Campus } from '@/lib/types';
 import { ROLES_CONFIG } from '@/lib/mocks';
-import { Shield, Home, Megaphone, PieChart, Map, BadgeCheck, ClipboardList, LogOut, Landmark } from 'lucide-react';
+import { Home, Megaphone, PieChart, Map, BadgeCheck, ClipboardList, LogOut, Landmark, MapPin } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const iconMap: Record<string, any> = {
@@ -19,9 +19,10 @@ interface SidebarProps {
   activeSection: string;
   onSectionChange: (id: string) => void;
   onLogout: () => void;
+  campus: Campus;
 }
 
-export default function Sidebar({ role, activeSection, onSectionChange, onLogout }: SidebarProps) {
+export default function Sidebar({ role, activeSection, onSectionChange, onLogout, campus }: SidebarProps) {
   const config = ROLES_CONFIG[role];
 
   return (
@@ -33,9 +34,15 @@ export default function Sidebar({ role, activeSection, onSectionChange, onLogout
           </div>
           <div className="flex flex-col">
             <span className="font-black text-2xl tracking-tighter leading-none">UNE</span>
-            <span className="text-[10px] font-bold text-secondary tracking-widest uppercase">Seguridad Red 2026</span>
+            <span className="text-[10px] font-bold text-secondary tracking-widest uppercase">Seguridad 2026</span>
           </div>
         </div>
+        {campus !== 'Global' && (
+          <div className="mt-4 inline-flex items-center gap-2 px-3 py-1.5 bg-white/5 rounded-lg border border-white/10 w-full">
+            <MapPin className="w-3 h-3 text-secondary" />
+            <span className="text-[10px] font-bold text-slate-300 truncate uppercase">{campus}</span>
+          </div>
+        )}
       </div>
       
       <nav className="flex-1 overflow-y-auto p-6 space-y-3">
@@ -65,7 +72,7 @@ export default function Sidebar({ role, activeSection, onSectionChange, onLogout
           onClick={onLogout}
           className="w-full flex items-center justify-center gap-3 p-4 rounded-2xl text-slate-500 hover:bg-red-500/10 hover:text-red-400 transition-all font-bold text-sm"
         >
-          <LogOut className="w-5 h-5" /> FINALIZAR TURNO
+          <LogOut className="w-5 h-5" /> FINALIZAR SESIÓN
         </button>
       </div>
     </aside>
