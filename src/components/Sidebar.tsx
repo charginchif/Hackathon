@@ -29,16 +29,18 @@ export default function Sidebar({ role, activeSection, onSectionChange, onLogout
     <aside className="w-full lg:w-80 bg-primary text-slate-300 flex flex-col shrink-0 border-r border-white/5 z-20 shadow-[10px_0_40px_rgba(0,0,0,0.1)] overflow-hidden">
       <div className="p-10 border-b border-white/5 bg-black/10">
         <div className="flex items-center gap-4 text-white mb-4">
-          <div className="w-14 h-14 bg-secondary rounded-[1.25rem] flex items-center justify-center shadow-2xl border-2 border-white/10">
-            <ShieldAlert className="w-8 h-8 text-white" />
+          <div className="w-14 h-14 bg-white rounded-[1.25rem] flex items-center justify-center shadow-2xl border-2 border-white/10 overflow-hidden p-1">
+            <img src="/IconoLogo.png" alt="Comunidad Alerta Icon" className="w-full h-full object-contain" />
           </div>
           <div className="flex flex-col">
-            <span className="font-black text-3xl tracking-tighter leading-none">ISSU</span>
-            <span className="text-[9px] font-black text-secondary tracking-[0.2em] uppercase mt-1">S.A.F.E. System</span>
+            <span className="font-black text-xl tracking-tighter leading-none uppercase">Comunidad</span>
+            <span className="font-black text-xl tracking-tighter leading-none uppercase text-secondary">Alerta</span>
           </div>
         </div>
+        <p className="text-[9px] font-black text-white/40 tracking-widest uppercase mb-4 leading-tight">Unidos por un entorno más seguro</p>
+        
         {campus !== 'Global' && (
-          <div className="mt-6 inline-flex items-center gap-3 px-4 py-2 bg-white/5 rounded-2xl border border-white/10 w-full">
+          <div className="mt-2 inline-flex items-center gap-3 px-4 py-2 bg-white/5 rounded-2xl border border-white/10 w-full">
             <MapPin className="w-4 h-4 text-secondary" />
             <span className="text-[10px] font-black text-slate-300 truncate uppercase tracking-widest">{campus}</span>
           </div>

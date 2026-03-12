@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { ShieldCheck, UserCheck, ChevronRight, Bell, User as UserIcon, ScanFace, Mail, Lock, Landmark, Loader2, Zap, LayoutDashboard, Map as MapIcon, Megaphone, CheckCircle2, Siren } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -101,7 +102,7 @@ export default function Home() {
       if (userFound) {
         handleLoginSuccess(userFound);
       } else {
-        setLoginError('Credenciales ISSU no válidas.');
+        setLoginError('Credenciales no válidas para Comunidad Alerta.');
       }
       setIsLoading(false);
     }, 1000);
@@ -113,18 +114,16 @@ export default function Home() {
         const fbUid = cred.user.uid;
 
         if (db) {
-            // 1. Sync user profile
             const userRef = doc(db, 'users', fbUid);
             await setDoc(userRef, { 
                 id: fbUid,
                 name: user.name,
                 role: user.role,
                 campus: user.campus,
-                email: user.email || `${fbUid}@issu-anon.mx`,
+                email: user.email || `${fbUid}@comunidad-alerta.mx`,
                 lastLogin: serverTimestamp() 
             }, { merge: true });
 
-            // 2. Register Authorization
             if (user.role === 'autoridad') {
                 const adminAuthRef = doc(db, 'globalAdmins', fbUid);
                 await setDoc(adminAuthRef, { active: true });
@@ -144,7 +143,7 @@ export default function Home() {
         setActiveSection(ROLES_CONFIG[user.role].defaultSection);
         setIsScanning(false);
     } catch (err) {
-        setLoginError('Error de enlace con el servidor central.');
+        setLoginError('Error de enlace con el servidor de Comunidad Alerta.');
         console.error(err);
     }
   };
@@ -188,11 +187,11 @@ export default function Home() {
           {!isScanning ? (
             <>
               <div className="text-center mb-10">
-                <div className="mb-6 inline-flex items-center justify-center w-24 h-24 bg-primary rounded-3xl text-secondary shadow-xl border-4 border-slate-50">
-                  <Landmark className="w-14 h-14" />
+                <div className="mb-6 inline-flex items-center justify-center w-24 h-24 bg-white rounded-3xl overflow-hidden shadow-xl border-4 border-slate-50 relative">
+                   <img src="/Logo.png" alt="Comunidad Alerta Logo" className="w-full h-full object-contain" />
                 </div>
-                <h1 className="text-3xl font-black text-primary tracking-tighter mb-2 font-headline uppercase leading-none">ISSU SEGURIDAD</h1>
-                <p className="text-slate-500 text-xs font-bold uppercase tracking-[0.3em]">Instituto de Seguridad Superior Urbana</p>
+                <h1 className="text-3xl font-black text-primary tracking-tighter mb-2 font-headline uppercase leading-none">Comunidad Alerta</h1>
+                <p className="text-slate-500 text-xs font-bold uppercase tracking-[0.2em]">Unidos por un entorno más seguro</p>
               </div>
 
               <Tabs defaultValue="biometric" className="w-full">
@@ -209,7 +208,7 @@ export default function Home() {
                             <Landmark className="w-5 h-5 text-slate-400 group-hover:text-secondary" />
                             <div className="text-left">
                                 <p className="text-xs font-black text-primary leading-none">Admin Global C5</p>
-                                <p className="text-[9px] text-slate-400 uppercase">Supervisión Total</p>
+                                <p className="text-[9px] text-slate-400 uppercase">Supervisión Comunidad Alerta</p>
                             </div>
                         </div>
                         <ChevronRight className="w-4 h-4" />
@@ -252,7 +251,7 @@ export default function Home() {
                   <form onSubmit={handleEmailLogin} className="space-y-4">
                     <div className="relative">
                         <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-                        <Input placeholder="usuario@issu.edu.mx" className="pl-12 rounded-2xl h-14" value={loginEmail} onChange={e => setLoginEmail(e.target.value)} />
+                        <Input placeholder="usuario@comunidadalerta.org" className="pl-12 rounded-2xl h-14" value={loginEmail} onChange={e => setLoginEmail(e.target.value)} />
                     </div>
                     <div className="relative">
                         <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
@@ -278,7 +277,7 @@ export default function Home() {
               <div className="w-full bg-slate-100 h-3 rounded-full overflow-hidden mb-6">
                 <div className="h-full bg-primary transition-all duration-100" style={{ width: `${scanProgress}%` }}></div>
               </div>
-              <p className="text-slate-400 text-[10px] font-black uppercase tracking-[0.4em]">Protocolo de Identidad ISSU v2.0</p>
+              <p className="text-slate-400 text-[10px] font-black uppercase tracking-[0.4em]">Identidad Comunidad Alerta v2.0</p>
             </div>
           )}
         </div>
@@ -304,7 +303,7 @@ export default function Home() {
             </h2>
             <div className="flex items-center gap-2 mt-1">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Enlace Satelital Activo • ISSU-NET</span>
+              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Enlace Comunidad Alerta Activo</span>
             </div>
           </div>
           

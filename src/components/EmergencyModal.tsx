@@ -45,7 +45,7 @@ export default function EmergencyModal({ incident, onClose, onDispatch }: Emerge
     <Dialog open={true} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-xl p-0 overflow-hidden border-none shadow-2xl">
         <DialogHeader className="sr-only">
-          <DialogTitle>ALERTA SOS ACTIVA - PROTOCOLO ISSU</DialogTitle>
+          <DialogTitle>ALERTA SOS ACTIVA - COMUNIDAD ALERTA</DialogTitle>
           <DialogDescription>
             Intervención inmediata requerida para el usuario {incident.userName} en {incident.zone}.
           </DialogDescription>

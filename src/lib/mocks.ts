@@ -11,36 +11,36 @@ export const MOCK_USERS: Record<string, User & { password?: string }> = {
     id: 'ADMIN-01',
     name: 'Dra. Elena Vance',
     role: 'autoridad',
-    roleDisplay: 'Directora de Seguridad ISSU',
+    roleDisplay: 'Directora Comunidad Alerta',
     campus: 'Global',
-    email: 'e.vance@issu.edu.mx',
+    email: 'e.vance@comunidadalerta.org',
     password: 'admin'
   },
   'alumno_metro': {
     id: 'ISS-7821',
     name: 'Mariana López',
     role: 'alumno',
-    roleDisplay: 'Estudiante ISSU',
+    roleDisplay: 'Miembro Comunidad Alerta',
     campus: 'Campus Metropolitano',
-    email: 'm.lopez@issu.edu.mx',
+    email: 'm.lopez@comunidadalerta.org',
     password: 'password123'
   },
   'alumno_tec': {
     id: 'ISS-9902',
     name: 'Roberto García',
     role: 'alumno',
-    roleDisplay: 'Estudiante ISSU',
+    roleDisplay: 'Miembro Comunidad Alerta',
     campus: 'Campus Tecnológico',
-    email: 'r.garcia@issu.edu.mx',
+    email: 'r.garcia@comunidadalerta.org',
     password: 'password123'
   },
   'alumno_oriente': {
     id: 'ISS-4410',
     name: 'Sofía Pérez',
     role: 'alumno',
-    roleDisplay: 'Estudiante ISSU',
+    roleDisplay: 'Miembro Comunidad Alerta',
     campus: 'Campus Oriente',
-    email: 's.perez@issu.edu.mx',
+    email: 's.perez@comunidadalerta.org',
     password: 'password123'
   }
 };
@@ -97,9 +97,9 @@ export const ROLES_CONFIG = {
   alumno: {
     nav: [
       { id: 'dashboard', icon: 'Home', text: 'Mi Seguridad' },
-      { id: 'mapa', icon: 'Map', text: 'Navegación Segura' },
-      { id: 'accesos', icon: 'BadgeCheck', text: 'Registro Acceso' },
-      { id: 'reportar', icon: 'Megaphone', text: 'Reportar Incidente' }
+      { id: 'mapa', icon: 'Map', text: 'Mapa Táctico' },
+      { id: 'accesos', icon: 'BadgeCheck', text: 'Mi Acceso' },
+      { id: 'reportar', icon: 'Megaphone', text: 'Reportar' }
     ],
     defaultSection: 'dashboard'
   },
@@ -107,7 +107,7 @@ export const ROLES_CONFIG = {
     nav: [
       { id: 'dashboard', icon: 'PieChart', text: 'Dashboard C5' },
       { id: 'mapa', icon: 'Map', text: 'Perímetros' },
-      { id: 'accesos', icon: 'BadgeCheck', text: 'Control Biométrico' },
+      { id: 'accesos', icon: 'BadgeCheck', text: 'Accesos' },
       { id: 'gestion', icon: 'ClipboardList', text: 'Centro de Mando' }
     ],
     defaultSection: 'dashboard'

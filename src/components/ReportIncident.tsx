@@ -78,7 +78,7 @@ export default function ReportIncident({ onReport, user }: ReportIncidentProps) 
       <Card className="bg-red-600 p-8 border-none text-white shadow-2xl relative overflow-hidden">
         <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex flex-col gap-2">
-            <h3 className="text-3xl font-black uppercase tracking-tight">Protocolo SOS ISSU</h3>
+            <h3 className="text-3xl font-black uppercase tracking-tight">Protocolo SOS</h3>
             <p className="text-red-100 font-bold opacity-80">Alerta inmediata por peligro inminente.</p>
           </div>
           <Button 
@@ -96,7 +96,7 @@ export default function ReportIncident({ onReport, user }: ReportIncidentProps) 
             <Megaphone className="w-8 h-8" />
           </div>
           <h3 className="text-2xl font-bold text-slate-800">Reporte de Seguridad</h3>
-          <p className="text-slate-500 mt-1">Colabora con la vigilancia de tu campus.</p>
+          <p className="text-slate-500 mt-1">Colabora con Comunidad Alerta.</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -159,7 +159,7 @@ export default function ReportIncident({ onReport, user }: ReportIncidentProps) 
           <DialogHeader>
             <DialogTitle className="text-2xl font-black text-primary text-center uppercase">¡Reporte Enviado!</DialogTitle>
             <DialogDescription className="text-slate-500 font-medium text-center">
-              El Centro de Mando ISSU ha registrado tu reporte. Nuestras unidades han sido notificadas.
+              El Centro de Mando Comunidad Alerta ha registrado tu reporte. Nuestras unidades han sido notificadas.
             </DialogDescription>
           </DialogHeader>
           <Button onClick={() => setShowSuccess(false)} className="w-full bg-primary rounded-xl font-bold h-12 mt-4">ENTENDIDO</Button>

@@ -4,8 +4,8 @@ import { FirebaseClientProvider } from '@/firebase';
 import { Toaster } from '@/components/ui/toaster';
 
 export const metadata: Metadata = {
-  title: 'ISSU - Instituto de Seguridad Superior Urbana',
-  description: 'Plataforma de Prevención y Respuesta Rápida ISSU',
+  title: 'Comunidad Alerta - Unidos por un entorno más seguro',
+  description: 'Plataforma de Prevención y Respuesta Rápida para una comunidad protegida.',
 };
 
 export default function RootLayout({
@@ -14,7 +14,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="es">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />

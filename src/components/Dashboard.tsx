@@ -24,8 +24,8 @@ export default function Dashboard({ role, campus, incidents = [], onNavigate }: 
     <div className="space-y-8">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold text-primary font-headline">Panel de Control <span className="text-secondary tracking-tight">ISSU SAFE</span></h1>
-          <p className="text-slate-500 font-medium">Monitoreo Institucional: <strong className="text-primary">{campusDisplay}</strong></p>
+          <h1 className="text-3xl font-extrabold text-primary font-headline">Comunidad Alerta <span className="text-secondary tracking-tight">PROTECCIÓN</span></h1>
+          <p className="text-slate-500 font-medium">Unidos por un entorno más seguro: <strong className="text-primary">{campusDisplay}</strong></p>
         </div>
         {criticalReports > 0 && (
           <Badge className="bg-red-600 text-white animate-pulse px-4 py-2 rounded-xl text-xs font-bold gap-2">
@@ -45,11 +45,11 @@ export default function Dashboard({ role, campus, incidents = [], onNavigate }: 
               <p className="text-white/60 text-xs font-bold uppercase tracking-widest mb-1">Estatus Perimetral</p>
               <h3 className="text-3xl font-black">{criticalReports > 0 ? 'CRÍTICO' : 'SEGURO'}</h3>
             </div>
-            <Landmark className="w-10 h-10 text-secondary opacity-50" />
+            <ShieldCheck className="w-10 h-10 text-secondary opacity-50" />
           </div>
           <div className="mt-4 flex items-center gap-2 relative z-10">
             <span className={cn("w-2 h-2 rounded-full", criticalReports > 0 ? "bg-white" : "bg-emerald-400")}></span>
-            <p className="text-[10px] font-bold uppercase tracking-widest">{criticalReports > 0 ? 'Protocolo SOS Activo' : 'Protección Activa'}</p>
+            <p className="text-[10px] font-bold uppercase tracking-widest">{criticalReports > 0 ? 'Protocolo SOS Activo' : 'Red Protegida'}</p>
           </div>
         </Card>
 
@@ -63,7 +63,7 @@ export default function Dashboard({ role, campus, incidents = [], onNavigate }: 
               <IdCard className="w-6 h-6" />
             </div>
           </div>
-          <p className="text-xs text-muted-foreground mt-4 font-medium">Validación de Identidad ISSU</p>
+          <p className="text-xs text-muted-foreground mt-4 font-medium">Validación Comunidad Alerta</p>
         </Card>
 
         <Card className="p-6 border-slate-100 shadow-lg hover:shadow-xl transition-shadow bg-white">
@@ -82,7 +82,7 @@ export default function Dashboard({ role, campus, incidents = [], onNavigate }: 
         <Card className="p-6 border-slate-100 shadow-lg hover:shadow-xl transition-shadow bg-white">
           <div className="flex justify-between items-start">
             <div>
-              <p className="text-muted-foreground text-xs font-bold uppercase tracking-widest mb-1">Enlace C5 ISSU</p>
+              <p className="text-muted-foreground text-xs font-bold uppercase tracking-widest mb-1">Enlace C5</p>
               <h3 className="text-3xl font-black text-primary">Activo</h3>
             </div>
             <div className="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-primary border border-slate-100">
@@ -96,7 +96,7 @@ export default function Dashboard({ role, campus, incidents = [], onNavigate }: 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <Card className="lg:col-span-2 p-0 overflow-hidden flex flex-col min-h-[450px] border-slate-100 shadow-xl rounded-3xl bg-white">
           <div className="p-6 border-b flex justify-between items-center bg-white z-10">
-            <h4 className="font-extrabold text-primary uppercase tracking-tight">Geolocalización ISSU: {campusDisplay}</h4>
+            <h4 className="font-extrabold text-primary uppercase tracking-tight">Geolocalización: {campusDisplay}</h4>
             <button 
                 onClick={() => onNavigate('mapa')}
                 className="text-xs font-bold text-secondary hover:text-primary transition-colors flex items-center gap-1 bg-secondary/10 px-3 py-1.5 rounded-full"
@@ -107,8 +107,8 @@ export default function Dashboard({ role, campus, incidents = [], onNavigate }: 
           <div className="flex-1 bg-grid-pattern relative flex items-center justify-center bg-slate-50">
             <div className="w-3/4 h-2/3 map-building rounded-3xl flex items-center justify-center relative shadow-2xl overflow-hidden bg-slate-100">
                <div className="absolute inset-0 bg-indigo-50/20"></div>
-              <span className="text-slate-300 font-black uppercase tracking-[0.2em] text-2xl font-headline relative z-10">
-                {campus === 'Global' ? 'SISTEMA ISSU' : campus.split(' ').pop()}
+              <span className="text-slate-300 font-black uppercase tracking-[0.2em] text-2xl font-headline relative z-10 text-center px-4">
+                SISTEMA COMUNIDAD ALERTA
               </span>
               
               {campusIncidents.filter(i => i.status === 'pendiente').map((inc) => (

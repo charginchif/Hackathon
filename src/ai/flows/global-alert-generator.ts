@@ -38,9 +38,9 @@ const prompt = ai.definePrompt({
   name: 'globalAlertGeneratorPrompt',
   input: { schema: GlobalAlertGeneratorInputSchema },
   output: { schema: GlobalAlertGeneratorOutputSchema },
-  prompt: `You are an AI assistant for the "Escuelas Seguras" platform, specialized in generating urgent and clear global alert messages for the school community.
+  prompt: `You are an AI assistant for the "Comunidad Alerta" platform, specialized in generating urgent and clear global alert messages for the community.
 
-Your task is to draft a concise and informative alert message based on the provided active incidents and/or additional context. The message should be directed to students, parents, and neighbors, informing them about the situation and, if applicable, advising on safety measures.
+Your task is to draft a concise and informative alert message based on the provided active incidents and/or additional context. The message should be directed to residents, parents, and neighbors, informing them about the situation and, if applicable, advising on safety measures.
 
 If there are active incidents, summarize them clearly. If additional context is provided, incorporate it. If no specific incidents or context are given, generate a general safety reminder.
 
@@ -62,7 +62,7 @@ Active Incidents:
 Additional Context: "{{additionalContext}}"
 {{/if}}
 
-Please generate the alert message in Spanish. Ensure the message is suitable for a school safety alert system.
+Please generate the alert message in Spanish. Ensure the message is suitable for a professional safety alert system. Mention "Comunidad Alerta: Unidos por un entorno más seguro" as the signature.
 `
 });
 
