@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -185,10 +186,9 @@ export default function Home() {
         <div className="max-w-md w-full bg-white rounded-[2.5rem] shadow-2xl p-6 md:p-10 relative z-10 border border-slate-200">
           {!isScanning ? (
             <>
-              <div className="text-center mb-8 md:mb-10">
-                <div className="mb-4 md:mb-6 inline-flex items-center justify-center w-20 h-20 md:w-24 md:h-24 bg-white rounded-3xl overflow-hidden shadow-xl border-4 border-slate-50 relative">
-                   {/* IconoLogo.png para el inicio de sesión como se solicitó */}
-                   <img src="/iconos/IconoLogo.png" alt="Comunidad Alerta Icono" className="w-full h-full object-contain" />
+              <div className="text-center mb-8 md:mb-10 flex flex-col items-center">
+                <div className="mb-4 md:mb-6 flex items-center justify-center w-full h-20 md:h-24 overflow-hidden relative">
+                   <img src="/iconos/IconoLogo.png" alt="Comunidad Alerta Icono" className="h-full object-contain" />
                 </div>
                 <h1 className="text-2xl md:text-3xl font-black text-primary tracking-tighter mb-1 md:2 font-headline uppercase leading-none">Comunidad Alerta</h1>
                 <p className="text-slate-500 text-[10px] md:text-xs font-bold uppercase tracking-[0.2em]">Unidos por un entorno más seguro</p>
