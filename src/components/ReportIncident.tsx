@@ -75,7 +75,7 @@ export default function ReportIncident({ onReport, user }: ReportIncidentProps) 
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
-      <Card className="bg-red-600 p-8 border-none text-white shadow-2xl relative overflow-hidden">
+      <Card className="bg-secondary p-8 border-none text-white shadow-2xl relative overflow-hidden">
         <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex flex-col gap-2">
             <h3 className="text-3xl font-black uppercase tracking-tight">Protocolo SOS</h3>
@@ -83,7 +83,7 @@ export default function ReportIncident({ onReport, user }: ReportIncidentProps) 
           </div>
           <Button 
             onClick={handleSOSQuick}
-            className="bg-white text-red-600 h-16 px-10 rounded-2xl font-black text-xl shadow-2xl animate-pulse flex gap-3"
+            className="bg-white text-secondary h-16 px-10 rounded-2xl font-black text-xl shadow-2xl animate-pulse flex gap-3"
           >
             <Zap className="w-8 h-8 fill-current" /> ACTIVAR SOS
           </Button>
@@ -92,7 +92,7 @@ export default function ReportIncident({ onReport, user }: ReportIncidentProps) 
 
       <Card className="shadow-xl p-8 bg-white border border-slate-100 rounded-3xl">
         <div className="text-center mb-10">
-          <div className="w-16 h-16 bg-indigo-50 text-primary rounded-full flex items-center justify-center mx-auto mb-4">
+          <div className="w-16 h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto mb-4">
             <Megaphone className="w-8 h-8" />
           </div>
           <h3 className="text-2xl font-bold text-slate-800">Reporte de Seguridad</h3>

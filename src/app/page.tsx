@@ -180,7 +180,7 @@ export default function Home() {
 
   if (!currentUser) {
     return (
-      <div className="h-screen w-full flex items-center justify-center bg-indigo-950 px-4 relative overflow-hidden">
+      <div className="h-screen w-full flex items-center justify-center bg-primary px-4 relative overflow-hidden">
         <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] pointer-events-none"></div>
         <div className="max-w-md w-full bg-white rounded-[2.5rem] shadow-2xl p-6 md:p-10 relative z-10 border border-slate-200">
           {!isScanning ? (
@@ -256,7 +256,7 @@ export default function Home() {
                         <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                         <Input type="password" placeholder="••••••••" className="pl-12 rounded-2xl h-14" value={loginPass} onChange={e => setLoginPass(e.target.value)} />
                     </div>
-                    {loginError && <p className="text-xs text-red-500 font-bold text-center">{loginError}</p>}
+                    {loginError && <p className="text-xs text-secondary font-bold text-center">{loginError}</p>}
                     <Button type="submit" className="w-full bg-primary h-14 rounded-2xl font-black uppercase tracking-widest" disabled={isLoading}>
                       {isLoading ? <Loader2 className="animate-spin" /> : 'Sincronizar Terminal'}
                     </Button>
@@ -369,7 +369,7 @@ export default function Home() {
                 <p className="text-xs md:text-sm font-black text-primary leading-tight uppercase tracking-tighter">{currentUser.name}</p>
                 <p className="text-[7px] md:text-[9px] text-secondary font-black uppercase tracking-widest">{currentUser.roleDisplay}</p>
               </div>
-              <div className="w-10 h-10 md:w-14 md:h-14 bg-indigo-900 text-secondary rounded-lg md:rounded-[1.25rem] flex items-center justify-center font-bold shadow-md md:shadow-xl border-2 md:border-4 border-slate-50 overflow-hidden">
+              <div className="w-10 h-10 md:w-14 md:h-14 bg-primary text-primary-foreground rounded-lg md:rounded-[1.25rem] flex items-center justify-center font-bold shadow-md md:shadow-xl border-2 md:border-4 border-slate-50 overflow-hidden">
                 <UserIcon className="w-6 h-6 md:w-8 md:h-8" />
               </div>
             </div>

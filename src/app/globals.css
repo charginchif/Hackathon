@@ -4,25 +4,25 @@
 
 @layer base {
   :root {
-    --background: 210 40% 98%;
-    --foreground: 222 47% 11%;
+    --background: 60 20% 99%; /* Hueso #FFFFFB */
+    --foreground: 251 4% 15%;
     --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card-foreground: 251 4% 15%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
-    --primary: 234 89% 25%; /* Indigo ISSU */
-    --primary-foreground: 210 40% 98%;
-    --secondary: 0 72% 51%; /* Crimson ISSU */
-    --secondary-foreground: 210 40% 98%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 45 93% 47%;
-    --accent-foreground: 222 47% 11%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 234 89% 25%;
+    --popover-foreground: 251 4% 15%;
+    --primary: 31 92% 46%; /* Naranja #E37909 */
+    --primary-foreground: 60 20% 99%;
+    --secondary: 359 80% 43%; /* Rojo #C51617 */
+    --secondary-foreground: 60 20% 99%;
+    --muted: 251 4% 59%; /* Gris #96939B */
+    --muted-foreground: 251 4% 35%;
+    --accent: 31 92% 46%;
+    --accent-foreground: 60 20% 99%;
+    --destructive: 359 80% 43%;
+    --destructive-foreground: 60 20% 99%;
+    --border: 251 4% 90%;
+    --input: 251 4% 90%;
+    --ring: 31 92% 46%;
     --radius: 1rem;
   }
 }
@@ -39,8 +39,8 @@
 .bg-grid-pattern {
     background-size: 50px 50px;
     background-image: 
-        linear-gradient(to right, rgba(30, 27, 75, 0.05) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(30, 27, 75, 0.05) 1px, transparent 1px);
+        linear-gradient(to right, rgba(227, 121, 9, 0.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(227, 121, 9, 0.05) 1px, transparent 1px);
 }
 
 .face-scan-line {
@@ -89,7 +89,7 @@
   z-index: 1;
 }
 
-.danger-high { background-color: rgba(153, 27, 27, 0.3); border-color: #991b1b; }
-.danger-mid { background-color: rgba(154, 52, 18, 0.3); border-color: #9a3412; }
-.danger-low { background-color: rgba(133, 77, 14, 0.3); border-color: #854d0e; }
+.danger-high { background-color: rgba(197, 22, 23, 0.3); border-color: #c51617; }
+.danger-mid { background-color: rgba(227, 121, 9, 0.3); border-color: #e37909; }
+.danger-low { background-color: rgba(150, 147, 155, 0.3); border-color: #96939b; }
 .safe-zone { background-color: rgba(22, 101, 52, 0.2); border-color: #166534; }
