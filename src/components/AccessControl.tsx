@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Search, Download, Clock, User, LogIn, LogOut, CheckCircle, XCircle } from 'lucide-react';
+import { Search, Download, Clock, User, LogIn, LogOut, CheckCircle, XCircle, MapPin } from 'lucide-react';
 import { AccessLog } from '@/lib/types';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
