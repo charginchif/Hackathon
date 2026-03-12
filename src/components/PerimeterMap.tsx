@@ -1,11 +1,9 @@
-
 'use client';
 
-import { MapPin, School, ShieldAlert, ShieldCheck, Zap, DoorOpen, DoorClosed, Wrench, User, AlertTriangle, Building2, Navigation, Cctv, Lamp, TreeDeciduous, ParkingCircle, Hospital, ShoppingCart, Shield, Pill, Coffee, Trees } from 'lucide-react';
-import { Incident, ZoneOverlay, MapMarker } from '@/lib/types';
-import { campusZones, campusMarkers } from '@/lib/mocks';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { cn } from '@/lib/utils';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import mapboxgl, { type LngLatLike, type Marker } from 'mapbox-gl';
+import { Incident, MapMarker, ZoneOverlay } from '@/lib/types';
+import { campusMarkers, campusZones } from '@/lib/mocks';
 import { Badge } from '@/components/ui/badge';
 
 interface PerimeterMapProps {
@@ -13,189 +11,301 @@ interface PerimeterMapProps {
   campus: string;
 }
 
-const getMarkerIcon = (type: MapMarker['type']) => {
-  switch (type) {
-    case 'entrada': return <DoorOpen className="w-4 h-4" />;
-    case 'salida': return <DoorClosed className="w-4 h-4" />;
-    case 'falla': return <Wrench className="w-4 h-4" />;
-    case 'estudiante': return <User className="w-4 h-4" />;
-    case 'cctv': return <Cctv className="w-4 h-4" />;
-    case 'iluminacion': return <Lamp className="w-4 h-4" />;
-    case 'edificio': return <Building2 className="w-4 h-4" />;
-    case 'calle': return <Navigation className="w-4 h-4 rotate-45" />;
-    case 'parking': return <ParkingCircle className="w-4 h-4" />;
-    case 'hospital': return <Hospital className="w-4 h-4" />;
-    case 'comercio': return <ShoppingCart className="w-4 h-4" />;
-    case 'policia': return <Shield className="w-4 h-4" />;
-    case 'farmacia': return <Pill className="w-4 h-4" />;
-    case 'cafeteria': return <Coffee className="w-4 h-4" />;
-    case 'parque': return <Trees className="w-4 h-4" />;
-    default: return <MapPin className="w-4 h-4" />;
-  }
+interface CampusConfig {
+  lng: number;
+  lat: number;
+  zoom: number;
+}
+
+const CAMPUS_CONFIG: Record<string, CampusConfig> = {
+  'Campus Metropolitano': { lng: -99.1332, lat: 19.4326, zoom: 15.2 },
+  'Campus Tecnologico': { lng: -100.3161, lat: 25.6866, zoom: 15.2 },
+  'Campus Tecnológico': { lng: -100.3161, lat: 25.6866, zoom: 15.2 },
+  'Campus Oriente': { lng: -98.2063, lat: 19.0414, zoom: 15.2 },
+  Global: { lng: -99.1332, lat: 19.4326, zoom: 11.5 },
 };
 
-const getMarkerColor = (type: MapMarker['type']) => {
-  switch (type) {
-    case 'entrada': return "bg-emerald-500 text-white";
-    case 'salida': return "bg-slate-700 text-white";
-    case 'falla': return "bg-yellow-500 text-white animate-bounce";
-    case 'cctv': return "bg-blue-600 text-white";
-    case 'edificio': return "bg-indigo-900 text-white";
-    case 'calle': return "bg-slate-400 text-white opacity-40";
-    case 'parking': return "bg-indigo-400 text-white";
-    case 'hospital': return "bg-red-500 text-white";
-    case 'policia': return "bg-blue-800 text-white shadow-[0_0_15px_rgba(30,64,175,0.5)]";
-    case 'comercio': return "bg-orange-500 text-white";
-    case 'farmacia': return "bg-emerald-400 text-white";
-    case 'parque': return "bg-green-600 text-white";
-    case 'cafeteria': return "bg-amber-700 text-white";
-    default: return "bg-slate-500 text-white";
-  }
+const MARKER_ICON_BY_TYPE: Record<string, string> = {
+  entrada: '/iconos/ICONOS-02.png',
+  salida: '/iconos/ICONOS-11.png',
+  falla: '/iconos/ICONOS-06.png',
+  estudiante: '/iconos/ICONOS-05.png',
+  incidente: '/iconos/Alerta.png',
+  cctv: '/iconos/ICONOS-10.png',
+  iluminacion: '/iconos/ICONOS-09.png',
+  edificio: '/iconos/Logo.png',
+  calle: '/iconos/ICONOS-03.png',
+  parking: '/iconos/ICONOS-12.png',
+  hospital: '/iconos/Hospital.png',
+  comercio: '/iconos/ICONOS-08.png',
+  parque: '/iconos/ICONOS-07.png',
+  policia: '/iconos/ICONOS-12.png',
+  farmacia: '/iconos/ICONOS-08.png',
+  cafeteria: '/iconos/ICONOS-07.png',
 };
+
+const LON_SPAN = 0.045;
+const LAT_SPAN = 0.03;
+
+function parsePercent(value: string): number {
+  return Number(value.replace('%', ''));
+}
+
+function percentToLngLat(
+  coords: { top: string; left: string },
+  center: CampusConfig
+): [number, number] {
+  const x = (parsePercent(coords.left) - 50) / 100;
+  const y = (50 - parsePercent(coords.top)) / 100;
+  return [center.lng + x * LON_SPAN, center.lat + y * LAT_SPAN];
+}
+
+function zoneToPolygon(zone: ZoneOverlay, center: CampusConfig): [number, number][][] {
+  const left = parsePercent(zone.coords.left);
+  const top = parsePercent(zone.coords.top);
+  const width = parsePercent(zone.coords.width);
+  const height = parsePercent(zone.coords.height);
+
+  const p1 = percentToLngLat({ top: `${top}%`, left: `${left}%` }, center);
+  const p2 = percentToLngLat({ top: `${top}%`, left: `${left + width}%` }, center);
+  const p3 = percentToLngLat({ top: `${top + height}%`, left: `${left + width}%` }, center);
+  const p4 = percentToLngLat({ top: `${top + height}%`, left: `${left}%` }, center);
+
+  return [[p1, p2, p3, p4, p1]];
+}
+
+function zoneFillColor(type: ZoneOverlay['type']): string {
+  switch (type) {
+    case 'danger-high':
+      return '#C51617';
+    case 'danger-mid':
+      return '#E37909';
+    case 'danger-low':
+      return '#96939B';
+    case 'safe':
+      return '#FFFFFB';
+    default:
+      return '#96939B';
+  }
+}
 
 export default function PerimeterMap({ incidents, campus }: PerimeterMapProps) {
-  const activeIncidents = incidents.filter(i => i.status === 'pendiente' && (campus === 'Global' ? true : i.campus === campus));
-  const zones = campusZones[campus] || [];
-  const markers = campusMarkers[campus] || [];
+  const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
+  const mapContainerRef = useRef<HTMLDivElement | null>(null);
+  const mapRef = useRef<mapboxgl.Map | null>(null);
+  const dataMarkersRef = useRef<Marker[]>([]);
+  const [isMapReady, setIsMapReady] = useState(false);
+
+  const campusConfig = useMemo(
+    () => CAMPUS_CONFIG[campus] ?? CAMPUS_CONFIG['Campus Metropolitano'],
+    [campus]
+  );
+
+  const activeIncidents = useMemo(
+    () =>
+      incidents.filter(
+        (incident) =>
+          incident.status === 'pendiente' && (campus === 'Global' ? true : incident.campus === campus)
+      ),
+    [incidents, campus]
+  );
+
+  const zones = useMemo(() => campusZones[campus] || [], [campus]);
+  const markers = useMemo(() => campusMarkers[campus] || [], [campus]);
+
+  useEffect(() => {
+    if (!token || !mapContainerRef.current || mapRef.current) {
+      return;
+    }
+
+    mapboxgl.accessToken = token;
+    const map = new mapboxgl.Map({
+      container: mapContainerRef.current,
+      style: 'mapbox://styles/mapbox/streets-v12',
+      center: [campusConfig.lng, campusConfig.lat] as LngLatLike,
+      zoom: campusConfig.zoom,
+      pitch: 35,
+      bearing: -15,
+      antialias: true,
+    });
+
+    map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+
+    map.on('load', () => {
+      setIsMapReady(true);
+    });
+
+    mapRef.current = map;
+
+    return () => {
+      dataMarkersRef.current.forEach((marker) => marker.remove());
+      dataMarkersRef.current = [];
+      map.remove();
+      mapRef.current = null;
+      setIsMapReady(false);
+    };
+  }, [token, campusConfig]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !isMapReady) {
+      return;
+    }
+
+    map.flyTo({
+      center: [campusConfig.lng, campusConfig.lat],
+      zoom: campusConfig.zoom,
+      duration: 800,
+      essential: true,
+    });
+
+    const zoneFeatures = zones.map((zone) => ({
+      type: 'Feature' as const,
+      geometry: {
+        type: 'Polygon' as const,
+        coordinates: zoneToPolygon(zone, campusConfig),
+      },
+      properties: {
+        id: zone.id,
+        name: zone.name,
+        fill: zoneFillColor(zone.type),
+      },
+    }));
+
+    const zoneData = {
+      type: 'FeatureCollection' as const,
+      features: zoneFeatures,
+    };
+
+    const existingSource = map.getSource('campus-zones') as mapboxgl.GeoJSONSource | undefined;
+    if (existingSource) {
+      existingSource.setData(zoneData);
+    } else {
+      map.addSource('campus-zones', {
+        type: 'geojson',
+        data: zoneData,
+      });
+
+      map.addLayer({
+        id: 'campus-zones-fill',
+        type: 'fill',
+        source: 'campus-zones',
+        paint: {
+          'fill-color': ['get', 'fill'],
+          'fill-opacity': 0.2,
+        },
+      });
+
+      map.addLayer({
+        id: 'campus-zones-outline',
+        type: 'line',
+        source: 'campus-zones',
+        paint: {
+          'line-color': '#E37909',
+          'line-width': 2,
+        },
+      });
+    }
+
+    dataMarkersRef.current.forEach((marker) => marker.remove());
+    dataMarkersRef.current = [];
+
+    markers.forEach((marker) => {
+      const [lng, lat] = percentToLngLat(marker.coords, campusConfig);
+      const icon = MARKER_ICON_BY_TYPE[marker.type] || '/iconos/ICONOS-08.png';
+
+      const el = document.createElement('button');
+      el.type = 'button';
+      el.style.width = '36px';
+      el.style.height = '36px';
+      el.style.borderRadius = '999px';
+      el.style.border = '2px solid #FFFFFB';
+      el.style.background = '#E37909';
+      el.style.boxShadow = '0 8px 18px rgba(0,0,0,0.25)';
+      el.style.display = 'flex';
+      el.style.alignItems = 'center';
+      el.style.justifyContent = 'center';
+      el.style.padding = '6px';
+      el.innerHTML = `<img src="${icon}" alt="${marker.label}" style="width:100%;height:100%;object-fit:contain;" />`;
+
+      const popup = new mapboxgl.Popup({ offset: 12 }).setHTML(
+        `<div style="font-family:Segoe UI Variable,Segoe UI,sans-serif;min-width:180px;">
+          <strong style="display:block;color:#C51617;font-size:12px;text-transform:uppercase;">${marker.label}</strong>
+          <span style="color:#96939B;font-size:11px;text-transform:uppercase;">Tipo: ${marker.type}</span>
+        </div>`
+      );
+
+      const mapMarker = new mapboxgl.Marker(el).setLngLat([lng, lat]).setPopup(popup).addTo(map);
+      dataMarkersRef.current.push(mapMarker);
+    });
+
+    activeIncidents.forEach((incident) => {
+      const [lng, lat] = percentToLngLat(incident.coords, campusConfig);
+
+      const el = document.createElement('button');
+      el.type = 'button';
+      el.style.width = '44px';
+      el.style.height = '44px';
+      el.style.borderRadius = '999px';
+      el.style.border = '2px solid #FFFFFB';
+      el.style.background = '#C51617';
+      el.style.boxShadow = '0 0 0 10px rgba(197,22,23,0.2)';
+      el.style.display = 'flex';
+      el.style.alignItems = 'center';
+      el.style.justifyContent = 'center';
+      el.style.padding = '8px';
+      el.innerHTML = '<img src="/iconos/Alerta.png" alt="Alerta" style="width:100%;height:100%;object-fit:contain;" />';
+
+      const popup = new mapboxgl.Popup({ offset: 12 }).setHTML(
+        `<div style="font-family:Segoe UI Variable,Segoe UI,sans-serif;min-width:220px;">
+          <strong style="display:block;color:#C51617;font-size:12px;text-transform:uppercase;">${incident.category}</strong>
+          <p style="margin:6px 0;color:#4F4F4D;font-size:12px;line-height:1.35;">${incident.description}</p>
+          <div style="display:flex;justify-content:space-between;color:#96939B;font-size:11px;text-transform:uppercase;">
+            <span>${incident.zone}</span>
+            <span>${incident.time}</span>
+          </div>
+        </div>`
+      );
+
+      const mapMarker = new mapboxgl.Marker(el).setLngLat([lng, lat]).setPopup(popup).addTo(map);
+      dataMarkersRef.current.push(mapMarker);
+    });
+  }, [isMapReady, campusConfig, zones, markers, activeIncidents]);
+
+  if (!token) {
+    return (
+      <div className="h-full flex flex-col space-y-4">
+        <div>
+          <h3 className="text-xl font-black text-primary font-headline uppercase tracking-tight">Mapa de Entorno Urbano</h3>
+          <p className="text-sm text-muted-foreground font-medium">Configura Mapbox para habilitar el mapa en tiempo real.</p>
+        </div>
+        <div className="flex-1 min-h-[480px] rounded-[2rem] panel-soft p-6 flex flex-col justify-center items-center text-center">
+          <p className="text-primary font-black uppercase text-sm">Falta NEXT_PUBLIC_MAPBOX_TOKEN</p>
+          <p className="text-muted mt-2 text-sm">Agrega tu token en .env.local y reinicia el servidor.</p>
+          <code className="mt-4 px-3 py-2 rounded-lg bg-background border border-muted/40 text-xs text-foreground">
+            NEXT_PUBLIC_MAPBOX_TOKEN=tu_token_aqui
+          </code>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="h-full flex flex-col space-y-4">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
         <div>
           <h3 className="text-xl font-black text-primary font-headline uppercase tracking-tight">Mapa de Entorno Urbano</h3>
-          <p className="text-sm text-slate-500 font-medium">Comunidad Alerta: Unidos por un entorno más seguro.</p>
+          <p className="text-sm text-muted-foreground font-medium">Comunidad Alerta con visualizacion en Mapbox.</p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <Badge variant="outline" className="bg-emerald-100 text-emerald-700 border-emerald-200 px-3 py-1 text-[10px] font-bold">Zona Segura</Badge>
-          <Badge variant="outline" className="bg-blue-100 text-blue-700 border-blue-200 px-3 py-1 text-[10px] font-bold">Servicios</Badge>
-          <Badge variant="outline" className="bg-red-100 text-red-700 border-red-200 px-3 py-1 text-[10px] font-bold">Alerta Activa</Badge>
+          <Badge variant="outline" className="brand-chip px-3 py-1 text-[10px] font-bold">Mapbox</Badge>
+          <Badge variant="outline" className="brand-chip px-3 py-1 text-[10px] font-bold">Zonas Activas</Badge>
+          <Badge variant="outline" className="brand-chip px-3 py-1 text-[10px] font-bold">Incidentes</Badge>
         </div>
       </div>
-      
-      <div className="flex-1 bg-slate-100 rounded-[2.5rem] border-4 border-white shadow-2xl relative overflow-hidden min-h-[650px]">
-        {/* Radar Animation Elements */}
-        <div className="radar-sweep"></div>
-        
-        {/* Calles y Cuadrícula Urbana Estilo Google Maps */}
-        <div className="absolute inset-0 pointer-events-none opacity-20">
-            <div className="absolute top-[20%] left-0 w-full h-8 bg-slate-300"></div>
-            <div className="absolute top-[80%] left-0 w-full h-8 bg-slate-300"></div>
-            <div className="absolute top-0 left-[20%] w-8 h-full bg-slate-300"></div>
-            <div className="absolute top-0 left-[80%] w-8 h-full bg-slate-300"></div>
-            <div className="absolute top-[50%] left-0 w-full h-4 bg-slate-300 rotate-1"></div>
-            <div className="absolute top-0 left-[50%] w-4 h-full bg-slate-300 -rotate-1"></div>
-        </div>
 
-        {/* Capas de Riesgo / Zonas Urbanas */}
-        {zones.map(zone => (
-          <div 
-            key={zone.id}
-            className={cn(
-              "absolute rounded-[2rem] border-2 transition-all duration-700 z-10 backdrop-blur-[1px]",
-              zone.type === 'danger-high' && "danger-high animate-pulse",
-              zone.type === 'danger-mid' && "danger-mid",
-              zone.type === 'danger-low' && "danger-low",
-              zone.type === 'safe' && "safe-zone"
-            )}
-            style={zone.coords}
-          >
-            <div className="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap">
-                <span className="text-[8px] font-black uppercase px-3 py-1 rounded-full bg-slate-900 text-white shadow-xl border border-white/20">
-                    {zone.name}
-                </span>
-            </div>
-          </div>
-        ))}
-
-        {/* Puntos de Infraestructura y Vida Urbana */}
-        <TooltipProvider>
-            {markers.map(marker => (
-                <div key={marker.id} className="absolute z-20 -translate-x-1/2 -translate-y-1/2" style={marker.coords}>
-                    <Tooltip>
-                        <TooltipTrigger asChild>
-                            <div className="flex flex-col items-center gap-1 group">
-                                <div className={cn(
-                                    "w-7 h-7 md:w-8 md:h-8 rounded-full border-2 border-white shadow-lg flex items-center justify-center cursor-pointer transition-all group-hover:scale-125 group-hover:z-50",
-                                    getMarkerColor(marker.type)
-                                )}>
-                                    {getMarkerIcon(marker.type)}
-                                </div>
-                                <span className="text-[7px] md:text-[9px] font-black text-slate-800 uppercase bg-white/90 backdrop-blur-sm px-1.5 py-0.5 rounded-md shadow-sm border border-slate-200 whitespace-nowrap opacity-100 transition-all group-hover:bg-primary group-hover:text-white">
-                                    {marker.label}
-                                </span>
-                            </div>
-                        </TooltipTrigger>
-                        <TooltipContent className="bg-slate-900 text-white p-3 border-none rounded-xl shadow-2xl">
-                            <p className="text-xs font-black uppercase mb-1">{marker.label}</p>
-                            <p className="text-[10px] text-slate-400 font-bold uppercase">Categoría: {marker.type}</p>
-                        </TooltipContent>
-                    </Tooltip>
-                </div>
-            ))}
-        </TooltipProvider>
-
-        {/* Centro de Mando Táctico (Edificio Principal) */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-48 bg-white/90 backdrop-blur-md border-b-8 border-b-secondary border-4 border-primary rounded-[3rem] flex flex-col items-center justify-center shadow-2xl z-10 group hover:scale-105 transition-all">
-          <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center mb-3 shadow-inner group-hover:rotate-6 transition-transform">
-            <School className="w-10 h-10 text-secondary" />
-          </div>
-          <span className="text-primary font-black text-sm md:text-base uppercase tracking-[0.2em] font-headline text-center px-4 leading-none">COMUNIDAD ALERTA</span>
-          <p className="text-[7px] font-bold text-slate-400 uppercase mt-2 tracking-widest text-center">Unidos por un entorno más seguro</p>
-        </div>
-
-        {/* Incidentes Dinámicos de Usuarios */}
-        <TooltipProvider>
-          {activeIncidents.map(inc => (
-            <div 
-              key={inc.id}
-              className="absolute w-14 h-14 -translate-x-1/2 -translate-y-full z-40"
-              style={{ top: inc.coords.top, left: inc.coords.left }}
-            >
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <div className={cn(
-                      "cursor-pointer drop-shadow-[0_0_20px_rgba(239,68,68,0.7)] transition-all",
-                      inc.severity === 'critica' ? "animate-bounce text-red-600 scale-125" : "text-orange-500"
-                  )}>
-                    <div className="relative flex flex-col items-center">
-                        {inc.category === 'SOS' && (
-                            <div className="absolute -top-4 -right-4 w-8 h-8 bg-white rounded-full flex items-center justify-center border-4 border-red-600 shadow-2xl z-50">
-                                <Zap className="w-5 h-5 text-red-600 fill-red-600 animate-pulse" />
-                            </div>
-                        )}
-                        <MapPin className="w-14 h-14" fill="currentColor" stroke="white" strokeWidth={2} />
-                        <span className="mt-[-15px] text-[8px] font-black bg-red-600 text-white px-2 py-0.5 rounded shadow-lg uppercase whitespace-nowrap">
-                            ALERTA: {inc.userName}
-                        </span>
-                    </div>
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent className="bg-slate-900 text-white border-none p-5 w-72 rounded-[2rem] shadow-2xl">
-                  <div className="flex justify-between items-center mb-3">
-                    <span className={cn(
-                        "text-[10px] font-black uppercase px-3 py-1 rounded-full",
-                        inc.severity === 'critica' ? "bg-red-500 text-white" : "bg-orange-500 text-white"
-                    )}>{inc.category}</span>
-                    <span className="text-[9px] text-slate-400 font-bold">{inc.time}</span>
-                  </div>
-                  <p className="font-black text-lg leading-tight mb-2 uppercase tracking-tighter">{inc.description}</p>
-                  <div className="flex flex-col gap-1 text-[11px] text-slate-400 font-bold mb-4">
-                    <div className="flex items-center gap-2">
-                        <MapPin className="w-3 h-3 text-secondary" /> {inc.zone}
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <User className="w-3 h-3 text-secondary" /> {inc.userName}
-                    </div>
-                  </div>
-                  <div className="pt-3 border-t border-white/10 flex items-center gap-2">
-                    <div className="w-2.5 h-2.5 rounded-full bg-red-500 animate-ping"></div>
-                    <span className="text-[10px] font-black text-red-400 uppercase tracking-widest">Respuesta Táctica Iniciada</span>
-                  </div>
-                </TooltipContent>
-              </Tooltip>
-            </div>
-          ))}
-        </TooltipProvider>
+      <div className="flex-1 min-h-[650px] rounded-[2.5rem] border border-muted/35 shadow-2xl overflow-hidden panel-soft">
+        <div ref={mapContainerRef} className="h-full w-full" />
       </div>
     </div>
   );
