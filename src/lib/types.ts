@@ -1,5 +1,5 @@
 export type Role = 'alumno' | 'autoridad';
-export type Campus = 'UNE Campus Central' | 'UNE Campus Américas' | 'UNE Campus Tlaquepaque' | 'Global';
+export type Campus = 'Campus Metropolitano' | 'Campus Tecnológico' | 'Campus Oriente' | 'Global';
 
 export interface User {
   id: string;
@@ -10,9 +10,20 @@ export interface User {
   email?: string;
 }
 
-export type IncidentCategory = 'Infraestructura' | 'Sospechoso' | 'Emergencia' | 'Acoso' | 'SOS';
+export type IncidentCategory = 'Infraestructura' | 'Sospechoso' | 'Emergencia' | 'Acoso' | 'SOS' | 'Falla Sistema';
 export type IncidentStatus = 'pendiente' | 'atendido' | 'despachado';
 export type IncidentSeverity = 'baja' | 'media' | 'alta' | 'critica';
+
+export interface MapMarker {
+  id: string;
+  type: 'entrada' | 'salida' | 'falla' | 'estudiante' | 'incidente';
+  label: string;
+  coords: {
+    top: string;
+    left: string;
+  };
+  severity?: IncidentSeverity;
+}
 
 export interface Incident {
   id: number;
@@ -43,7 +54,7 @@ export interface AccessLog {
 export interface ZoneOverlay {
   id: string;
   name: string;
-  type: 'danger' | 'safe';
+  type: 'danger-low' | 'danger-mid' | 'danger-high' | 'safe';
   coords: {
     top: string;
     left: string;
