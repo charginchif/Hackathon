@@ -30,7 +30,7 @@ export default function Sidebar({ role, activeSection, onSectionChange, onLogout
       <div className="p-10 border-b border-white/5 bg-black/10">
         <div className="flex items-center gap-4 text-white mb-4">
           <div className="w-14 h-14 bg-white rounded-[1.25rem] flex items-center justify-center shadow-2xl border-2 border-white/10 overflow-hidden p-1">
-            <img src="/IconoLogo.png" alt="Comunidad Alerta Icon" className="w-full h-full object-contain" />
+            <img src="/iconos/IconoLogo.png" alt="Comunidad Alerta Icon" className="w-full h-full object-contain" />
           </div>
           <div className="flex flex-col">
             <span className="font-black text-xl tracking-tighter leading-none uppercase">Comunidad</span>

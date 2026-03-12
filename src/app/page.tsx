@@ -188,7 +188,7 @@ export default function Home() {
             <>
               <div className="text-center mb-10">
                 <div className="mb-6 inline-flex items-center justify-center w-24 h-24 bg-white rounded-3xl overflow-hidden shadow-xl border-4 border-slate-50 relative">
-                   <img src="/Logo.png" alt="Comunidad Alerta Logo" className="w-full h-full object-contain" />
+                   <img src="/iconos/Logo.png" alt="Comunidad Alerta Logo" className="w-full h-full object-contain" />
                 </div>
                 <h1 className="text-3xl font-black text-primary tracking-tighter mb-2 font-headline uppercase leading-none">Comunidad Alerta</h1>
                 <p className="text-slate-500 text-xs font-bold uppercase tracking-[0.2em]">Unidos por un entorno más seguro</p>
