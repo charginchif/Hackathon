@@ -213,7 +213,7 @@ export default function Home() {
                       </Button>
                         <Button variant="outline" onClick={() => startBiometricLogin('alumno_metro')} className="w-full justify-between h-14 rounded-xl border-muted/40 group bg-background hover:bg-secondary hover:text-secondary-foreground">
                         <div className="flex items-center gap-3">
-                          <img src="/iconos/ICONOS-05.svg" alt="Alumno" className="w-5 h-5 object-contain" />
+                          <img src="/iconos/ICONOS-12.svg" alt="Admin" className="w-5 h-5 object-contain" />
                             <div className="text-left">
                                 <p className="text-xs font-black text-primary leading-none group-hover:text-secondary-foreground">Mariana López</p>
                             <p className="text-[9px] text-muted uppercase group-hover:text-secondary-foreground/85">Campus Metropolitano</p>
@@ -222,7 +222,7 @@ export default function Home() {
                       </Button>
                         <Button variant="outline" onClick={() => startBiometricLogin('alumno_tec')} className="w-full justify-between h-14 rounded-xl border-muted/40 group bg-background hover:bg-secondary hover:text-secondary-foreground">
                         <div className="flex items-center gap-3">
-                          <img src="/iconos/ICONOS-05.svg" alt="Alumno" className="w-5 h-5 object-contain" />
+                          <img src="/iconos/ICONOS-12.svg" alt="Admin" className="w-5 h-5 object-contain" />
                             <div className="text-left">
                                 <p className="text-xs font-black text-primary leading-none group-hover:text-secondary-foreground">Roberto García</p>
                             <p className="text-[9px] text-muted uppercase group-hover:text-secondary-foreground/85">Campus Tecnológico</p>
@@ -231,7 +231,7 @@ export default function Home() {
                       </Button>
                         <Button variant="outline" onClick={() => startBiometricLogin('alumno_oriente')} className="w-full justify-between h-14 rounded-xl border-muted/40 group bg-background hover:bg-secondary hover:text-secondary-foreground">
                         <div className="flex items-center gap-3">
-                          <img src="/iconos/ICONOS-05.svg" alt="Alumno" className="w-5 h-5 object-contain" />
+                          <img src="/iconos/ICONOS-12.svg" alt="Admin" className="w-5 h-5 object-contain" />
                             <div className="text-left">
                                 <p className="text-xs font-black text-primary leading-none group-hover:text-secondary-foreground">Sofía Pérez</p>
                             <p className="text-[9px] text-muted uppercase group-hover:text-secondary-foreground/85">Campus Oriente</p>
