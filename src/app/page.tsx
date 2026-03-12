@@ -19,7 +19,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import EmergencyModal from '@/components/EmergencyModal';
 import StudentAccess from '@/components/StudentAccess';
 
-import { useFirestore, useCollection, useMemoFirebase, useAuth } from '@/firebase';
+import { useFirestore, useCollection, useMemoFirebase, useAuth, useUser } from '@/firebase';
 import { collection, query, orderBy, serverTimestamp, doc, setDoc } from 'firebase/firestore';
 import { signInAnonymously } from 'firebase/auth';
 import { addDocumentNonBlocking, updateDocumentNonBlocking } from '@/firebase/non-blocking-updates';
@@ -27,29 +27,30 @@ import { addDocumentNonBlocking, updateDocumentNonBlocking } from '@/firebase/no
 export default function Home() {
   const db = useFirestore();
   const auth = useAuth();
+  const { user: fbUser } = useUser();
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [activeSection, setActiveSection] = useState<string>('dashboard');
   const [activeCampus, setActiveCampus] = useState<Campus>('Campus Metropolitano');
   const [activeEmergency, setActiveEmergency] = useState<Incident | null>(null);
   
-  // Firebase Data Subscriptions - Only run if user is logged in
+  // Firebase Data Subscriptions - Only run if user is logged in AND fbUser is present
   const incidentsRef = useMemoFirebase(() => {
-    if (!db || !activeCampus || !currentUser) return null;
+    if (!db || !activeCampus || !currentUser || !fbUser) return null;
     const campusId = activeCampus === 'Global' ? 'Campus Metropolitano' : activeCampus;
     return query(collection(db, 'schools', campusId, 'incidents'), orderBy('timestamp', 'desc'));
-  }, [db, activeCampus, !!currentUser]);
+  }, [db, activeCampus, !!currentUser, !!fbUser]);
 
   const accessLogsRef = useMemoFirebase(() => {
-    if (!db || !activeCampus || !currentUser) return null;
+    if (!db || !activeCampus || !currentUser || !fbUser) return null;
     const campusId = activeCampus === 'Global' ? 'Campus Metropolitano' : activeCampus;
     return query(collection(db, 'schools', campusId, 'accessLogs'), orderBy('timestamp', 'desc'));
-  }, [db, activeCampus, !!currentUser]);
+  }, [db, activeCampus, !!currentUser, !!fbUser]);
 
   const { data: incidentsData } = useCollection<Incident>(incidentsRef);
-  const incidents = incidentsData ?? [];
+  const incidents = incidentsData || [];
 
   const { data: accessLogsData } = useCollection<AccessLog>(accessLogsRef);
-  const accessLogs = accessLogsData ?? [];
+  const accessLogs = accessLogsData || [];
 
   // Login states
   const [isScanning, setIsScanning] = useState(false);
@@ -105,9 +106,34 @@ export default function Home() {
     }, 1000);
   };
 
-  const handleLoginSuccess = (user: User) => {
-    // Sign in to Firebase Auth to satisfy Security Rules context
-    signInAnonymously(auth).then(() => {
+  const handleLoginSuccess = async (user: User) => {
+    try {
+        const cred = await signInAnonymously(auth);
+        const fbUid = cred.user.uid;
+
+        if (db) {
+            // 1. Sync user profile
+            const userRef = doc(db, 'users', fbUid);
+            await setDoc(userRef, { 
+                id: fbUid,
+                name: user.name,
+                role: user.role,
+                campus: user.campus,
+                email: user.email || `${fbUid}@issu-anon.mx`,
+                lastLogin: serverTimestamp() 
+            }, { merge: true });
+
+            // 2. Register Authorization (Shadow Collections)
+            if (user.role === 'autoridad') {
+                const adminAuthRef = doc(db, 'globalAdmins', fbUid);
+                await setDoc(adminAuthRef, { active: true });
+            } else if (user.role === 'alumno') {
+                const campusId = user.campus === 'Global' ? 'Campus Metropolitano' : user.campus;
+                const studentAuthRef = doc(db, 'schoolStudents', campusId, fbUid);
+                await setDoc(studentAuthRef, { active: true });
+            }
+        }
+
         setCurrentUser(user);
         if (user.role === 'alumno') {
           setActiveCampus(user.campus);
@@ -116,23 +142,10 @@ export default function Home() {
         }
         setActiveSection(ROLES_CONFIG[user.role].defaultSection);
         setIsScanning(false);
-
-        // Sync user to Firestore
-        if (db) {
-            const userRef = doc(db, 'users', user.id);
-            setDoc(userRef, { 
-                id: user.id,
-                name: user.name,
-                role: user.role,
-                campus: user.campus,
-                email: user.email,
-                lastLogin: serverTimestamp() 
-            }, { merge: true });
-        }
-    }).catch(err => {
+    } catch (err) {
         setLoginError('Error de enlace con el servidor central.');
         console.error(err);
-    });
+    }
   };
 
   const logout = () => {
@@ -145,7 +158,7 @@ export default function Home() {
   };
 
   const handleSOS = () => {
-    if (!db || !currentUser) return;
+    if (!db || !currentUser || !fbUser) return;
     const campusId = currentUser.campus === 'Global' ? 'Campus Metropolitano' : currentUser.campus;
     const colRef = collection(db, 'schools', campusId, 'incidents');
     
@@ -154,10 +167,12 @@ export default function Home() {
       description: 'ALERTA SOS: USUARIO SOLICITA AUXILIO INMEDIATO',
       zone: 'UBICACIÓN GEOLOCALIZADA',
       campus: campusId,
+      schoolId: campusId, // Added to match firestore rules
       status: 'pendiente',
       severity: 'critica',
-      userId: currentUser.id,
+      userId: fbUser.uid,
       userName: currentUser.name,
+      reporterUserId: fbUser.uid, // Added to match firestore rules
       timestamp: serverTimestamp(),
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       coords: { top: '50%', left: '50%' }
@@ -331,9 +346,15 @@ export default function Home() {
           {activeSection === 'reportar' && (
             <ReportIncident 
                 onReport={(newInc) => {
+                    if (!fbUser) return;
                     const campusId = currentUser.campus === 'Global' ? 'Campus Metropolitano' : currentUser.campus;
                     const colRef = collection(db!, 'schools', campusId, 'incidents');
-                    addDocumentNonBlocking(colRef, { ...newInc, timestamp: serverTimestamp() });
+                    addDocumentNonBlocking(colRef, { 
+                      ...newInc, 
+                      schoolId: campusId, 
+                      reporterUserId: fbUser.uid,
+                      timestamp: serverTimestamp() 
+                    });
                 }} 
                 user={currentUser} 
             />

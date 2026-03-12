@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -10,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Megaphone, Camera, Send, Check, Zap } from 'lucide-react';
 import { Incident, User, IncidentCategory } from '@/lib/types';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { useUser } from '@/firebase';
 
 interface ReportIncidentProps {
   onReport: (incident: Partial<Incident>) => void;
@@ -17,6 +17,7 @@ interface ReportIncidentProps {
 }
 
 export default function ReportIncident({ onReport, user }: ReportIncidentProps) {
+  const { user: fbUser } = useUser();
   const [category, setCategory] = useState<string>('');
   const [zone, setZone] = useState<string>('');
   const [description, setDescription] = useState('');
@@ -24,17 +25,22 @@ export default function ReportIncident({ onReport, user }: ReportIncidentProps) 
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!fbUser) return;
     
+    const campusId = user.campus === 'Global' ? 'Campus Metropolitano' : user.campus;
+
     onReport({
-      id: Date.now(),
+      id: Date.now().toString(),
       category: category as IncidentCategory,
       description,
       zone,
-      campus: user.campus === 'Global' ? 'Campus Metropolitano' : user.campus,
+      campus: campusId,
+      schoolId: campusId,
       status: 'pendiente',
       severity: (category === 'Emergencia' || category === 'Acoso') ? 'alta' : 'media',
-      userId: user.id,
+      userId: fbUser.uid,
       userName: user.name,
+      reporterUserId: fbUser.uid,
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       coords: { top: '35%', left: '40%' }
     });
@@ -43,6 +49,28 @@ export default function ReportIncident({ onReport, user }: ReportIncidentProps) 
     setCategory('');
     setZone('');
     setDescription('');
+  };
+
+  const handleSOSQuick = () => {
+    if (!fbUser) return;
+    const campusId = user.campus === 'Global' ? 'Campus Metropolitano' : user.campus;
+
+    onReport({
+        id: Date.now().toString(),
+        category: 'SOS',
+        description: 'BOTÓN SOS ACTIVADO POR USUARIO',
+        zone: 'UBICACIÓN DINÁMICA',
+        campus: campusId,
+        schoolId: campusId,
+        status: 'pendiente',
+        severity: 'critica',
+        userId: fbUser.uid,
+        userName: user.name,
+        reporterUserId: fbUser.uid,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        coords: { top: '50%', left: '50%' }
+    });
+    setShowSuccess(true);
   };
 
   return (
@@ -54,22 +82,7 @@ export default function ReportIncident({ onReport, user }: ReportIncidentProps) 
             <p className="text-red-100 font-bold opacity-80">Alerta inmediata por peligro inminente.</p>
           </div>
           <Button 
-            onClick={() => {
-                onReport({
-                    id: Date.now(),
-                    category: 'SOS',
-                    description: 'BOTÓN SOS ACTIVADO POR USUARIO',
-                    zone: 'UBICACIÓN DINÁMICA',
-                    campus: user.campus === 'Global' ? 'Campus Metropolitano' : user.campus,
-                    status: 'pendiente',
-                    severity: 'critica',
-                    userId: user.id,
-                    userName: user.name,
-                    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                    coords: { top: '50%', left: '50%' }
-                });
-                setShowSuccess(true);
-            }}
+            onClick={handleSOSQuick}
             className="bg-white text-red-600 h-16 px-10 rounded-2xl font-black text-xl shadow-2xl animate-pulse flex gap-3"
           >
             <Zap className="w-8 h-8 fill-current" /> ACTIVAR SOS

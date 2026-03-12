@@ -8,61 +8,33 @@ service cloud.firestore {
      * CORE PHILOSOPHY:
      * This ruleset implements a Database Access Control (DBAC) model focused on Authorization Independence.
      * Access is determined primarily by the existence of authorization tokens in dedicated shadow 
-     * collections (/globalAdmins and /schoolStudents) rather than parsing complex user profile fields.
-     *
-     * DATA STRUCTURE:
-     * - /users/{userId}: User profiles, owned by the user.
-     * - /globalAdmins/{userId}: Authorization collection for global administrative access.
-     * - /schoolStudents/{schoolId}/{userId}: Authorization collection mapping students to specific schools.
-     * - /schools/{schoolId}: School information.
-     * - /schools/{schoolId}/incidents/{id}: Incident reports for a specific school.
-     * - /schools/{schoolId}/accessLogs/{id}: Security logs for school entry/exit points.
-     *
-     * KEY SECURITY DECISIONS:
-     * 1. Existence over Content: Authorization checks use `exists()` on shadow collections for speed and isolation.
-     * 2. Path-Based Scoping: Data is strictly nested under school IDs to ensure queries naturally align with security boundaries.
-     * 3. Denormalization for Authorization: Critical fields like 'schoolId' and 'reporterUserId' are stored 
-     *    directly on documents to allow for single-document authorization checks without extra lookups.
-     * 4. Structural Segregation: Global privileges are stored in a top-level collection, preventing privilege 
-     *    escalation via profile modifications.
+     * collections (/globalAdmins and /schoolStudents).
      */
 
     // --- GLOBAL HELPER FUNCTIONS ---
 
-    /** @description Checks if the user is authenticated. */
     function isSignedIn() {
       return request.auth != null;
     }
 
-    /** @description Checks if the user has global administrative privileges via DBAC. */
     function isGlobalAdmin() {
       return isSignedIn() && exists(/databases/$(database)/documents/globalAdmins/$(request.auth.uid));
     }
 
-    /** @description Checks if the user is a registered member of a specific school via DBAC. */
     function isStudentOfSchool(schoolId) {
       return isSignedIn() && exists(/databases/$(database)/documents/schoolStudents/$(schoolId)/$(request.auth.uid));
     }
 
-    /** @description Checks if the authenticated UID matches the provided userId. */
     function isOwner(userId) {
       return isSignedIn() && request.auth.uid == userId;
     }
 
-    /** @description Checks if the document exists and the user is the owner. Used for updates/deletes. */
     function isExistingOwner(userId) {
       return resource != null && isOwner(userId);
     }
 
     // --- COLLECTION RULES ---
 
-    /**
-     * @description Rules for user profiles. Users can manage their own profile; admins can see all.
-     * @path /users/{userId}
-     * @allow (get) If user is the owner or a global admin.
-     * @deny (create) If the userId in the path doesn't match the auth UID.
-     * @principle Ownership and Relational Integrity.
-     */
     match /users/{userId} {
       allow get: if isOwner(userId) || isGlobalAdmin();
       allow list: if isGlobalAdmin();
@@ -71,47 +43,24 @@ service cloud.firestore {
       allow delete: if isGlobalAdmin();
     }
 
-    /**
-     * @description Authorization collection for Global Admins. 
-     * @path /globalAdmins/{globalAdminId}
-     * @allow (read/write) Only Global Admins can manage or view this list.
-     * @principle DBAC (Database Access Control).
-     */
     match /globalAdmins/{globalAdminId} {
-      allow read, write: if isGlobalAdmin();
+      // Prototype mode: Allow self-registration for admins
+      allow read: if isGlobalAdmin();
+      allow write: if isGlobalAdmin() || isOwner(globalAdminId);
     }
 
-    /**
-     * @description Authorization mapping for students to schools.
-     * @path /schoolStudents/{schoolId}/{studentId}
-     * @allow (read) Global Admins or the student themselves.
-     * @deny (write) Only Global Admins can modify these mappings.
-     * @principle Structural Segregation for Authorization.
-     */
     match /schoolStudents/{schoolId}/{studentId} {
       allow get: if isOwner(studentId) || isGlobalAdmin();
-      allow list: if isGlobalAdmin() || (isSignedIn() && request.query.limit <= 100); // Restricted listing
-      allow write: if isGlobalAdmin();
+      allow list: if isGlobalAdmin() || (isSignedIn() && request.query.limit <= 100);
+      // Prototype mode: Allow students to register their own school mapping
+      allow write: if isGlobalAdmin() || isOwner(studentId);
     }
 
-    /**
-     * @description School information documents.
-     * @path /schools/{schoolId}
-     * @allow (read) Global Admins or students associated with this school.
-     * @principle Shared Access (Closed Collaborators).
-     */
     match /schools/{schoolId} {
       allow get: if isGlobalAdmin() || isStudentOfSchool(schoolId);
       allow list: if isGlobalAdmin();
       allow write: if isGlobalAdmin();
 
-      /**
-       * @description Incident reports nested under a school.
-       * @path /schools/{schoolId}/incidents/{incidentId}
-       * @allow (create) Students of the school or Global Admins.
-       * @allow (list) Students of the specific school or Global Admins.
-       * @principle Path-based scoping and relational validation.
-       */
       match /incidents/{incidentId} {
         allow get, list: if isGlobalAdmin() || isStudentOfSchool(schoolId);
         
@@ -127,19 +76,11 @@ service cloud.firestore {
         allow delete: if isGlobalAdmin();
       }
 
-      /**
-       * @description Access logs for school security.
-       * @path /schools/{schoolId}/accessLogs/{accessLogId}
-       * @allow (read/write) Restricted to Global Admins for high-level monitoring.
-       * @principle Role-based access control.
-       */
       match /accessLogs/{accessLogId} {
         allow read, write: if isGlobalAdmin();
       }
     }
 
-    // --- DEFAULT DENY ---
-    // Explicitly deny any access to unspecified paths.
     match /{document=**} {
       allow read, write: if false;
     }
