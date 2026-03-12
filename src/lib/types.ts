@@ -1,4 +1,5 @@
 export type Role = 'alumno' | 'autoridad';
+export type Campus = 'UNE Campus Central' | 'UNE Campus Américas' | 'UNE Campus Tlaquepaque';
 
 export interface User {
   id: string;
@@ -15,6 +16,7 @@ export interface Incident {
   category: IncidentCategory;
   description: string;
   zone: string;
+  campus: Campus;
   status: IncidentStatus;
   user: string;
   time: string;
@@ -30,5 +32,6 @@ export interface AccessLog {
   person: string;
   role: string;
   gate: string;
+  campus: Campus;
   status: 'Autorizado' | 'Denegado';
 }

@@ -2,7 +2,7 @@
 
 import { Role } from '@/lib/types';
 import { ROLES_CONFIG } from '@/lib/mocks';
-import { Shield, Home, Megaphone, PieChart, Map, BadgeCheck, ClipboardList, LogOut } from 'lucide-react';
+import { Shield, Home, Megaphone, PieChart, Map, BadgeCheck, ClipboardList, LogOut, Landmark } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const iconMap: Record<string, any> = {
@@ -25,16 +25,20 @@ export default function Sidebar({ role, activeSection, onSectionChange, onLogout
   const config = ROLES_CONFIG[role];
 
   return (
-    <aside className="w-full lg:w-72 bg-slate-900 text-slate-300 flex flex-col shrink-0 border-r border-slate-800 z-20 shadow-xl overflow-hidden">
-      <div className="p-6 border-b border-slate-800">
+    <aside className="w-full lg:w-80 bg-primary text-slate-300 flex flex-col shrink-0 border-r border-white/5 z-20 shadow-2xl overflow-hidden">
+      <div className="p-8 border-b border-white/5">
         <div className="flex items-center gap-3 text-white mb-2">
-          <Shield className="w-8 h-8 text-emerald-500" />
-          <span className="font-bold text-xl tracking-wide font-headline">ES-2026</span>
+          <div className="w-12 h-12 bg-secondary rounded-2xl flex items-center justify-center shadow-lg">
+            <Landmark className="w-7 h-7 text-primary" />
+          </div>
+          <div className="flex flex-col">
+            <span className="font-black text-2xl tracking-tighter leading-none">UNE</span>
+            <span className="text-[10px] font-bold text-secondary tracking-widest uppercase">Seguridad Red 2026</span>
+          </div>
         </div>
-        <p className="text-xs text-slate-500 uppercase font-semibold">Panel de Control Módulo MVP</p>
       </div>
       
-      <nav className="flex-1 overflow-y-auto p-4 space-y-2">
+      <nav className="flex-1 overflow-y-auto p-6 space-y-3">
         {config.nav.map(item => {
           const Icon = iconMap[item.icon];
           const isActive = activeSection === item.id;
@@ -43,25 +47,25 @@ export default function Sidebar({ role, activeSection, onSectionChange, onLogout
               key={item.id}
               onClick={() => onSectionChange(item.id)}
               className={cn(
-                "w-full flex items-center gap-3 p-3 rounded-xl transition font-medium group",
+                "w-full flex items-center gap-4 p-4 rounded-2xl transition-all duration-300 font-bold group",
                 isActive 
-                  ? "bg-emerald-500/10 text-emerald-400" 
-                  : "text-slate-400 hover:bg-slate-800 hover:text-slate-200"
+                  ? "bg-secondary text-primary shadow-lg scale-105" 
+                  : "text-slate-400 hover:bg-white/5 hover:text-white"
               )}
             >
-              <Icon className={cn("w-5 h-5", isActive ? "text-emerald-400" : "text-slate-500 group-hover:text-slate-200")} /> 
+              <Icon className={cn("w-5 h-5", isActive ? "text-primary" : "text-slate-500 group-hover:text-white")} /> 
               {item.text}
             </button>
           );
         })}
       </nav>
 
-      <div className="p-4 border-t border-slate-800">
+      <div className="p-6 border-t border-white/5">
         <button 
           onClick={onLogout}
-          className="w-full flex items-center justify-center gap-2 p-3 rounded-lg text-slate-400 hover:bg-red-500/10 hover:text-red-400 transition-colors"
+          className="w-full flex items-center justify-center gap-3 p-4 rounded-2xl text-slate-500 hover:bg-red-500/10 hover:text-red-400 transition-all font-bold text-sm"
         >
-          <LogOut className="w-4 h-4" /> Cerrar Sesión
+          <LogOut className="w-5 h-5" /> FINALIZAR TURNO
         </button>
       </div>
     </aside>
