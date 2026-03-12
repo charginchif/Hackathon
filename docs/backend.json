@@ -1,0 +1,439 @@
+{
+  "entities": {
+    "User": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "User",
+      "type": "object",
+      "description": "Represents a user of the Escuelas Seguras application, with specific roles and affiliations.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the User entity."
+        },
+        "name": {
+          "type": "string",
+          "description": "Full name of the user."
+        },
+        "email": {
+          "type": "string",
+          "description": "Email address of the user, used for authentication (handled externally).",
+          "format": "email"
+        },
+        "role": {
+          "type": "string",
+          "description": "The role of the user within the application, determining access permissions.",
+          "format": "enum",
+          "items": {
+            "type": "string"
+          }
+        },
+        "schoolId": {
+          "type": "string",
+          "description": "Reference to the School this user is primarily associated with (e.g., student's school, authority's school). Null for GlobalAdmin. (Relationship: School 1:N User)"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the user account was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the user account was last updated.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "email",
+        "role",
+        "createdAt"
+      ]
+    },
+    "School": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "School",
+      "type": "object",
+      "description": "Represents a school or educational institution ('plantel') being monitored by the application.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the School entity."
+        },
+        "name": {
+          "type": "string",
+          "description": "Official name of the school."
+        },
+        "address": {
+          "type": "string",
+          "description": "Physical street address of the school."
+        },
+        "city": {
+          "type": "string",
+          "description": "City where the school is located."
+        },
+        "state": {
+          "type": "string",
+          "description": "State/Province where the school is located."
+        },
+        "postalCode": {
+          "type": "string",
+          "description": "Postal code of the school's location."
+        },
+        "latitude": {
+          "type": "number",
+          "description": "Geographical latitude coordinate of the school's main entrance or center."
+        },
+        "longitude": {
+          "type": "number",
+          "description": "Geographical longitude coordinate of the school's main entrance or center."
+        },
+        "description": {
+          "type": "string",
+          "description": "A brief description or overview of the school."
+        },
+        "status": {
+          "type": "string",
+          "description": "Operational status of the school within the system.",
+          "format": "enum",
+          "items": {
+            "type": "string"
+          }
+        },
+        "securityLevel": {
+          "type": "string",
+          "description": "Overall security level calculated for the school (e.g., from KPI cards).",
+          "format": "enum",
+          "items": {
+            "type": "string"
+          }
+        },
+        "perimeterCoordinates": {
+          "type": "array",
+          "description": "An array of geographic coordinates defining the school's perimeter, for map visualization.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the school record was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the school record was last updated.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "address",
+        "city",
+        "state",
+        "latitude",
+        "longitude",
+        "status",
+        "createdAt"
+      ]
+    },
+    "Incident": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Incident",
+      "type": "object",
+      "description": "Represents a reported incident within or around a school's perimeter.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Incident entity."
+        },
+        "reporterUserId": {
+          "type": "string",
+          "description": "Reference to the User who reported the incident. (Relationship: User 1:N Incident)"
+        },
+        "schoolId": {
+          "type": "string",
+          "description": "Reference to the School where the incident occurred. (Relationship: School 1:N Incident)"
+        },
+        "category": {
+          "type": "string",
+          "description": "The category or type of incident.",
+          "format": "enum",
+          "items": {
+            "type": "string"
+          }
+        },
+        "description": {
+          "type": "string",
+          "description": "Detailed description of the incident as reported."
+        },
+        "zone": {
+          "type": "string",
+          "description": "Specific area or point within or around the school where the incident is located.",
+          "format": "enum",
+          "items": {
+            "type": "string"
+          }
+        },
+        "status": {
+          "type": "string",
+          "description": "Current status of the incident report.",
+          "format": "enum",
+          "items": {
+            "type": "string"
+          }
+        },
+        "reportedAt": {
+          "type": "string",
+          "description": "Timestamp when the incident was reported.",
+          "format": "date-time"
+        },
+        "resolvedAt": {
+          "type": "string",
+          "description": "Timestamp when the incident was marked as resolved.",
+          "format": "date-time"
+        },
+        "latitude": {
+          "type": "number",
+          "description": "Geographical latitude coordinate of the incident location for map visualization."
+        },
+        "longitude": {
+          "type": "number",
+          "description": "Geographical longitude coordinate of the incident location for map visualization."
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "URL to an optional image attached as evidence for the incident.",
+          "format": "uri"
+        },
+        "severity": {
+          "type": "string",
+          "description": "Severity level of the incident, potentially determined by AI analysis or manual input.",
+          "format": "enum",
+          "items": {
+            "type": "string"
+          }
+        },
+        "suggestedActions": {
+          "type": "array",
+          "description": "AI-suggested actions for incident resolution. (GenAI feature)",
+          "items": {
+            "type": "string"
+          }
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the incident record was last updated.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "reporterUserId",
+        "schoolId",
+        "category",
+        "description",
+        "zone",
+        "status",
+        "reportedAt",
+        "latitude",
+        "longitude"
+      ]
+    },
+    "AccessLog": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "AccessLog",
+      "type": "object",
+      "description": "Records individual entry and exit events at school access points for security monitoring.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the AccessLog entry."
+        },
+        "schoolId": {
+          "type": "string",
+          "description": "Reference to the School where the access event occurred. (Relationship: School 1:N AccessLog)"
+        },
+        "personName": {
+          "type": "string",
+          "description": "Name of the person who accessed the school."
+        },
+        "personId": {
+          "type": "string",
+          "description": "Reference to the User (if registered) who accessed the school. (Relationship: User 1:N AccessLog)"
+        },
+        "personRole": {
+          "type": "string",
+          "description": "Role of the person during the access event (e.g., student, teacher, visitor).",
+          "format": "enum",
+          "items": {
+            "type": "string"
+          }
+        },
+        "accessPoint": {
+          "type": "string",
+          "description": "Specific access point or gate used for entry/exit.",
+          "format": "enum",
+          "items": {
+            "type": "string"
+          }
+        },
+        "accessType": {
+          "type": "string",
+          "description": "Type of access event (Entry or Exit).",
+          "format": "enum",
+          "items": {
+            "type": "string"
+          }
+        },
+        "status": {
+          "type": "string",
+          "description": "Validation status of the access attempt (Authorized or Denied).",
+          "format": "enum",
+          "items": {
+            "type": "string"
+          }
+        },
+        "timestamp": {
+          "type": "string",
+          "description": "Timestamp when the access event occurred.",
+          "format": "date-time"
+        },
+        "validatedByUserId": {
+          "type": "string",
+          "description": "Reference to the User (e.g., security personnel) who validated this access, if applicable. (Relationship: User 1:N AccessLog)"
+        }
+      },
+      "required": [
+        "id",
+        "schoolId",
+        "personName",
+        "personRole",
+        "accessPoint",
+        "accessType",
+        "status",
+        "timestamp"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/users/{userId}",
+        "definition": {
+          "entityName": "User",
+          "schema": {
+            "$ref": "#/backend/entities/User"
+          },
+          "description": "Stores individual user profiles. The 'id' field in the document matches the Firebase Authentication UID. The 'schoolId' field indicates the user's primary school affiliation (null for global admins). This document acts as a source of truth for client-side display but for security rule evaluation, dedicated role collections are preferred for authorization independence.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique Firebase Authentication UID of the user."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/globalAdmins/{globalAdminId}",
+        "definition": {
+          "entityName": "GlobalAdmin",
+          "schema": {
+            "$ref": "#/backend/entities/User"
+          },
+          "description": "Dedicated collection for 'GlobalAdmin' roles. The existence of a document with 'globalAdminId' matching 'request.auth.uid' grants global administrative privileges. This design allows for 'Existence over Content' authorization checks in security rules, supporting DBAC and Authorization Independence.",
+          "params": [
+            {
+              "name": "globalAdminId",
+              "description": "The unique Firebase Authentication UID of a user with global administrative privileges."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/schoolStudents/{schoolId}/{studentId}",
+        "definition": {
+          "entityName": "SchoolStudent",
+          "schema": {
+            "$ref": "#/backend/entities/User"
+          },
+          "description": "Dedicated collection to map 'Comunidad' (student, parent, neighbor) users to specific schools. The existence of a document here signifies that 'studentId' is authorized for actions related to 'schoolId'. This supports DBAC and Authorization Independence by enabling `exists()` checks in security rules without fetching user profiles.",
+          "params": [
+            {
+              "name": "schoolId",
+              "description": "The unique identifier of the school the user is associated with."
+            },
+            {
+              "name": "studentId",
+              "description": "The unique Firebase Authentication UID of the community user (student, parent, neighbor)."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/schools/{schoolId}",
+        "definition": {
+          "entityName": "School",
+          "schema": {
+            "$ref": "#/backend/entities/School"
+          },
+          "description": "Stores data for individual schools ('planteles'). Accessible by global admins or users associated with that specific school. Security rules will rely on `globalAdmins` or `schoolStudents` authorization collections.",
+          "params": [
+            {
+              "name": "schoolId",
+              "description": "The unique identifier for a school."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/schools/{schoolId}/incidents/{incidentId}",
+        "definition": {
+          "entityName": "Incident",
+          "schema": {
+            "$ref": "#/backend/entities/Incident"
+          },
+          "description": "Stores incident reports, nested under their respective 'School'. Includes denormalized 'schoolId' field for authorization independence, allowing security rules to directly compare 'incident.schoolId' without relying on parent data. The 'reporterUserId' identifies the user who submitted the report.",
+          "params": [
+            {
+              "name": "schoolId",
+              "description": "The unique identifier of the school where the incident occurred."
+            },
+            {
+              "name": "incidentId",
+              "description": "The unique identifier for the incident report."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/schools/{schoolId}/accessLogs/{accessLogId}",
+        "definition": {
+          "entityName": "AccessLog",
+          "schema": {
+            "$ref": "#/backend/entities/AccessLog"
+          },
+          "description": "Records access events (entries/exits) for a specific 'School'. Includes denormalized 'schoolId' for authorization independence. Primarily visible to 'GlobalAdmin' and potentially 'SchoolAdmin' roles.",
+          "params": [
+            {
+              "name": "schoolId",
+              "description": "The unique identifier of the school where the access event occurred."
+            },
+            {
+              "name": "accessLogId",
+              "description": "The unique identifier for the access log entry."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The Firestore structure is designed following the core principles of Authorization Independence, Structural Segregation, and DBAC (Database Access Control) to ensure security, scalability, and debuggability. \n\n**Authorization Independence:** This is primarily achieved through denormalization and the use of dedicated authorization collections. \n1.  **Denormalization:** All 'Incident' and 'AccessLog' documents explicitly include their `schoolId` as a direct field. This eliminates the need for security rules to perform `get()` operations on the parent 'School' document to determine access rights for its subcollections. The `schoolId` in the document itself can be directly compared against the authenticated user's authorization context.\n2.  **Dedicated Authorization Collections (DBAC):** Instead of relying on custom claims or fetching the entire user profile for role evaluation during every data access, user roles and their school affiliations are denormalized into specific, lightweight authorization collections: `/globalAdmins/{uid}` and `/schoolStudents/{schoolId}/{uid}`. Security rules can then perform efficient `exists()` checks on these collections. For example, to verify if `request.auth.uid` is an administrator, rules simply check for the existence of `/globalAdmins/$(request.auth.uid)`. For a student's school-specific access, rules check `exists(/schoolStudents/$(schoolId)/$(request.auth.uid))`. This completely avoids `get()` calls on the main `/users/{uid}` profile during authorization, making rules atomic, faster, and easier to debug.\n\n**QAPs (Rules are not Filters):** The structure and authorization model enable Query-Ability with Predictable Security (QAPs), meaning security rules accurately reflect the client's requested data access without having to filter unauthorized results after a broad query.\n1.  **Alumno (Student) Access:** When an 'Alumno' wants to listen to incidents for their specific school, the client-side application first identifies the user's `schoolId` (e.g., from their `/users/{uid}` profile or by checking which `/schoolStudents/{schoolId}/{uid}` document exists for them). The query is then explicitly targeted to `/schools/{userSchoolId}/incidents`. The Firestore Security Rule for this path (`match /schools/{schoolId}/incidents/{incidentId}`) checks `request.auth.uid` against the `schoolId` in the path parameter using `exists(/schoolStudents/$(schoolId)/$(request.auth.uid))`. If the `schoolId` in the query path does not match the school the user is authorized for, the rule denies the entire read operation, upholding QAPs.\n2.  **Admin C5 Access:** An 'Admin C5' needs to query incidents from any specific school selected from a dropdown. The client issues a query to `/schools/{selectedSchoolId}/incidents`, where `selectedSchoolId` is a specific ID. The security rule for this path evaluates `exists(/globalAdmins/$(request.auth.uid))`. If the user is a `globalAdmin`, the query is permitted. If not, it's denied. This ensures that only authorized administrators can retrieve incidents for the requested school, without the need for rules to filter out schools they shouldn't see.\n\n**Structural Segregation:** Data with different security postures or access patterns are separated into distinct collections or subcollections (e.g., global admin roles vs. school-specific roles, school data vs. school-specific incidents). This simplifies rule writing by applying homogeneous security requirements across all documents within a given collection path."
+  }
+}
