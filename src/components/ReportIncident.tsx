@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Megaphone, Send, Check, Zap } from 'lucide-react';
+import { Send, Zap } from 'lucide-react';
 import { Incident, User, IncidentCategory } from '@/lib/types';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { useUser } from '@/firebase';
@@ -83,8 +83,9 @@ export default function ReportIncident({ onReport, user }: ReportIncidentProps) 
           </div>
           <Button 
             onClick={handleSOSQuick}
-            className="bg-background text-secondary h-16 px-10 rounded-2xl font-black text-xl shadow-2xl animate-pulse flex gap-3"
+            className="bg-background text-secondary h-16 px-8 rounded-2xl font-black text-xl shadow-2xl animate-pulse flex gap-3"
           >
+            <img src="/iconos/Alerta.png" alt="Alerta" className="w-9 h-9 object-contain" />
             <Zap className="w-8 h-8 fill-current" /> ACTIVAR SOS
           </Button>
         </div>
@@ -146,6 +147,7 @@ export default function ReportIncident({ onReport, user }: ReportIncidentProps) 
           </div>
 
           <Button type="submit" className="w-full bg-primary h-14 text-lg font-bold gap-2 shadow-lg rounded-xl">
+            <img src="/iconos/ICONOS-06.png" alt="Enviar" className="w-5 h-5 object-contain" />
             <Send className="w-5 h-5" /> ENVIAR AL CENTRO DE MANDO
           </Button>
         </form>
@@ -153,8 +155,8 @@ export default function ReportIncident({ onReport, user }: ReportIncidentProps) 
 
       <Dialog open={showSuccess} onOpenChange={setShowSuccess}>
         <DialogContent className="sm:max-w-md p-10 text-center rounded-[2rem]">
-          <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6 border border-primary/30">
-            <Check className="w-10 h-10 text-primary" />
+          <div className="w-24 h-24 bg-primary/10 rounded-3xl flex items-center justify-center mx-auto mb-6 border border-primary/30 p-3">
+            <img src="/iconos/ICONOS-07.png" alt="Confirmado" className="w-full h-full object-contain" />
           </div>
           <DialogHeader>
             <DialogTitle className="text-2xl font-black text-primary text-center uppercase">¡Reporte Enviado!</DialogTitle>

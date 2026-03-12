@@ -2,16 +2,15 @@
 
 import { Role, Campus } from '@/lib/types';
 import { ROLES_CONFIG } from '@/lib/mocks';
-import { Home, Megaphone, PieChart, Map, BadgeCheck, ClipboardList, LogOut, MapPin } from 'lucide-react';
+import { MapPin } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-const iconMap: Record<string, any> = {
-  Home: Home,
-  Megaphone: Megaphone,
-  PieChart: PieChart,
-  Map: Map,
-  BadgeCheck: BadgeCheck,
-  ClipboardList: ClipboardList,
+const navIconBySection: Record<string, string> = {
+  dashboard: '/iconos/ICONOS-02.png',
+  mapa: '/iconos/ICONOS-03.png',
+  accesos: '/iconos/Qr.png',
+  reportar: '/iconos/Alerta.png',
+  gestion: '/iconos/ICONOS-12.png',
 };
 
 interface SidebarProps {
@@ -49,8 +48,8 @@ export default function Sidebar({ role, activeSection, onSectionChange, onLogout
       
       <nav className="flex-1 overflow-y-auto p-6 lg:p-8 space-y-3 lg:space-y-4">
         {config.nav.map(item => {
-          const Icon = iconMap[item.icon];
           const isActive = activeSection === item.id;
+          const iconSrc = navIconBySection[item.id] || '/iconos/ICONOS-05.png';
           return (
             <button 
               key={item.id}
@@ -62,7 +61,14 @@ export default function Sidebar({ role, activeSection, onSectionChange, onLogout
                   : "text-primary-foreground/80 hover:bg-background/20 hover:text-primary-foreground"
               )}
             >
-              <Icon className={cn("w-5 h-5 lg:w-6 lg:h-6", isActive ? "text-secondary-foreground" : "text-primary-foreground/65 group-hover:text-primary-foreground")} /> 
+              <span className={cn(
+                "w-8 h-8 lg:w-9 lg:h-9 rounded-xl p-1.5 shrink-0 border",
+                isActive
+                  ? "bg-background/95 border-background/50"
+                  : "bg-background/15 border-background/30 group-hover:bg-background/25"
+              )}>
+                <img src={iconSrc} alt={`Icono ${item.text}`} className="w-full h-full object-contain" />
+              </span>
               {item.text}
             </button>
           );
@@ -74,7 +80,10 @@ export default function Sidebar({ role, activeSection, onSectionChange, onLogout
           onClick={onLogout}
           className="w-full flex items-center justify-center gap-3 p-4 lg:p-5 rounded-[1rem] lg:rounded-[1.25rem] text-primary-foreground/70 hover:bg-background/20 hover:text-primary-foreground transition-all font-black text-[10px] lg:text-xs uppercase tracking-widest"
         >
-          <LogOut className="w-4 h-4 lg:w-5 lg:h-5" /> DESCONECTAR TERMINAL
+          <span className="w-7 h-7 rounded-lg bg-background/20 border border-background/30 p-1.5">
+            <img src="/iconos/ICONOS-11.png" alt="Salir" className="w-full h-full object-contain" />
+          </span>
+          DESCONECTAR TERMINAL
         </button>
       </div>
     </aside>

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { UserCheck, ChevronRight, User as UserIcon, Mail, Lock, Landmark, Loader2, Zap, Menu, ShieldCheck, AlertTriangle, Network, Navigation, Building2, Cctv, DoorOpen } from 'lucide-react';
+import { ChevronRight, User as UserIcon, Mail, Lock, Loader2, Zap, Menu, ShieldCheck, AlertTriangle, Network, Navigation, Building2, Cctv, DoorOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -204,7 +204,7 @@ export default function Home() {
                     <div className="space-y-3">
                         <Button variant="outline" onClick={() => startBiometricLogin('admin_global')} className="w-full justify-between h-14 rounded-xl border-secondary/30 group bg-background">
                         <div className="flex items-center gap-3">
-                          <Landmark className="w-5 h-5 text-muted group-hover:text-secondary" />
+                          <img src="/iconos/ICONOS-12.png" alt="Admin" className="w-5 h-5 object-contain" />
                             <div className="text-left">
                                 <p className="text-xs font-black text-primary leading-none">Admin Global C5</p>
                             <p className="text-[9px] text-muted uppercase">Supervisión Comunidad Alerta</p>
@@ -214,7 +214,7 @@ export default function Home() {
                       </Button>
                         <Button variant="outline" onClick={() => startBiometricLogin('alumno_metro')} className="w-full justify-between h-14 rounded-xl border-muted/40 group bg-background">
                         <div className="flex items-center gap-3">
-                          <UserCheck className="w-5 h-5 text-muted group-hover:text-primary" />
+                          <img src="/iconos/ICONOS-05.png" alt="Alumno" className="w-5 h-5 object-contain" />
                             <div className="text-left">
                                 <p className="text-xs font-black text-primary leading-none">Mariana López</p>
                             <p className="text-[9px] text-muted uppercase">Campus Metropolitano</p>
@@ -224,7 +224,7 @@ export default function Home() {
                       </Button>
                         <Button variant="outline" onClick={() => startBiometricLogin('alumno_tec')} className="w-full justify-between h-14 rounded-xl border-muted/40 group bg-background">
                         <div className="flex items-center gap-3">
-                          <UserCheck className="w-5 h-5 text-muted group-hover:text-primary" />
+                          <img src="/iconos/ICONOS-05.png" alt="Alumno" className="w-5 h-5 object-contain" />
                             <div className="text-left">
                                 <p className="text-xs font-black text-primary leading-none">Roberto García</p>
                             <p className="text-[9px] text-muted uppercase">Campus Tecnológico</p>
@@ -234,7 +234,7 @@ export default function Home() {
                       </Button>
                         <Button variant="outline" onClick={() => startBiometricLogin('alumno_oriente')} className="w-full justify-between h-14 rounded-xl border-muted/40 group bg-background">
                         <div className="flex items-center gap-3">
-                          <UserCheck className="w-5 h-5 text-muted group-hover:text-primary" />
+                          <img src="/iconos/ICONOS-05.png" alt="Alumno" className="w-5 h-5 object-contain" />
                             <div className="text-left">
                                 <p className="text-xs font-black text-primary leading-none">Sofía Pérez</p>
                             <p className="text-[9px] text-muted uppercase">Campus Oriente</p>
@@ -328,7 +328,8 @@ export default function Home() {
             </div>
             
             <div className="flex flex-col">
-              <h2 className="text-lg md:text-2xl font-black text-primary font-headline tracking-tighter uppercase leading-none">
+              <h2 className="text-lg md:text-2xl font-black text-primary font-headline tracking-tighter uppercase leading-none flex items-center gap-2">
+                <img src="/iconos/ICONOS-09.png" alt="Seccion" className="w-5 h-5 md:w-6 md:h-6 object-contain" />
                 {ROLES_CONFIG[currentUser.role].nav.find(n => n.id === activeSection)?.text || 'Operaciones'}
               </h2>
               <div className="flex items-center gap-2 mt-0.5 md:mt-1">
