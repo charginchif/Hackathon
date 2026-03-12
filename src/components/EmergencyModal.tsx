@@ -26,12 +26,16 @@ export default function EmergencyModal({ incident, onClose, onDispatch }: Emerge
   if (dispatched) {
     return (
       <Dialog open={true} onOpenChange={onClose}>
-        <DialogContent className="sm:max-w-md p-10 text-center">
+        <DialogContent className="sm:max-w-md p-10 text-center border-none shadow-2xl">
           <div className="w-24 h-24 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6 animate-bounce">
             <CheckCircle2 className="w-12 h-12" />
           </div>
-          <DialogTitle className="text-2xl font-black text-primary mb-2 uppercase">¡Despacho Exitoso!</DialogTitle>
-          <p className="text-slate-500 font-medium">Se ha enviado la alerta a {dispatched}. La unidad está en camino al {incident.zone}.</p>
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-black text-primary mb-2 uppercase text-center">¡Despacho Exitoso!</DialogTitle>
+            <DialogDescription className="text-slate-500 font-medium text-center">
+              Se ha enviado la alerta a las unidades de {dispatched}. La unidad está en camino a la zona: {incident.zone}.
+            </DialogDescription>
+          </DialogHeader>
         </DialogContent>
       </Dialog>
     );
@@ -40,6 +44,14 @@ export default function EmergencyModal({ incident, onClose, onDispatch }: Emerge
   return (
     <Dialog open={true} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-xl p-0 overflow-hidden border-none shadow-2xl">
+        {/* Accesibilidad: Título y descripción ocultos para Radix UI si no se usan visualmente en el diseño actual */}
+        <DialogHeader className="sr-only">
+          <DialogTitle>ALERTA SOS ACTIVA - PROTOCOLO ISSU</DialogTitle>
+          <DialogDescription>
+            Intervención inmediata requerida para el usuario {incident.user} en {incident.zone}.
+          </DialogDescription>
+        </DialogHeader>
+
         <div className="bg-red-600 p-8 text-white flex items-center gap-6">
           <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center animate-pulse">
             <ShieldAlert className="w-10 h-10" />
@@ -64,24 +76,24 @@ export default function EmergencyModal({ incident, onClose, onDispatch }: Emerge
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <Button 
-                onClick={() => handleDispatch('POLICÍA')}
+                onClick={() => handleDispatch('POLICÍA / C5')}
                 className="h-24 flex-col gap-2 bg-blue-600 hover:bg-blue-700 rounded-2xl shadow-lg transition-transform hover:scale-105"
             >
-              <Siren className="w-8 h-8" />
+              <Siren className="w-8 h-8 text-white" />
               <span className="font-black text-[10px] uppercase">Policía / C5</span>
             </Button>
             <Button 
-                onClick={() => handleDispatch('MÉDICOS')}
+                onClick={() => handleDispatch('CUERPOS MÉDICOS')}
                 className="h-24 flex-col gap-2 bg-emerald-600 hover:bg-emerald-700 rounded-2xl shadow-lg transition-transform hover:scale-105"
             >
-              <Ambulance className="w-8 h-8" />
+              <Ambulance className="w-8 h-8 text-white" />
               <span className="font-black text-[10px] uppercase">Ambulancia</span>
             </Button>
             <Button 
                 onClick={() => handleDispatch('BOMBEROS')}
                 className="h-24 flex-col gap-2 bg-orange-600 hover:bg-orange-700 rounded-2xl shadow-lg transition-transform hover:scale-105"
             >
-              <Flame className="w-8 h-8" />
+              <Flame className="w-8 h-8 text-white" />
               <span className="font-black text-[10px] uppercase">Bomberos</span>
             </Button>
           </div>
