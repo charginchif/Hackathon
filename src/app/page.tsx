@@ -188,6 +188,7 @@ export default function Home() {
             <>
               <div className="text-center mb-8 md:mb-10 flex flex-col items-center">
                 <div className="mb-4 md:mb-6 flex items-center justify-center w-full h-20 md:h-24 overflow-hidden relative">
+                   {/* Se utiliza IconoLogo.png para el inicio de sesión como se solicitó */}
                    <img src="/iconos/IconoLogo.png" alt="Comunidad Alerta Icono" className="h-full object-contain" />
                 </div>
                 <h1 className="text-2xl md:text-3xl font-black text-primary tracking-tighter mb-1 md:2 font-headline uppercase leading-none">Comunidad Alerta</h1>
