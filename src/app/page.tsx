@@ -187,7 +187,7 @@ export default function Home() {
             <>
               <div className="text-center mb-8 md:mb-10 flex flex-col items-center">
                 <div className="mb-4 md:mb-6 flex items-center justify-center w-full h-24 md:h-28 overflow-hidden relative">
-                   <img src="/iconos/IconoLogo.png" alt="Comunidad Alerta Logo" className="h-full object-contain" />
+                   <img src="/iconos/IconoLogo.png" alt="Comunidad Alerta Icono" className="h-full object-contain" />
                 </div>
                 <h1 className="text-2xl md:text-3xl font-black text-primary tracking-tighter mb-1 md:2 font-headline uppercase leading-none">Comunidad Alerta</h1>
                 <p className="text-slate-500 text-[10px] md:text-xs font-bold uppercase tracking-[0.2em]">Unidos por un entorno más seguro</p>
@@ -250,7 +250,7 @@ export default function Home() {
                   <form onSubmit={handleEmailLogin} className="space-y-4">
                     <div className="relative">
                         <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-                        <Input placeholder="usuario@issu.edu.mx" className="pl-12 rounded-2xl h-14" value={loginEmail} onChange={e => setLoginEmail(e.target.value)} />
+                        <Input placeholder="usuario@comunidadalerta.org" className="pl-12 rounded-2xl h-14" value={loginEmail} onChange={e => setLoginEmail(e.target.value)} />
                     </div>
                     <div className="relative">
                         <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
