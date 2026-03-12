@@ -25,7 +25,7 @@ export default function AIAssistant({ incident, onClose }: AIAssistantProps) {
           category: incident.category,
           description: incident.description,
           zone: incident.zone,
-          user: incident.user,
+          user: incident.userName, // Corrected from incident.user to incident.userName
           time: incident.time
         });
         setResponse(res);

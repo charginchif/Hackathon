@@ -13,8 +13,8 @@ import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
 
 const IncidentReportInputSchema = z.object({
-  id: z.number().describe('Unique identifier for the incident.'),
-  category: z.enum(['Infraestructura', 'Sospechoso', 'Emergencia', 'Acoso']).describe('Category of the incident.'),
+  id: z.union([z.string(), z.number()]).describe('Unique identifier for the incident.'),
+  category: z.enum(['Infraestructura', 'Sospechoso', 'Emergencia', 'Acoso', 'SOS']).describe('Category of the incident.'),
   description: z.string().describe('Detailed description of the incident.'),
   zone: z.string().describe('Location or zone where the incident occurred.'),
   user: z.string().describe('Name of the user who reported the incident.'),
@@ -57,7 +57,7 @@ Incident Report:
 - Time: {{{time}}}
 
 Consider the category and description to tailor your response. For example:
-- For 'Emergencia', prioritize safety and external emergency services.
+- For 'Emergencia' or 'SOS', prioritize safety and external emergency services.
 - For 'Sospechoso', focus on security protocols and police contact.
 - For 'Infraestructura', suggest contacting maintenance and assessing impact.
 - For 'Acoso', recommend counseling, prefect, or school director involvement.
