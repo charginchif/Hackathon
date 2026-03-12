@@ -2,7 +2,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { ShieldCheck, UserCheck, ChevronRight, Bell, User as UserIcon, ScanFace, Mail, Lock, Landmark, Loader2, Zap, LayoutDashboard, Map as MapIcon, Megaphone, CheckCircle2 } from 'lucide-react';
+import { ShieldCheck, UserCheck, ChevronRight, Bell, User as UserIcon, ScanFace, Mail, Lock, Landmark, Loader2, Zap, LayoutDashboard, Map as MapIcon, Megaphone, CheckCircle2, Siren } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -20,29 +20,31 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import EmergencyModal from '@/components/EmergencyModal';
 import StudentAccess from '@/components/StudentAccess';
 
-import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
+import { useFirestore, useCollection, useMemoFirebase, useAuth } from '@/firebase';
 import { collection, query, orderBy, serverTimestamp, doc, setDoc } from 'firebase/firestore';
+import { signInAnonymously } from 'firebase/auth';
 import { addDocumentNonBlocking, updateDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 
 export default function Home() {
   const db = useFirestore();
+  const auth = useAuth();
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [activeSection, setActiveSection] = useState<string>('dashboard');
   const [activeCampus, setActiveCampus] = useState<Campus>('Campus Metropolitano');
   const [activeEmergency, setActiveEmergency] = useState<Incident | null>(null);
   
-  // Firebase Data Subscriptions
+  // Firebase Data Subscriptions - Only run if user is logged in
   const incidentsRef = useMemoFirebase(() => {
-    if (!db || !activeCampus) return null;
+    if (!db || !activeCampus || !currentUser) return null;
     const campusId = activeCampus === 'Global' ? 'Campus Metropolitano' : activeCampus;
     return query(collection(db, 'schools', campusId, 'incidents'), orderBy('timestamp', 'desc'));
-  }, [db, activeCampus]);
+  }, [db, activeCampus, !!currentUser]);
 
   const accessLogsRef = useMemoFirebase(() => {
-    if (!db || !activeCampus) return null;
+    if (!db || !activeCampus || !currentUser) return null;
     const campusId = activeCampus === 'Global' ? 'Campus Metropolitano' : activeCampus;
     return query(collection(db, 'schools', campusId, 'accessLogs'), orderBy('timestamp', 'desc'));
-  }, [db, activeCampus]);
+  }, [db, activeCampus, !!currentUser]);
 
   const { data: incidents = [] } = useCollection<Incident>(incidentsRef);
   const { data: accessLogs = [] } = useCollection<AccessLog>(accessLogsRef);
@@ -102,20 +104,33 @@ export default function Home() {
   };
 
   const handleLoginSuccess = (user: User) => {
-    setCurrentUser(user);
-    if (user.role === 'alumno') {
-      setActiveCampus(user.campus);
-    } else {
-      setActiveCampus('Campus Metropolitano');
-    }
-    setActiveSection(ROLES_CONFIG[user.role].defaultSection);
-    setIsScanning(false);
+    // Sign in to Firebase Auth to satisfy Security Rules context
+    signInAnonymously(auth).then(() => {
+        setCurrentUser(user);
+        if (user.role === 'alumno') {
+          setActiveCampus(user.campus);
+        } else {
+          setActiveCampus('Campus Metropolitano');
+        }
+        setActiveSection(ROLES_CONFIG[user.role].defaultSection);
+        setIsScanning(false);
 
-    // Sync user to Firestore if needed
-    if (db) {
-        const userRef = doc(db, 'users', user.id);
-        setDoc(userRef, { ...user, lastLogin: serverTimestamp() }, { merge: true });
-    }
+        // Sync user to Firestore
+        if (db) {
+            const userRef = doc(db, 'users', user.id);
+            setDoc(userRef, { 
+                id: user.id,
+                name: user.name,
+                role: user.role,
+                campus: user.campus,
+                email: user.email,
+                lastLogin: serverTimestamp() 
+            }, { merge: true });
+        }
+    }).catch(err => {
+        setLoginError('Error de enlace con el servidor central.');
+        console.error(err);
+    });
   };
 
   const logout = () => {
